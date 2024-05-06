@@ -77,17 +77,17 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1714947113,
-        "narHash": "sha256-olBJPSbAyVG1y8ACZt1JylE/Lg9Egp5Wop1Tk9k7Juo=",
-        "ref": "refs/heads/master",
-        "rev": "0d1742e01fe78f2a86b3d76ffe1c771b6fb9e2be",
-        "revCount": 184,
-        "type": "git",
-        "url": "ssh://gitea@gitea.koubic.dev/honza/nix4dev.git"
+        "lastModified": 1715007516,
+        "narHash": "sha256-uVQMdI+R5JP+Lwr4TJ+KSM5g7JkhDJHb+OM9N/TBRK4=",
+        "owner": "jan-kouba",
+        "repo": "nix4dev",
+        "rev": "9719e1b7a99d37a7643193991781fbfe70630c56",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.koubic.dev/honza/nix4dev.git"
+        "owner": "jan-kouba",
+        "repo": "nix4dev",
+        "type": "github"
       }
     },
     "nixpkgs": {

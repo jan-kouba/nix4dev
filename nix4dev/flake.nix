@@ -3,7 +3,7 @@
   # To change flake inputs, use the `nix4dev.flake.extraInputs` option.
   inputs = {
     "nix4dev" = {
-      "url" = "git+ssh://gitea@gitea.koubic.dev/honza/nix4dev.git";
+      "url" = "github:jan-kouba/nix4dev";
     };
   };
 
