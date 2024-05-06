@@ -26,8 +26,11 @@
           ./flake-modules/default.nix
           ''
             Default flake module not found. To create an empty default module execute:
-            > echo "{}" > ./nix4dev/flake-modules/default.nix
-            in the root of the project.
+
+            mkdir -p ./flake-modules
+            echo "{}" > ./flake-modules/default.nix
+
+            in the directory containing the flake.nix file.
           ''
         )
       ];
