@@ -27,7 +27,7 @@ in {
 
         config = {
           baseFlakeInputs = {
-            nix4dev.url = "git+ssh://gitea@gitea.koubic.dev/honza/nix4dev.git";
+            nix4dev.url = "github:jan-kouba/nix4dev";
           };
 
           baseFlakeModules = [
