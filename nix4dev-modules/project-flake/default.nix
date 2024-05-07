@@ -46,20 +46,32 @@ in {
     };
 
     config = l.mkIf cfg.enable {
-      nix4dev.checkCommands = l.mkIf cfg.enable (
-        let
-          nixFlakeCheck = pkgs.writeShellApplication {
-            name = "nix-flake-check";
+      nix4dev = {
+        checkCommands = l.mkIf cfg.enable (
+          let
+            nixFlakeCheck = pkgs.writeShellApplication {
+              name = "nix-flake-check";
+              runtimeInputs = [pkgs.nix];
+              text = ''
+                ( cd "$PRJ_ROOT" && nix flake check . )
+              '';
+            };
+          in ["${nixFlakeCheck}/bin/nix-flake-check"]
+        );
+
+        updateCommands = let
+          cmd = pkgs.writeShellApplication {
+            name = "update-project-inputs";
             runtimeInputs = [pkgs.nix];
             text = ''
-              ( cd "$PRJ_ROOT" && nix flake check . )
+              ( cd "$PRJ_ROOT" && nix flake update . )
             '';
           };
-        in ["${nixFlakeCheck}/bin/nix-flake-check"]
-      );
+        in ["${cmd}/bin/${cmd.name}"];
 
-      nix4dev.managedFiles.files = {
-        "flake.nix".source.file = cfg.flakeNixFile;
+        managedFiles.files = {
+          "flake.nix".source.file = cfg.flakeNixFile;
+        };
       };
     };
   };

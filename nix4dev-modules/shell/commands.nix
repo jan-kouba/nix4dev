@@ -35,6 +35,7 @@
       prepareCommands = compoundCommandOption "prepare";
       setupCommands = compoundCommandOption "setup";
       checkCommands = compoundCommandOption "check";
+      updateCommands = compoundCommandOption "update";
     };
 
     config = let
@@ -55,6 +56,12 @@
         help = "Runs checks";
         subCommands = cfg.checkCommands;
       };
+
+      updateCommand = compoundCommand {
+        commandName = "update";
+        help = "Updates dependencies";
+        subCommands = cfg.updateCommands;
+      };
     in {
       packages.setup = setupCommand.package;
 
@@ -63,6 +70,7 @@
           prepareCommand
           setupCommand
           checkCommand
+          updateCommand
         ];
       };
 

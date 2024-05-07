@@ -86,6 +86,16 @@ in {
             /.direnv
           '';
         };
+
+        nix4dev.updateCommands = let
+          cmd = pkgs.writeShellApplication {
+            name = "update-nix4dev-inputs";
+            runtimeInputs = [pkgs.nix];
+            text = ''
+              ( cd "$PRJ_ROOT"/nix4dev && nix flake update . )
+            '';
+          };
+        in ["${cmd}/bin/${cmd.name}"];
       };
     };
   };
