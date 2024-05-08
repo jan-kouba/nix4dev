@@ -1,0 +1,26 @@
+{
+  "jobs": {
+    "nix4dev-check": {
+      "runs-on": "ubuntu-22.04",
+      "steps": [
+        { "uses": "actions/checkout@v3" },
+        { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        { "name": "Run `check`", "run": "nix develop ./nix4dev -c check\n" }
+      ]
+    },
+    "nix4dev-test-all": {
+      "runs-on": "ubuntu-22.04",
+      "steps": [
+        { "uses": "actions/checkout@v3" },
+        { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        {
+          "name": "Run `test-all`",
+          "run": "nix develop ./nix4dev -c test-all\n"
+        }
+      ]
+    }
+  },
+  "name": "nix4dev-check",
+  "on": { "push": {}, "workflow_dispatch": {} },
+  "permissions": { "contents": "read", "id-token": "write" }
+}
