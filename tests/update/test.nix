@@ -11,6 +11,7 @@ t.makeTest (
     popd
 
     cp -r ${./repo}/* .
+    chmod -R u+w .
     pwd > nix4dev/flake-modules/repo_root
     git add .
     nix develop ./nix4dev -c setup
