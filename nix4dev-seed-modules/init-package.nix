@@ -27,9 +27,11 @@ in {
       }
     '';
 
-    seededModule = pkgs.runCommand "default.nix" {} ''
-      cat ${seededModuleNotFormatted} | ${config.treefmt.package}/bin/treefmt --config-file ${config.treefmt.build.configFile} --stdin out.nix > $out
-    '';
+    seededModule = nix4devLib.writeFormattedFile {
+      treefmtConfig = config.treefmt;
+      fileToFormat = seededModuleNotFormatted;
+      outputFileName = "default.nix";
+    };
 
     init = pkgs.writeShellApplication {
       name = "setup";

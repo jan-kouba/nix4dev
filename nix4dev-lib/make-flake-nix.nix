@@ -1,7 +1,7 @@
 {
   lib,
   writeText,
-  runCommand,
+  writeFormattedFile,
   ...
 }: let
   l = lib // builtins;
@@ -76,9 +76,12 @@
           };
       }
     '';
-    flakeNix = runCommand "format-flake" {} ''
-      cat ${flakeNotFormatted} | ${treefmtConfig.package}/bin/treefmt --config-file ${treefmtConfig.build.configFile} --stdin out.nix > $out
-    '';
+
+    flakeNix = writeFormattedFile {
+      inherit treefmtConfig;
+      fileToFormat = flakeNotFormatted;
+      outputFileName = "flake.nix";
+    };
   in
     flakeNix;
 in {
