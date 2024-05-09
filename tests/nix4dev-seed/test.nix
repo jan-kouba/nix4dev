@@ -20,7 +20,7 @@ t.makeTest (
     nix develop ./nix4dev -c setup
 
     git add .
-    git cm -m "Added repo files"
+    git commit -m "Added repo files"
 
 
 
