@@ -5,6 +5,10 @@
       "steps": [
         { "uses": "actions/checkout@v3" },
         { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        {
+          "name": "Setup git for test",
+          "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n"
+        },
         { "name": "Run `check`", "run": "nix develop ./nix4dev -c check\n" }
       ]
     },
@@ -13,6 +17,10 @@
       "steps": [
         { "uses": "actions/checkout@v3" },
         { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        {
+          "name": "Setup git for test",
+          "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n"
+        },
         {
           "name": "Run `test-all`",
           "run": "nix develop ./nix4dev -c test-all\n"

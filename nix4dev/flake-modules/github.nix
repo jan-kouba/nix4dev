@@ -21,6 +21,13 @@
               uses = "cachix/install-nix-action@v26";
             }
             {
+              name = "Setup git for test";
+              run = ''
+                git config --global user.email "nix4dev-ci@github.com"
+                git config --global user.name "nix4dev CI"
+              '';
+            }
+            {
               name = mainStepName;
               run = mainStepCommand;
             }
