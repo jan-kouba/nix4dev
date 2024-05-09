@@ -7,7 +7,7 @@ t.makeTest (
 
     nix develop ./nix4dev -c setup
     git add .
-    git cm -am "Setup project level flake"
+    git commit -am "Setup project level flake"
 
     test "$(nix run .#foo)" == "Hello, world!"
     test "$(nix run .#bar)" == "Hello, world!"
