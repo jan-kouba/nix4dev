@@ -15,7 +15,7 @@
     pushd "$tmp_dir"/repo
 
     # Initializing repo
-    nix run ${repoPath}#setup
+    nix run ${repoPath}#init
 
     git init .
     git add .

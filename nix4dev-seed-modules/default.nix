@@ -45,7 +45,7 @@ in {
     perSystem = {system, ...}: {
       config = {
         # Setup project to use nix4dev shell.
-        packages.setup = let
+        packages.init = let
           initialSetupProjectFlake =
             nix4devFlake.inputs.flake-parts.lib.mkFlake
             {
