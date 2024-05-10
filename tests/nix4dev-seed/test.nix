@@ -30,7 +30,7 @@ t.makeTest (
     mkdir repo_seeded
     cd repo_seeded
 
-    nix run ../repo#setup
+    nix run ../repo#init
     mv nix4dev/flake-modules/default.nix nix4dev/flake-modules/seed.nix
     cp -r ${./repo_seeded}/* .
 
