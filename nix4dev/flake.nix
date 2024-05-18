@@ -4,7 +4,9 @@
   inputs = {
     "nix4dev" = {
       "url" = "github:jan-kouba/nix4dev";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs = inputs:

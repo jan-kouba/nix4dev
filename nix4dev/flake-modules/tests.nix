@@ -1,7 +1,8 @@
-{
+{ inputs, ...}: {
   perSystem = {
     pkgs,
     lib,
+    system,
     ...
   }: let
     testDirs = lib.filterAttrs (_name: type: type == "directory") (builtins.readDir ../../tests);
@@ -24,8 +25,15 @@
 
     testLib = testName:
       import ../../tests/lib.nix {
-        inherit pkgs testName;
+        inherit pkgs system testName;
         repoPath = ../..;
+        nix4devFlake = let 
+          self = (import ../../flake.nix).outputs ({ 
+            inherit self;             
+          } // inputs.nix4dev.inputs) // {
+            inputs = inputs.nix4dev.inputs;
+          };
+        in self;
       };
 
     tests =
