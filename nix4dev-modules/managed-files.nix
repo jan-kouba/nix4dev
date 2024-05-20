@@ -118,7 +118,7 @@
 
     config = let
       installCmd = _: managedFile: let
-        inst = mode: ''install -D -m ${mode} "${managedFile.source.file}" "$PRJ_ROOT"/'${managedFile.target}' '';
+        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.source.file}" "$PRJ_ROOT"/'${managedFile.target}' '';
         executeMode =
           if managedFile.executable
           then "x"

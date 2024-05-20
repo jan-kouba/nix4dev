@@ -39,7 +39,7 @@ in {
       text = ''
         PRJ_ROOT="$(pwd)" setup
 
-        install -D "${seededModule}" nix4dev/flake-modules/default.nix
+        ${pkgs.coreutils}/bin/install -D "${seededModule}" nix4dev/flake-modules/default.nix
 
         echo '# Welcome to nix4dev dev-shell!'
         echo
