@@ -7,6 +7,7 @@
 
       extraInputs = {
         foo-nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+        systems.url = "github:nix-systems/default";
       };
     };
   };
