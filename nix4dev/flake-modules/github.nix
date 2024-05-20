@@ -12,7 +12,8 @@
           mainStepName,
           mainStepCommand,
         }: {
-          runs-on = "ubuntu-22.04";
+          strategy.matrix.runs-on = ["ubuntu-22.04" "macos-14"];
+          runs-on = "\${{ matrix.runs-on}}";
 
           steps = [
             {uses = "actions/checkout@v3";}
