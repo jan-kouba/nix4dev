@@ -6,11 +6,11 @@
   inputs = {
     "devshell" = {
       "inputs" = {
+        "flake-utils" = {
+          "follows" = "flake-utils";
+        };
         "nixpkgs" = {
           "follows" = "nixpkgs";
-        };
-        "systems" = {
-          "follows" = "systems";
         };
       };
       "url" = "github:numtide/devshell";
