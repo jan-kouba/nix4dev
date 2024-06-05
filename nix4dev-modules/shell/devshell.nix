@@ -72,7 +72,7 @@ in {
             # Watch & reload direnv on change
             TO_WATCH=""
             mapfile -td "" TO_WATCH < <(find ./nix4dev -type f -print0)
-            nix_direnv_watch_file "''${TO_WATCH[@]}"
+            watch_file "''${TO_WATCH[@]}"
 
             if [[ $(type -t use_flake) != function ]]; then
               echo "ERROR: use_flake function missing."
