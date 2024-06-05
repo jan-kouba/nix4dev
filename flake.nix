@@ -32,7 +32,7 @@
       "url" = "github:numtide/flake-utils";
     };
     "nixpkgs" = {
-      "url" = "github:NixOS/nixpkgs/nixos-23.11";
+      "url" = "github:NixOS/nixpkgs/nixos-24.05";
     };
     "systems" = {
       "url" = "github:nix-systems/default";
