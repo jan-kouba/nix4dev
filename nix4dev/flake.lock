@@ -77,11 +77,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1717620693,
-        "narHash": "sha256-vxjieWsM4D4zK4QWSOqmKLAcF4lGu8jbamk1HWxyN0g=",
+        "lastModified": 1717624772,
+        "narHash": "sha256-gghIMdJReMnmvNv9XouN6srZr2JBSyRl+UwSlW7ABDY=",
         "owner": "jan-kouba",
         "repo": "nix4dev",
-        "rev": "b9caec377663eee00e2d35095f86f933e1eb47cd",
+        "rev": "80d114a0b713dcedf3acf84fbefca140f619e990",
         "type": "github"
       },
       "original": {
@@ -92,16 +92,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1717530100,
-        "narHash": "sha256-b4Dn+PnrZoVZ/BoR9JN2fTxXxplJrAsdSUIePf4Cacs=",
+        "lastModified": 1717281328,
+        "narHash": "sha256-evZPzpf59oNcDUXxh2GHcxHkTEG4fjae2ytWP85jXRo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a2e1d0414259a144ebdc048408a807e69e0565af",
+        "rev": "b3b2b28c1daa04fe2ae47c21bb76fd226eac4ca1",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.11",
+        "ref": "nixos-24.05",
         "repo": "nixpkgs",
         "type": "github"
       }
