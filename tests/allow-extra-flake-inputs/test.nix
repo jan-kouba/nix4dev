@@ -6,7 +6,7 @@ t.makeTest (
       { inputs, ... }: {
         perSystem = { system, ...}: {
           nix4dev.flake.extraInputs = {
-            foo.url = "github:NixOS/nixpkgs/nixos-23.11";
+            foo.url = "github:NixOS/nixpkgs/nixos-24.05";
           };
 
           packages.bar = inputs.foo.legacyPackages.\''${system}.hello;

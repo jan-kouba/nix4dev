@@ -21,7 +21,7 @@ in
         '';
         example = ''
           {
-            foo.url = "github:NixOS/nixpkgs/nixos-23.11";
+            foo.url = "github:NixOS/nixpkgs/nixos-24.05";
           }
         '';
         default = {};
