@@ -19,7 +19,7 @@ in {
         '';
         example = l.literalExpression ''
           {
-            foo.url = "github:NixOS/nixpkgs/nixos-23.11";
+            foo.url = "github:NixOS/nixpkgs/nixos-24.05";
           }
         '';
       };
