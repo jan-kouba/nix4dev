@@ -4,7 +4,10 @@
       "runs-on": "${{ matrix.runs-on}}",
       "steps": [
         { "uses": "actions/checkout@v3" },
-        { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        {
+          "name": "Install Nix",
+          "uses": "DeterminateSystems/nix-installer-action@main"
+        },
         {
           "name": "Setup git for test",
           "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n"
@@ -17,7 +20,10 @@
       "runs-on": "${{ matrix.runs-on}}",
       "steps": [
         { "uses": "actions/checkout@v3" },
-        { "name": "Install Nix", "uses": "cachix/install-nix-action@v26" },
+        {
+          "name": "Install Nix",
+          "uses": "DeterminateSystems/nix-installer-action@main"
+        },
         {
           "name": "Setup git for test",
           "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n"
