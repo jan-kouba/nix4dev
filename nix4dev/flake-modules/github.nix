@@ -19,7 +19,7 @@
             {uses = "actions/checkout@v3";}
             {
               name = "Install Nix";
-              uses = "cachix/install-nix-action@v26";
+              uses = "DeterminateSystems/nix-installer-action@main";
             }
             {
               name = "Setup git for test";
