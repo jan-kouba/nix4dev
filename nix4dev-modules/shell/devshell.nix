@@ -39,14 +39,26 @@ in {
       flakeType = t.submodule flakeOptions;
     in {
       options.nix4dev = {
-        envrc.preamble = l.mkOption {
-          type = t.lines;
-          description = ''
-            Lines to put into the beginning of .envrc.
-            Can be used to watch for additional files.
-          '';
-          default = "";
-          internal = true;
+        envrc = {
+          preamble = l.mkOption {
+            type = t.lines;
+            description = ''
+              Lines to put into the beginning of .envrc.
+              Can be used to watch for additional files.
+            '';
+            default = "";
+            internal = true;
+          };
+
+          watchDirectories = l.mkOption {
+            type = t.listOf t.str;
+            description = ''
+              List of directories to watch for changes that will trigger
+              direnv reload. The directories must be relative paths to the project root.
+            '';
+            default = [];
+            example = ["./flake-modules/common"];
+          };
         };
 
         flake = l.mkOption {
@@ -63,16 +75,26 @@ in {
         nix4dev.managedFiles.files = {
           "nix4dev/flake.nix".source.file = cfg.flake.flakeNixFile;
 
-          ".envrc".source.text = ''
+          ".envrc".source.text = let
+            allWatchDirs = ["./nix4dev"] ++ cfg.envrc.watchDirectories;
+          in ''
             #!/usr/bin/env bash
             # ^ added for shellcheck and file-type detection
 
             ${cfg.envrc.preamble}
 
             # Watch & reload direnv on change
-            TO_WATCH=""
-            mapfile -td "" TO_WATCH < <(find ./nix4dev -type f -print0)
-            watch_file "''${TO_WATCH[@]}"
+            set_watch() {
+              TO_WATCH=""
+              ${
+              l.strings.concatMapStringsSep "\n" (dir: ''
+                mapfile -td "" TO_WATCH < <(find "./${dir}}" -type f -print0)
+                watch_file "''${TO_WATCH[@]}"
+              '')
+              allWatchDirs
+            }
+            }
+            set_watch
 
             if [[ $(type -t use_flake) != function ]]; then
               echo "ERROR: use_flake function missing."
