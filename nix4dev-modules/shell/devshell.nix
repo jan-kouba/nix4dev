@@ -76,7 +76,7 @@ in {
           "nix4dev/flake.nix".source.file = cfg.flake.flakeNixFile;
 
           ".envrc".source.text = let
-            allWatchDirs = ["./nix4dev"] ++ cfg.envrc.watchDirectories;
+            allWatchDirs = ["nix4dev"] ++ cfg.envrc.watchDirectories;
           in ''
             #!/usr/bin/env bash
             # ^ added for shellcheck and file-type detection
@@ -86,12 +86,14 @@ in {
             # Watch & reload direnv on change
             set_watch() {
               TO_WATCH=""
-              ${
-              l.strings.concatMapStringsSep "\n" (dir: ''
-                mapfile -td "" TO_WATCH < <(find "./${dir}}" -type f -print0)
-                watch_file "''${TO_WATCH[@]}"
-              '')
-              allWatchDirs
+            ${
+              l.strings.concatLines (
+                l.lists.concatMap (dir: [
+                  ("  " + ''mapfile -td "" TO_WATCH < <(find "./${dir}" -type f -print0)'')
+                  ("  " + ''watch_file "''${TO_WATCH[@]}"'')
+                ])
+                allWatchDirs
+              )
             }
             }
             set_watch
