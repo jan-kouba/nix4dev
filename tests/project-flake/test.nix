@@ -5,7 +5,7 @@ t.makeTest (
     chmod -R u+w .
     git add .
 
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
     git add .
     git commit -am "Setup project level flake"
 

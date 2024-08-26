@@ -63,8 +63,6 @@
         subCommands = cfg.updateCommands;
       };
     in {
-      packages.setup = setupCommand.package;
-
       devshells.default = {
         commands = [
           prepareCommand
@@ -83,6 +81,13 @@
           '';
         };
       in ["${nixFlakeCheck}/bin/nix-flake-check"];
+
+      packages = {
+        prepare = prepareCommand.package;
+        setup = setupCommand.package;
+        check = checkCommand.package;
+        update = updateCommand.package;
+      };
     };
   };
 }

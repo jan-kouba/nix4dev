@@ -14,7 +14,7 @@ t.makeTest (
     chmod -R u+w .
     pwd > nix4dev/flake-modules/repo_root
     git add .
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
     git add .
     git commit -a -m "Update"
 
@@ -26,7 +26,7 @@ t.makeTest (
     git commit -a -m "Second commit"
     popd
 
-    nix develop ./nix4dev -c update
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#update
 
     diff "$(nix build --no-link --print-out-paths ./nix4dev#foo)" <(echo "baz")
     diff "$(nix build --no-link --print-out-paths .#foo)" <(echo "baz")

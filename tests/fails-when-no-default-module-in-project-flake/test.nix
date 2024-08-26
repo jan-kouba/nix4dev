@@ -4,7 +4,7 @@ t.makeTest (
     mkdir -p nix4dev/flake-modules
     echo "{ perSystem.nix4dev.projectFlake.enable = true; }" > nix4dev/flake-modules/default.nix
     git add .
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
     git add .
     git commit -m "chore: Setup project"
 

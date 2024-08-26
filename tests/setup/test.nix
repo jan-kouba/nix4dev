@@ -9,7 +9,7 @@ t.makeTest (
     chmod 'u+w' .envrc
     echo "# Something added at the end" >> .envrc
 
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
 
     diff bar <(echo "foo")
     grep -v "# Something added at the end" .envrc
