@@ -5,6 +5,6 @@ t.makeTest (
     echo "{}" > nix4dev/flake-modules/default.nix
     git add nix4dev/flake-modules/default.nix
 
-    nix develop ./nix4dev -c check
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#check
   ''
 )

@@ -5,7 +5,7 @@ t.makeTest (
     chmod -R u+w .
     git add .
 
-    nix develop ./nix4dev -c prepare
+    nix run ./nix4dev#prepare
 
     for f in expected/*; do
       ${t.pkgs.difftastic}/bin/difft input/"$(basename "$f")" "$f" || exit 1

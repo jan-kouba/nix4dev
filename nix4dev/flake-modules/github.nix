@@ -38,7 +38,7 @@
         checkJob = workflowJob {
           mainStepName = "Run `check`";
           mainStepCommand = ''
-            nix develop ./nix4dev -c check
+            nix run ./nix4dev#check
           '';
         };
 

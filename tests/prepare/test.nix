@@ -13,7 +13,7 @@ t.makeTest (
 
     cat test.nix
 
-    nix develop nix4dev/ -c prepare
+    nix run ./nix4dev#prepare
 
     cat > test.nix.expected <<EOF
     {

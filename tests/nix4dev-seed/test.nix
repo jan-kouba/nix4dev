@@ -17,7 +17,7 @@ t.makeTest (
     EOF
 
     git add .
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
 
     git add .
     git commit -m "Added repo files"
@@ -40,7 +40,7 @@ t.makeTest (
     nix develop ./nix4dev -c test-success
 
     # Test that setup does not break things
-    nix develop ./nix4dev -c setup
+    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
     nix flake update --override-input nix4dev "${t.repoPath}" ./nix4dev
 
     nix develop ./nix4dev -c test-success
