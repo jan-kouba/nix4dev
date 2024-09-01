@@ -9,7 +9,7 @@ in {
     ./conventional-commits
     ./json.nix
     ./managed-files.nix
-    ./markdown.nix
+    (fpl.importApply ./markdown.nix nix4devInputs)
     ./nixlang.nix
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake

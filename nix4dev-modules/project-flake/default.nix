@@ -25,6 +25,9 @@ in {
       config = {
         baseFlakeInputs = {
           nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+          nixpkgs-mdformat = {
+            url = "github:NixOS/nixpkgs";
+          };
           flake-parts = {
             url = "github:hercules-ci/flake-parts";
             inputs.nixpkgs-lib.follows = "nixpkgs";
