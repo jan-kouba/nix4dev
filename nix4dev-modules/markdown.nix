@@ -11,7 +11,7 @@ nix4devInputs: {
           p.mdformat-footnote
           p.mdformat-frontmatter
           p.mdformat-gfm
-          p.mdformat-gfm-action
+          p.mdformat-gfm-alerts
           p.mdformat-mkdocs
           p.mdformat-nix-alejandra
           p.mdformat-simple-breaks

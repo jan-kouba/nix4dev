@@ -34,6 +34,9 @@
     "nixpkgs" = {
       "url" = "github:NixOS/nixpkgs/nixos-24.05";
     };
+    "nixpkgs-mdformat" = {
+      "url" = "github:NixOS/nixpkgs/nixos-unstable-small";
+    };
     "systems" = {
       "url" = "github:nix-systems/default";
     };

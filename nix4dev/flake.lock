@@ -69,16 +69,18 @@
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-mdformat": "nixpkgs-mdformat",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "dirtyRev": "bc137e83045fa70c890964dc369cdbc167ee506b-dirty",
-        "dirtyShortRev": "bc137e8-dirty",
-        "lastModified": 1725225275,
-        "narHash": "sha256-sqGHV6eUdV5PNElRruXnkyzNsgcRlihiESclZo4QR4A=",
+        "lastModified": 1725365227,
+        "narHash": "sha256-o5+dfhlZRbOhwG//mxyrNuGHXZtp17KXzEh/9oFU0Vo=",
+        "ref": "refs/heads/github-admonitions",
+        "rev": "ea554e9c0347f5626b00eded0c84af82c820e8cf",
+        "revCount": 38,
         "type": "git",
-        "url": "file:///home/honza/var/wrk/work/nix4dev"
+        "url": "file:."
       },
       "original": {
         "owner": "jan-kouba",
@@ -98,6 +100,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-mdformat": {
+      "locked": {
+        "lastModified": 1725274606,
+        "narHash": "sha256-xXINAjCR8eTmp3AxZTk/PIH9nNoFNN0OM7MUw6eB7oQ=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "66a352a3f27a2eb2f27e42a13c6fe245d3be2b98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable-small",
         "repo": "nixpkgs",
         "type": "github"
       }
