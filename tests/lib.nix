@@ -2,7 +2,10 @@
   pkgs,
   repoPath,
   testName,
+  inputs
 }: let
+  repoInputs = inputs.nix4dev.inputs;
+
   withLockedRepo = testScript: ''
     set -x
     export NIX_CONFIG="
@@ -15,7 +18,8 @@
     pushd "$tmp_dir"/repo
 
     # Initializing repo
-    nix run ${repoPath}#init
+    ${(loadFlake (import "${repoPath}/flake.nix") repoInputs).packages.${pkgs.system}.init}/bin/setup
+    # nix run ${repoPath}#init
 
     git init .
     git add .
@@ -44,6 +48,10 @@
 
       inherit text;
     };
+
+  loadFlake = flake: inputs: let
+    self = { inherit inputs; } // (flake.outputs (inputs // { inherit self; }));
+  in self;
 
   lib = {
     inherit
