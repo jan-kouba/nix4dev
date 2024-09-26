@@ -50,7 +50,9 @@
     };
 
   loadFlake = flake: inputs: let
-    self = { inherit inputs; } // (flake.outputs (inputs // { inherit self; }));
+    requiredInputNames = l.attrNames flake.inputs;
+    filteredInputs = l.getAttrs requiredInputNames inputs;
+    self = { inputs = filteredInputs; } // (flake.outputs (filteredInputs // { inherit self; }));
   in self;
 
   lib = {

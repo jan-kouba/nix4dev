@@ -9,6 +9,7 @@
   imports = [
     (flake-parts-lib.importApply ../nix4dev-seed-modules {nix4devFlake = self;})
     ./output.nix
+    ./tests.nix
   ];
 
   nix4dev.seed = {
