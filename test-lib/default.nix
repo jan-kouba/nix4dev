@@ -2,9 +2,11 @@
   pkgs,
   repoPath,
   testName,
-  inputs
+  inputs,
 }: let
   repoInputs = inputs.nix4dev.inputs;
+
+  l = pkgs.lib;
 
   withLockedRepo = testScript: ''
     set -x
@@ -52,8 +54,9 @@
   loadFlake = flake: inputs: let
     requiredInputNames = l.attrNames flake.inputs;
     filteredInputs = l.getAttrs requiredInputNames inputs;
-    self = { inputs = filteredInputs; } // (flake.outputs (filteredInputs // { inherit self; }));
-  in self;
+    self = {inputs = filteredInputs;} // (flake.outputs (filteredInputs // {inherit self;}));
+  in
+    self;
 
   lib = {
     inherit

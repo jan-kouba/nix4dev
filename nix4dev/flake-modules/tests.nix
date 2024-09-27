@@ -1,4 +1,4 @@
-{ inputs, ...}: {
+{inputs, ...}: {
   perSystem = {
     pkgs,
     lib,
@@ -23,7 +23,7 @@
       };
 
     testLib = testName:
-      import ../../tests/lib.nix {
+      import ../../test-lib {
         inherit pkgs testName inputs;
         repoPath = ../..;
       };
