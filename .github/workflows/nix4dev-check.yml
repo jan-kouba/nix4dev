@@ -12,7 +12,7 @@
           "name": "Setup git for test",
           "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n"
         },
-        { "name": "Run `check`", "run": "nix run ./nix4dev#check\n" }
+        { "name": "Run `check`", "run": "nix develop ./nix4dev -c check\n" }
       ],
       "strategy": { "matrix": { "runs-on": ["ubuntu-22.04", "macos-14"] } }
     },
