@@ -16,7 +16,7 @@
           runs-on = "\${{ matrix.runs-on}}";
 
           steps = [
-            {uses = "actions/checkout@v3";}
+            {uses = "actions/checkout@v4";}
             {
               name = "Install Nix";
               uses = "DeterminateSystems/nix-installer-action@main";
