@@ -52,24 +52,26 @@
       "./tests/formatters-work/repo/**"
     ];
 
-    devshells.default = {
-      commands =
-        (
-          lib.mapAttrsToList
-          (_n: v: {
-            package = v;
-            category = "tests";
-          })
-          tests
-        )
-        ++ [
-          {
-            name = "test-all";
-            package = testAllPkg;
-            help = "Runs all tests";
-            category = "tests";
-          }
-        ];
-    };
+    # devshells.default = {
+    #   commands =
+    #     (
+    #       lib.mapAttrsToList
+    #       (_n: v: {
+    #         package = v;
+    #         category = "tests";
+    #       })
+    #       tests
+    #     )
+    #     ++ [
+    #       {
+    #         name = "test-all";
+    #         package = testAllPkg;
+    #         help = "Runs all tests";
+    #         category = "tests";
+    #       }
+    #     ];
+    # };
+
+    checks.terraform-works = tests.terraform-works;
   };
 }

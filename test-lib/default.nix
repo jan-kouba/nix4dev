@@ -8,9 +8,9 @@
 
   l = pkgs.lib;
 
-  withLockedRepo = testScript: let
-    nix4devFlake = loadFlake (import "${repoPath}/flake.nix") repoInputs;
-  in ''
+  nix4devFlake = loadFlake (import "${repoPath}/flake.nix") repoInputs;
+
+  withLockedRepo = testScript: ''
     set -x
     export NIX_CONFIG="
       experimental-features = nix-command flakes
@@ -29,9 +29,9 @@
     git add .
     git commit -m "Init"
 
-    nix flake update --override-input nix4dev ${repoPath} --print-build-logs nix4dev/
-    git add nix4dev/flake.lock
-    git commit -m "Add nix4dev/flake.lock"
+    # nix flake update --override-input nix4dev ${repoPath} --print-build-logs nix4dev/
+    #git add nix4dev/flake.lock
+    #git commit -m "Add nix4dev/flake.lock"
 
     # Running testing logic
     ${testScript}
@@ -39,6 +39,30 @@
     # Removing test directory
     popd
     rm -rf "$tmp_dir"
+  '';
+
+  runTestCommand = commandName: text:
+    pkgs.runCommand commandName {
+      buildInputs = [pkgs.git];
+      GIT_CONFIG_GLOBAL = pkgs.writeText "" ''
+        [user]
+          email = "email@domain.com"
+          name  = "User Name"
+      '';
+    } text;
+
+  makeLockedRepo = runTestCommand "make-locked-repo" ''
+    # Creating test directory
+    mkdir -p $out/repo
+    pushd $out/repo
+
+    # Initializing repo
+    ${nix4devFlake.packages.${pkgs.system}.init}/bin/setup
+    # nix run ${repoPath}#init
+
+    git init .
+    git add .
+    git commit -m "Init"
   '';
 
   makeTest = text:
@@ -66,6 +90,10 @@
       makeTest
       pkgs
       repoPath
+      nix4devFlake
+      makeLockedRepo
+      loadFlake
+      runTestCommand
       ;
   };
 in
