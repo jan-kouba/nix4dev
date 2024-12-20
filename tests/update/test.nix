@@ -12,7 +12,7 @@ t.makeTest (
 
     cp -r ${./repo}/* .
     chmod -R u+w .
-    pwd > nix4dev/flake-modules/repo_root
+    readlink -f "$(pwd)" > nix4dev/flake-modules/repo_root
     git add .
     PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
     git add .
