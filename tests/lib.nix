@@ -21,7 +21,7 @@
     git add .
     git commit -m "Init"
 
-    nix flake update --override-input nix4dev ${repoPath} --print-build-logs nix4dev/
+    nix flake update --override-input nix4dev ${repoPath} --print-build-logs --flake nix4dev/
     git add nix4dev/flake.lock
     git commit -m "Add nix4dev/flake.lock"
 
