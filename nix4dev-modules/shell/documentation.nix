@@ -42,7 +42,7 @@
         {
           name = "show-options-doc";
           help = "Shows flake module options";
-          command = "${pkgs.xdg_utils}/bin/xdg-open ${config.packages.optionsDoc}";
+          command = "${pkgs.xdg-utils}/bin/xdg-open ${config.packages.optionsDoc}";
         }
       ];
     };

@@ -64,7 +64,7 @@ in {
             name = "update-project-inputs";
             runtimeInputs = [pkgs.nix];
             text = ''
-              ( cd "$PRJ_ROOT" && nix flake update . )
+              ( cd "$PRJ_ROOT" && nix flake update )
             '';
           };
         in ["${cmd}/bin/${cmd.name}"];

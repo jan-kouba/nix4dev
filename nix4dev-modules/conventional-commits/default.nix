@@ -71,7 +71,7 @@
         };
 
         treefmt.settings.global.excludes = [
-          "./CHANGELOG.md"
+          "CHANGELOG.md"
         ];
       }
     );
