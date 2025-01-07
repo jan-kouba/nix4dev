@@ -1,13 +1,9 @@
 {lib, ...}: {
   perSystem = {
-    config,
-    pkgs,
     ...
-  }: let
-    nix4devLib = import ../../nix4dev-lib {inherit pkgs;};
-  in {
+  }: {
     nix4dev.managedFiles.files = {
-      ".github/workflows/nix4dev-check.yml".source.file = let
+      ".github/workflows/nix4dev-check.yml".source.text = let
         workflowJob = {
           mainStepName,
           mainStepCommand,
@@ -70,14 +66,8 @@
             nix4dev-test-all = testJob;
           };
         };
-
-        workflowYaml = pkgs.writeText "workflow.json" (lib.generators.toYAML {} workflowNix);
       in
-        nix4devLib.writeFormattedFile {
-          treefmtConfig = config.treefmt;
-          fileToFormat = workflowYaml;
-          outputFileName = "workflow.json";
-        };
+        lib.generators.toYAML {} workflowNix;
     };
   };
 }
