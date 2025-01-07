@@ -13,7 +13,8 @@ in {
     ./nixlang.nix
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake
-    ./terraform.nix
     (fpl.importApply ./shell nix4devInputs)
+    ./terraform.nix
+    ./yaml.nix
   ];
 }
