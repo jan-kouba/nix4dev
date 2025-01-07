@@ -49,7 +49,7 @@
     };
   in {
     treefmt.settings.global.excludes = [
-      "./tests/formatters-work/repo/**"
+      "tests/formatters-work/repo/**"
     ];
 
     devshells.default = {

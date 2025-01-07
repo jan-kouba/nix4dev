@@ -1,7 +1,7 @@
 {
   perSystem = { pkgs, ...}: {
     treefmt.settings.global.excludes = [
-      "./expected/**"
+      "expected/**"
     ];
 
     nix4dev.terraform.enable = true;

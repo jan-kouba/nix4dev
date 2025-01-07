@@ -10,7 +10,6 @@ in {
     cfg = config.nix4dev.projectFlake;
     nix4devLib = import ../../nix4dev-lib {inherit pkgs;};
     flakeOptionsBase = nix4devLib.flakeNixOptions {
-      treefmtConfig = config.treefmt;
       flakePartsInputPathString = "inputs.flake-parts";
       flakeConfigPathString = "nix4dev.projectFlake";
       nixpkgsInputPathString = "inputs.nixpkgs";
@@ -64,7 +63,7 @@ in {
             name = "update-project-inputs";
             runtimeInputs = [pkgs.nix];
             text = ''
-              ( cd "$PRJ_ROOT" && nix flake update . )
+              ( cd "$PRJ_ROOT" && nix flake update )
             '';
           };
         in ["${cmd}/bin/${cmd.name}"];

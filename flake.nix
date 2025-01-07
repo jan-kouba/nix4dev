@@ -21,7 +21,7 @@
       "url" = "github:hercules-ci/flake-parts";
     };
     "nixpkgs" = {
-      "url" = "github:NixOS/nixpkgs/nixos-24.05";
+      "url" = "github:NixOS/nixpkgs/nixos-24.11";
     };
     "systems" = {
       "url" = "github:nix-systems/default";
