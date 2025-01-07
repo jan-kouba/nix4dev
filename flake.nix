@@ -6,9 +6,6 @@
   inputs = {
     "devshell" = {
       "inputs" = {
-        "flake-utils" = {
-          "follows" = "flake-utils";
-        };
         "nixpkgs" = {
           "follows" = "nixpkgs";
         };
@@ -22,14 +19,6 @@
         };
       };
       "url" = "github:hercules-ci/flake-parts";
-    };
-    "flake-utils" = {
-      "inputs" = {
-        "systems" = {
-          "follows" = "systems";
-        };
-      };
-      "url" = "github:numtide/flake-utils";
     };
     "nixpkgs" = {
       "url" = "github:NixOS/nixpkgs/nixos-24.11";
