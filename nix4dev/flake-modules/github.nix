@@ -1,7 +1,5 @@
 {lib, ...}: {
-  perSystem = {
-    ...
-  }: {
+  perSystem = {...}: {
     nix4dev.managedFiles.files = {
       ".github/workflows/nix4dev-check.yml".source.text = let
         workflowJob = {
@@ -38,7 +36,7 @@
         checkJob = workflowJob {
           mainStepName = "Run `check`";
           mainStepCommand = ''
-            nix run ./nix4dev#check
+            nix develop ./nix4dev -c check
           '';
         };
 
