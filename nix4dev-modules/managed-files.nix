@@ -8,6 +8,9 @@
     l = lib // builtins;
     t = l.types;
 
+    nix4devLib = import ../nix4dev-lib {inherit pkgs;};
+
+    topCfg = config;
     cfg = config.nix4dev.managedFiles;
 
     sourceType = t.submodule ({config, ...}: {
@@ -76,16 +79,21 @@
           description = "Relative path to the target file.";
         };
 
-        sourceFile = l.mkOption {
+        preparedSourceFile = l.mkOption {
           type = t.pathInStore;
           internal = true;
           readOnly = true;
-          description = "Path to the source file in store.";
+          description = "Path to the prepared source file.";
         };
       };
 
       config = {
         target = name;
+        preparedSourceFile = nix4devLib.writeFormattedFile {
+          treefmtConfig = topCfg.treefmt;
+          fileToFormat = config.source.file;
+          outputFileName = l.baseNameOf config.target;
+        };
       };
     });
   in {
@@ -118,7 +126,7 @@
 
     config = let
       installCmd = _: managedFile: let
-        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.source.file}" "$PRJ_ROOT"/'${managedFile.target}' '';
+        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$PRJ_ROOT"/'${managedFile.target}' '';
         executeMode =
           if managedFile.executable
           then "x"
