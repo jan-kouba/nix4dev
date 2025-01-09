@@ -21,7 +21,7 @@ in {
 
       nix4dev.allowUnfreePackages = ["terraform"];
 
-      nix4dev.managedFiles.files.".gitignore".sources.lines = ''
+      nix4dev.managedFiles.files.".gitignore".source.lines = ''
 
         #
         # Terraform
