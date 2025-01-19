@@ -54,7 +54,7 @@
       };
     });
 
-    managedFilesType = t.submodule ({
+    managedFileType = t.submodule ({
       config,
       name,
       ...
@@ -99,7 +99,7 @@
   in {
     options.nix4dev.managedFiles = {
       files = l.mkOption {
-        type = t.attrsOf managedFilesType;
+        type = t.attrsOf managedFileType;
         description = ''
           Definition of managed files in the project.
           The attribute name is a relative path to the target file.
@@ -119,14 +119,20 @@
 
       writeFiles = l.mkOption {
         type = t.package;
-        description = "A script that writes the files into the project.";
+        description = "A script that (over)writes the managed files into the project.";
+        readOnly = true;
+      };
+
+      updateFiles = l.mkOption {
+        type = t.package;
+        description = "A script that updates the managed files in the directory given as argument.";
         readOnly = true;
       };
     };
 
     config = let
       installCmd = _: managedFile: let
-        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$PRJ_ROOT"/'${managedFile.target}' '';
+        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$outDir"/'${managedFile.target}' '';
         executeMode =
           if managedFile.executable
           then "x"
@@ -139,13 +145,19 @@
         ${instOverwrite}
       '';
 
+      updateFilesScript = pkgs.writeShellScript "update-managed-files" ''
+        outDir="$1"
+        ${l.strings.concatLines (l.mapAttrsToList installCmd cfg.files)}
+      '';
+
       writeFilesCommand = pkgs.writeShellApplication {
         name = "write-managed-files";
         text = ''
-          ${l.strings.concatLines (l.mapAttrsToList installCmd cfg.files)}
+          ${updateFilesScript} "$PRJ_ROOT";
         '';
       };
     in {
+      nix4dev.managedFiles.updateFiles = updateFilesScript;
       nix4dev.managedFiles.writeFiles = writeFilesCommand;
 
       devshells.default.commands = [

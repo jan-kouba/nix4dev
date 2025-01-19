@@ -8,6 +8,7 @@
 in {
   flake.flakeModules = {
     default = fpl.importApply ../nix4dev-modules/default.nix inputs;
+    managedFiles = ../nix4dev-modules/managed-files.nix;
     nix4devSeed = fpl.importApply ../nix4dev-seed-modules {nix4devFlake = self;};
   };
 }
