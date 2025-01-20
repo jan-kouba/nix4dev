@@ -1,5 +1,3 @@
 {
-  imports = [
-    ./tests.nix
-  ];
+  imports = [ ./tests ];  
 }

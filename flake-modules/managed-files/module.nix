@@ -8,7 +8,7 @@
     l = lib // builtins;
     t = l.types;
 
-    nix4devLib = import ../nix4dev-lib {inherit pkgs;};
+    nix4devLib = import ../../nix4dev-lib {inherit pkgs;};
 
     topCfg = config;
     cfg = config.nix4dev.managedFiles;
@@ -97,8 +97,39 @@
       };
     });
   in {
-    imports = [ ../flake-modules/managed-files/module.nix];
-    
+    options.nix4dev.managedFiles = {
+      files = l.mkOption {
+        type = t.attrsOf managedFileType;
+        description = ''
+          Definition of managed files in the project.
+          The attribute name is a relative path to the target file.
+        '';
+        default = {};
+        example = l.options.literalExpression ''
+          {
+            ".envrc" = {
+              source.text = "use flake";
+            };
+            "examples/hello" = {
+              source.file = "''${someFlake}/examples/hello";
+            };
+          }
+        '';
+      };
+
+      writeFiles = l.mkOption {
+        type = t.package;
+        description = "A script that (over)writes the managed files into the project.";
+        readOnly = true;
+      };
+
+      updateFiles = l.mkOption {
+        type = t.package;
+        description = "A script that updates the managed files in the directory given as argument.";
+        readOnly = true;
+      };
+    };
+
     config = let
       installCmd = _: managedFile: let
         inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$outDir"/'${managedFile.target}' '';
@@ -126,16 +157,8 @@
         '';
       };
     in {
-      devshells.default.commands = [
-        {
-          name = "write-managed-files";
-          help = "(Over)writes managed files.";
-          package = writeFilesCommand;
-          category = "setup sub-commands";
-        }
-      ];
-
-      nix4dev.setupCommands = ["${writeFilesCommand}/bin/write-managed-files"];
+      nix4dev.managedFiles.updateFiles = updateFilesScript;
+      nix4dev.managedFiles.writeFiles = writeFilesCommand;
     };
   };
 }
