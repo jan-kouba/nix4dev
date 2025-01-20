@@ -6,6 +6,7 @@
           mainStepName,
           mainStepCommand,
         }: {
+          "if" = "github.event.pull_request.draft == false";
           strategy.matrix.runs-on = ["ubuntu-22.04" "macos-14"];
           runs-on = "\${{ matrix.runs-on}}";
 
@@ -50,7 +51,16 @@
         workflowNix = {
           name = "nix4dev-check";
           on = {
-            push = {};
+            push.branches = ["master"];
+            pull_request = {
+              types = [
+                "opened"
+                "reopened"
+                "synchronize"
+                "ready_for_review"
+              ];
+            };
+
             workflow_dispatch = {};
           };
 
