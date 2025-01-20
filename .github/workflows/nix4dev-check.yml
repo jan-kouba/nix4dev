@@ -3,6 +3,7 @@
     {
       "nix4dev-check":
         {
+          "if": "github.event.pull_request.draft == false",
           "runs-on": "${{ matrix.runs-on}}",
           "steps":
             [
@@ -28,6 +29,7 @@
         },
       "nix4dev-test-all":
         {
+          "if": "github.event.pull_request.draft == false",
           "runs-on": "${{ matrix.runs-on}}",
           "steps":
             [
@@ -53,6 +55,12 @@
         },
     },
   "name": "nix4dev-check",
-  "on": { "push": {}, "workflow_dispatch": {} },
+  "on":
+    {
+      "pull_request":
+        { "types": ["opened", "reopened", "synchronize", "ready_for_review"] },
+      "push": { "branches": ["master"] },
+      "workflow_dispatch": {},
+    },
   "permissions": { "contents": "read", "id-token": "write" },
 }
