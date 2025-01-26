@@ -3,6 +3,8 @@
 
   perSystem = {config, ...}: {
     config = {
+      nix4dev.managedFiles.treefmt.enable = true;
+
       devshells.default.commands = [
         {
           name = "write-managed-files";
