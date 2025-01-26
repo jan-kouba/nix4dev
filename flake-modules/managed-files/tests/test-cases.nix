@@ -4,7 +4,7 @@
     managedFilesConfig = {
       files."test.nix".source.text = ''
         {
-        foo = [  "bar"    ];
+        foo = [  "barr"    ];
         }
       '';
     };
@@ -16,7 +16,7 @@
     managedFilesConfig = {
       files."test.nix".source.text = ''
         {
-        foo = [  "bar"    ];
+        foo = [  "barr"    ];
         }
       '';
     };

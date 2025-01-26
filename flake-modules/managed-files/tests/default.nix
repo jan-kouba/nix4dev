@@ -50,7 +50,7 @@
       pkgs.testers.testEqualContents {
         inherit assertion;
         expected = pkgs.runCommand "expected" {} ''
-          ${pkgs.rsync}/bin/rsync -r "${expected}/" $out          
+          ${pkgs.rsync}/bin/rsync -r "${expected}/" $out
         '';
         actual = pkgs.runCommand "actual" {} ''
           ${updateManagedFiles} $out
