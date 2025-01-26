@@ -123,6 +123,22 @@
 
       treefmt.enable = l.mkEnableOption "the formatting of the managed files by treefmt. If enabled, treefmt must be configured in this flake.";
 
+      fileListPaths = l.mkOption {
+        type = t.listOf t.str;
+        default = ["./.managed-files.list"];
+        example = ["./files1.list"];
+        description = ''
+          Relative paths to the files containing list of managed files.
+          All paths in the list are merged into a single list.
+
+          This option is a list, in order to allow for easier migration when it is needed to change it's value.
+          If you want to change the value e.g. from `files.list` to `files2.list`, you first add the `files2.list`
+          value into the `fileListPaths` list and deprecate the `files.list` file.
+          After the deprication period elapses (and every user updates the managed files with the `fileListPaths` option containing the two values),
+          you can safely remove the `files.list` value from the `fileListPaths` list.
+        '';
+      };
+
       writeFiles = l.mkOption {
         type = t.package;
         description = "A script that (over)writes the managed files into the project.";
@@ -138,7 +154,7 @@
 
     config = let
       installCmd = _: managedFile: let
-        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$outDir"/'${managedFile.target}' '';
+        inst = mode: ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$out"/'${managedFile.target}' '';
         executeMode =
           if managedFile.executable
           then "x"
@@ -151,10 +167,60 @@
         ${instOverwrite}
       '';
 
-      updateFilesScript = pkgs.writeShellScript "update-managed-files" ''
-        outDir="$1"
+      managedFilesDir = pkgs.runCommand "managed-files-dir" {} ''
         ${l.strings.concatLines (l.mapAttrsToList installCmd cfg.files)}
       '';
+
+      managedFilesList = pkgs.writeText "managed-files-list" (
+        let
+          rsyncEscape = str: l.strings.escape ["*" "?" "["] str;
+          mergeFileRows =
+            l.attrsets.mapAttrsToList (
+              _: file: let
+                target = assert l.asserts.assertMsg (! l.strings.hasInfix "\n" file.target) "managed file path can not contain newline; path = `${file.target}`"; file.target;
+              in "/${rsyncEscape target}\n"
+            )
+            cfg.files;
+        in
+          l.strings.concatStrings (
+            l.sort (a: b: a < b) mergeFileRows
+          )
+      );
+
+      updateFilesScript = let
+        fileListPaths = assert l.asserts.assertMsg ((l.length cfg.fileListPaths) > 0) "`fileListPaths` can not be an empty list"; cfg.fileListPaths;
+        fileListPath = "$outDir/${l.head fileListPaths}";
+      in
+        pkgs.writeShellScript "update-managed-files" ''
+          set -euo pipefail
+
+          outDir="$1"
+
+          # Update managed files list to contain both old and new files
+          mkdir -p "$(dirname "${fileListPath}")"
+          cat "${managedFilesList}" > "${fileListPath}.new"
+          ${
+            l.strings.concatMapStringsSep "\n" (
+              f: ''
+                if [ -f "$outDir/${f}" ]; then
+                  cat "$outDir/${f}" >> "${fileListPath}.new"
+                fi
+              ''
+            )
+            cfg.fileListPaths
+          }
+          mv "${fileListPath}.new" "${fileListPath}"
+
+          # Update managed files
+          ${pkgs.rsync}/bin/rsync -r --delete -f".+ ${fileListPath}" -f'-! */' ${managedFilesDir}/ "$outDir"
+
+          # Update managed files list to contain just the new files
+          cat "${managedFilesList}" > "${fileListPath}.new"
+          mv "${fileListPath}.new" "${fileListPath}"
+          ${
+            l.strings.concatMapStringsSep "\n" (f: "rm -f \"$outDir/${f}\"") (l.tail cfg.fileListPaths)
+          }
+        '';
 
       writeFilesCommand = pkgs.writeShellApplication {
         name = "write-managed-files";
