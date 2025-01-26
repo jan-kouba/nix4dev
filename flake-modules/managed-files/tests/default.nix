@@ -48,7 +48,10 @@
       updateManagedFiles = (evalFlakeModules [module]).packages.${system}.updateManagedFiles;
     in
       pkgs.testers.testEqualContents {
-        inherit assertion expected;
+        inherit assertion;
+        expected = pkgs.runCommand "expected" {} ''
+          ${pkgs.rsync}/bin/rsync -r "${expected}/" $out          
+        '';
         actual = pkgs.runCommand "actual" {} ''
           ${updateManagedFiles} $out
         '';
