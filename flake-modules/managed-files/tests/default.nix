@@ -49,6 +49,8 @@
     in
       pkgs.testers.testEqualContents {
         inherit assertion;
+        # This copying is needed in order for the tests to not fail on OSX,
+        # because the actual and expected files have different group owner.
         expected = pkgs.runCommand "expected" {} ''
           ${pkgs.rsync}/bin/rsync -r "${expected}/" $out
         '';
