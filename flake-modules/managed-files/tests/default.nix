@@ -17,11 +17,9 @@
         systems = [system];
       };
 
-    managedFilesTest = {
-      assertion,
-      expected,
+    updateManagedFilesScript = {
       managedFilesConfig,
-      enableTreefmt ? true,
+      enableTreefmt,
     }: let
       treefmtModule = {
         imports = [inputs.treefmt-nix.flakeModule];
@@ -45,7 +43,20 @@
           packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
         };
       };
-      updateManagedFiles = (evalFlakeModules [module]).packages.${system}.updateManagedFiles;
+
+      flake = evalFlakeModules [module];
+    in
+      flake.packages.${system}.updateManagedFiles;
+
+    managedFilesTest = {
+      assertion,
+      expected,
+      managedFilesConfigs,
+      enableTreefmt ? true,
+    }: let
+      step = managedFilesConfig: ''
+        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} $out
+      '';
     in
       pkgs.testers.testEqualContents {
         inherit assertion;
@@ -55,7 +66,7 @@
           ${pkgs.rsync}/bin/rsync -r "${expected}/" $out
         '';
         actual = pkgs.runCommand "actual" {} ''
-          ${updateManagedFiles} $out
+          ${lib.strings.concatMapStringsSep "\n" step managedFilesConfigs}
         '';
       };
 
