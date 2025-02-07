@@ -48,25 +48,52 @@
     in
       flake.packages.${system}.updateManagedFiles;
 
+    /*
+    Runs managed files test.
+
+    # Inputs
+
+    `assertion`
+    : The description of this assertion
+
+    `expected`
+    : The expected output of the managed files application.
+
+    `initDirectory`
+    : The directory to start the test with.
+
+    `managedFilesConfigs`
+    : The managed files configurations to apply sequentially.
+
+    `enableTreefmt`
+    : If set to `true`, format the managed files using treefmt.
+    */
     managedFilesTest = {
       assertion,
       expected,
+      initDirectory ? null,
       managedFilesConfigs,
       enableTreefmt ? true,
     }: let
       step = managedFilesConfig: ''
-        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} $out
+        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out"
+      '';
+      actual = pkgs.runCommand "${assertion}-actual" {} ''
+        mkdir "$out"
+
+        # Copy initial files
+        ${lib.strings.optionalString (initDirectory != null) "${pkgs.rsync}/bin/rsync -r ${initDirectory}/ \"$out\""}
+
+        # Update managed files
+        ${lib.strings.concatMapStringsSep "\n" step managedFilesConfigs}
       '';
     in
       pkgs.testers.testEqualContents {
-        inherit assertion;
+        inherit actual assertion;
         # This copying is needed in order for the tests to not fail on OSX,
         # because the actual and expected files have different group owner.
-        expected = pkgs.runCommand "expected" {} ''
-          ${pkgs.rsync}/bin/rsync -r "${expected}/" $out
-        '';
-        actual = pkgs.runCommand "actual" {} ''
-          ${lib.strings.concatMapStringsSep "\n" step managedFilesConfigs}
+        expected = pkgs.runCommand "${assertion}-expected" {} ''
+          ${pkgs.rsync}/bin/rsync -r "${expected}/" "$out"
         '';
       };
 

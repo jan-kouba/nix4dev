@@ -3,7 +3,12 @@
 
   perSystem = {config, ...}: {
     config = {
-      nix4dev.managedFiles.treefmt.enable = true;
+      nix4dev.managedFiles = {
+        treefmt.enable = true;
+        fileListPaths = [
+          "./nix4dev/.managed-files.list"
+        ];
+      };
 
       devshells.default.commands = [
         {
