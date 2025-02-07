@@ -76,7 +76,7 @@
       enableTreefmt ? true,
     }: let
       step = managedFilesConfig: ''
-        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} $out
+        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out"
       '';
       actual = pkgs.runCommand "${assertion}-actual" {} ''
         mkdir "$out"
