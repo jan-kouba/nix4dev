@@ -176,8 +176,7 @@
           managedFilesTargets =
             l.attrsets.mapAttrsToList (
               _: file:
-                assert l.asserts.assertMsg (! l.strings.hasInfix "\n" file.target) "managed file path can not contain newline; path = `${file.target}`";
-                  file.target
+                file.target
             )
             cfg.files;
         in
@@ -229,7 +228,8 @@
           ${pkgs.rsync}/bin/rsync \
             -r \
             --delete \
-            -f'.+ '<(${pkgs.jq}/bin/jq --raw-output "$jq_filter" "${fileListPath}") \
+            --from0 \
+            -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" "${fileListPath}") \
             -f'-! */' \
             ${managedFilesDir}/ \
             "$outDir"

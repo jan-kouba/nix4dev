@@ -8,6 +8,7 @@
   "managedFiles": [
     "bracket[0-9]",
     "file",
+    "new\nline",
     "questionmark?",
     "star*",
     "starstar**"
