@@ -73,13 +73,4 @@
       }
     ];
   };
-
-  # "does not allow newline in file names" = {
-  #   managedFilesConfigs = [
-  #     {
-  #       files."new\nline".source.text = "new\nline";
-  #     }
-  #   ];
-  #   expected = null;
-  # };
 }
