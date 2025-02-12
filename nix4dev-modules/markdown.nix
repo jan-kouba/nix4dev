@@ -1,8 +1,8 @@
 nix4devInputs: {
-  perSystem = {pkgs, system, ...}: {
-    treefmt.programs.mdformat = {
-      enable = true;
-      package = pkgs.mdformat.withPlugins (p: [
+  perSystem = {pkgs, system, ...}: let
+    mdformat = (
+      pkgs.python3.withPackages (p: [
+          p.mdformat
           p.mdformat-admon
           p.mdformat-beautysh
           p.mdformat-footnote
@@ -14,7 +14,13 @@ nix4devInputs: {
           p.mdformat-simple-breaks
           p.mdformat-tables
           p.mdformat-toc
-        ]);
-    };
+        ])).overrideAttrs(_: {
+          meta.mainProgram = "mdformat";
+        });
+  in {
+    treefmt.programs.mdformat = {    
+      enable = true;
+      package = mdformat;
+    };    
   };
 }
