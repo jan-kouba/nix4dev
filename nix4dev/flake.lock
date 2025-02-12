@@ -42,42 +42,20 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": [
-          "nix4dev",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "nix4dev": {
       "inputs": {
         "devshell": "devshell",
         "flake-parts": "flake-parts",
-        "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1736292189,
-        "narHash": "sha256-y+tQen/7bzsZgeSktiOZni/Tqg6b/Y3jR7XFS1aizXI=",
+        "lastModified": 1739401774,
+        "narHash": "sha256-A73DpC3Qd/JFBHXZ0RQDL8JktKWcWOWUL8+hWLccnMs=",
         "owner": "jan-kouba",
         "repo": "nix4dev",
-        "rev": "e03add55c25da3c9d88c0d8535177b47076cb42f",
+        "rev": "c3007515b662219d847396e3300fe45a557ffd74",
         "type": "github"
       },
       "original": {
