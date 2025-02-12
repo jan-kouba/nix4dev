@@ -1,11 +1,8 @@
 nix4devInputs: {
-  perSystem = {system, ...}: {
+  perSystem = {pkgs, system, ...}: {
     treefmt.programs.mdformat = {
       enable = true;
-      package = let
-        mdformatPkgs = import nix4devInputs.nixpkgs-mdformat {inherit system;};
-      in
-        mdformatPkgs.mdformat.withPlugins (p: [
+      package = pkgs.mdformat.withPlugins (p: [
           p.mdformat-admon
           p.mdformat-beautysh
           p.mdformat-footnote

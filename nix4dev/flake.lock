@@ -74,22 +74,12 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-<<<<<<< HEAD
-        "lastModified": 1725365227,
-        "narHash": "sha256-o5+dfhlZRbOhwG//mxyrNuGHXZtp17KXzEh/9oFU0Vo=",
-        "ref": "refs/heads/github-admonitions",
-        "rev": "ea554e9c0347f5626b00eded0c84af82c820e8cf",
-        "revCount": 38,
-        "type": "git",
-        "url": "file:."
-=======
         "lastModified": 1736292189,
         "narHash": "sha256-y+tQen/7bzsZgeSktiOZni/Tqg6b/Y3jR7XFS1aizXI=",
         "owner": "jan-kouba",
         "repo": "nix4dev",
         "rev": "e03add55c25da3c9d88c0d8535177b47076cb42f",
         "type": "github"
->>>>>>> master
       },
       "original": {
         "owner": "jan-kouba",
