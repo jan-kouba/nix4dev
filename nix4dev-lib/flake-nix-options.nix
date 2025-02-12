@@ -7,7 +7,6 @@
   t = l.types;
 in
   {
-    treefmtConfig,
     flakePartsInputPathString,
     nixpkgsInputPathString,
     flakeConfigPathString,
@@ -21,7 +20,7 @@ in
         '';
         example = ''
           {
-            foo.url = "github:NixOS/nixpkgs/nixos-24.05";
+            foo.url = "github:NixOS/nixpkgs/nixos-24.11";
           }
         '';
         default = {};
@@ -79,7 +78,7 @@ in
         flakeInputs = config.baseFlakeInputs // config.extraInputs;
         flakeDescription = config.description;
         flakeModulesStrings = config.baseFlakeModules ++ config.extraFlakeModules;
-        inherit treefmtConfig flakePartsInputPathString nixpkgsInputPathString flakeConfigPathString;
+        inherit flakePartsInputPathString nixpkgsInputPathString flakeConfigPathString;
       };
     };
   }

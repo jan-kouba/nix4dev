@@ -10,13 +10,11 @@ in {
       pkgs,
       ...
     }: let
-      sysConfig = config;
       cfg = config.nix4dev;
 
       nix4devLib = import ../../nix4dev-lib {inherit pkgs;};
 
       baseFlakeOptions = nix4devLib.flakeNixOptions {
-        treefmtConfig = sysConfig.treefmt;
         flakePartsInputPathString = "inputs.nix4dev.inputs.flake-parts";
         nixpkgsInputPathString = "inputs.nix4dev.inputs.nixpkgs";
         flakeConfigPathString = "nix4dev.flake";
@@ -116,7 +114,7 @@ in {
             name = "update-nix4dev-inputs";
             runtimeInputs = [pkgs.nix];
             text = ''
-              ( cd "$PRJ_ROOT"/nix4dev && nix flake update . )
+              ( cd "$PRJ_ROOT"/nix4dev && nix flake update )
             '';
           };
         in ["${cmd}/bin/${cmd.name}"];

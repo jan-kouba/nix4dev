@@ -5,7 +5,11 @@
     outputFileName,
   }:
     runCommand outputFileName {} ''
-      cat '${fileToFormat}' | ${treefmtConfig.package}/bin/treefmt --config-file ${treefmtConfig.build.configFile} --stdin '${outputFileName}' > $out
+      cat '${fileToFormat}' | ${treefmtConfig.package}/bin/treefmt \
+        --tree-root "$(pwd)" \
+        --config-file ${treefmtConfig.build.configFile} \
+        --no-cache \
+        --stdin '${outputFileName}' > "$out"
     '';
 in {
   inherit writeFormattedFile;
