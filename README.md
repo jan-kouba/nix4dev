@@ -16,10 +16,10 @@ If you want to make your own modifications to the development shell, you can ini
 
 > [!TIP]
 > In order to simplify the process of adding your changes, you can also create your own nix4dev seed repo and use the [seed module](./nix4dev-seed-modules/default.nix) to easily setup the `init` command. Then you can initialize new project by:
-
-```
-nix run <your_seed_repo>#init
-```
+>
+> ```
+> nix run <your_seed_repo>#init
+> ```
 
 TODO: Explain in more detail how to setup seed repo.
 
