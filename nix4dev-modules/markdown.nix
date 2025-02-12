@@ -1,8 +1,5 @@
 {
-  perSystem = {
-    pkgs,
-    ...
-  }: let
+  perSystem = {pkgs, ...}: let
     mdformat =
       (
         pkgs.python3.withPackages (p: [
