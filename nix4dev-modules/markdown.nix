@@ -1,5 +1,9 @@
-{
-  perSystem = {pkgs, ...}: let
+{lib, ...}: {
+  perSystem = {
+    config,
+    pkgs,
+    ...
+  }: let
     mdformat =
       (
         pkgs.python3.withPackages (p: [
@@ -25,5 +29,11 @@
       enable = true;
       package = mdformat;
     };
+
+    nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
+      # Markdown
+      [*.md]
+      indent_size = 4
+    '';
   };
 }
