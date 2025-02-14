@@ -76,13 +76,13 @@
       enableTreefmt ? true,
     }: let
       step = managedFilesConfig: ''
-        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out"
+        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out/root"
       '';
       actual = pkgs.runCommand "${assertion}-actual" {} ''
-        mkdir "$out"
+        mkdir -p "$out/root"
 
         # Copy initial files
-        ${lib.strings.optionalString (initDirectory != null) "${pkgs.rsync}/bin/rsync -r ${initDirectory}/ \"$out\""}
+        ${lib.strings.optionalString (initDirectory != null) "${pkgs.rsync}/bin/rsync -r ${initDirectory}/ \"$out/root\""}
 
         # Update managed files
         ${lib.strings.concatMapStringsSep "\n" step managedFilesConfigs}
@@ -93,7 +93,14 @@
         # This copying is needed in order for the tests to not fail on OSX,
         # because the actual and expected files have different group owner.
         expected = pkgs.runCommand "${assertion}-expected" {} ''
-          ${pkgs.rsync}/bin/rsync -r "${expected}/" "$out"
+          set -euo pipefail
+
+          ls -la $(dirname $out)
+          mkdir -p "$out/root"
+
+          ls -la  $out
+
+          ${pkgs.rsync}/bin/rsync -r "${expected}/" "$out/root"
         '';
       };
 
