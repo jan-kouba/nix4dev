@@ -46,7 +46,7 @@ in {
 
         '';
 
-        ".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
+        ".editorconfig".source.lines = lib.mkIf (! config.nix4dev.editorconfig.disable) ''
           # Terraform / OpenTofu
           [*.{tf,tfvars}]
           indent_size = 2
