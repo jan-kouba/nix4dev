@@ -7,6 +7,7 @@ in {
 
     ./bash.nix
     ./conventional-commits
+    ./editorconfig.nix
     ./json.nix
     ./managed-files.nix
     ./markdown.nix
