@@ -25,15 +25,21 @@
         meta.mainProgram = "mdformat";
       });
   in {
-    treefmt.programs.mdformat = {
-      enable = true;
-      package = mdformat;
+    options = {
+      nix4dev.markdown.disable = lib.mkEnableOption "markdown support";
     };
 
-    nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
-      # Markdown
-      [*.md]
-      indent_size = 4
-    '';
+    config = lib.mkIf (! config.nix4dev.markdown.disable) {
+      treefmt.programs.mdformat = {
+        enable = true;
+        package = mdformat;
+      };
+
+      nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
+        # Markdown
+        [*.md]
+        indent_size = 4
+      '';
+    };
   };
 }

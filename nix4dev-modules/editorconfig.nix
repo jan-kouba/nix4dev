@@ -1,22 +1,12 @@
 {lib, ...}: {
-  perSystem = {
-    config,
-    ...
-  }: let
+  perSystem = {config, ...}: let
     cfg = config.nix4dev.editorconfig;
-    mkEnabledOption = feature:
-      lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        example = false;
-        description = "Whether to enable ${feature}.";
-      };
   in {
     options = {
-      nix4dev.editorconfig.enable = mkEnabledOption ".editorconfig generation";
+      nix4dev.editorconfig.disable = lib.mkEnableOption ".editorconfig generation";
     };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (! cfg.disable) {
       nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkBefore ''
         # EditorConfig is awesome:
         # https://EditorConfig.org

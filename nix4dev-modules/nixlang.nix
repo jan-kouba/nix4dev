@@ -1,16 +1,22 @@
 {lib, ...}: {
   perSystem = {config, ...}: {
-    treefmt.programs = {
-      deadnix.enable = true;
-      alejandra.enable = true;
+    options = {
+      nix4dev.nixlang.disable = lib.mkEnableOption "Nix language support";
     };
 
-    formatter = config.treefmt.programs.nixpkgs-fmt.package;
+    config = lib.mkIf (! config.nix4dev.nixlang.disable) {
+      treefmt.programs = {
+        deadnix.enable = true;
+        alejandra.enable = true;
+      };
 
-    nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
-      # Nix language
-      [*.nix]
-      indent_size = 2
-    '';
+      formatter = config.treefmt.programs.nixpkgs-fmt.package;
+
+      nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
+        # Nix language
+        [*.nix]
+        indent_size = 2
+      '';
+    };
   };
 }
