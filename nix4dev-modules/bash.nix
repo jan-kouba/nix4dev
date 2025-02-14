@@ -1,14 +1,20 @@
 {lib, ...}: {
   perSystem = {config, ...}: {
-    treefmt.programs = {
-      shellcheck.enable = true;
-      shfmt.enable = true;
+    options = {
+      nix4dev.bash.disable = lib.mkEnableOption "bash support";
     };
 
-    nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf config.nix4dev.editorconfig.enable ''
-      # Bash
-      [*.sh]
-      indent_size = 2
-    '';
+    config = lib.mkIf (! config.nix4dev.bash.disable) {
+      treefmt.programs = {
+        shellcheck.enable = true;
+        shfmt.enable = true;
+      };
+
+      nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf (! config.nix4dev.editorconfig.disable) ''
+        # Bash
+        [*.sh]
+        indent_size = 2
+      '';
+    };
   };
 }
