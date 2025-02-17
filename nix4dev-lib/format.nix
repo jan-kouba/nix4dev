@@ -9,7 +9,7 @@
         --tree-root "$(pwd)" \
         --config-file ${treefmtConfig.build.configFile} \
         --no-cache \
-        --stdin '${outputFileName}' > $out
+        --stdin '${outputFileName}' > "$out"
     '';
 in {
   inherit writeFormattedFile;

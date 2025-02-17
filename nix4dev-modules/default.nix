@@ -7,13 +7,15 @@ in {
 
     ./bash.nix
     ./conventional-commits
+    ./editorconfig.nix
     ./json.nix
     ./managed-files.nix
     ./markdown.nix
     ./nixlang.nix
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake
-    ./terraform.nix
     (fpl.importApply ./shell nix4devInputs)
+    ./terraform.nix
+    ./yaml.nix
   ];
 }

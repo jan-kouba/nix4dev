@@ -20,6 +20,38 @@ in {
       ];
 
       nix4dev.allowUnfreePackages = ["terraform"];
+
+      nix4dev.managedFiles.files = {
+        ".gitignore".source.lines = ''
+          #
+          # Terraform
+          #
+
+          # Ignore local .terraform directories
+          **/.terraform/*
+
+          # Ignore state files
+          *.tfstate
+          *.tfstate.*
+
+          # Ignore override files as they are usually used to override resources locally and so
+          # are not checked in
+          override.tf
+          override.tf.json
+          *_override.tf
+          *_override.tf.json
+
+          # Ignore the plan output of commands like: terraform plan -out=plan.tfplan
+          *.tfplan
+
+        '';
+
+        ".editorconfig".source.lines = lib.mkIf (! config.nix4dev.editorconfig.disable) ''
+          # Terraform / OpenTofu
+          [*.{tf,tfvars}]
+          indent_size = 2
+        '';
+      };
     };
   };
 }

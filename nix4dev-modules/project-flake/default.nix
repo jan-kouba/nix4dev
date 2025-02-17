@@ -10,7 +10,6 @@ in {
     cfg = config.nix4dev.projectFlake;
     nix4devLib = import ../../nix4dev-lib {inherit pkgs;};
     flakeOptionsBase = nix4devLib.flakeNixOptions {
-      treefmtConfig = config.treefmt;
       flakePartsInputPathString = "inputs.flake-parts";
       flakeConfigPathString = "nix4dev.projectFlake";
       nixpkgsInputPathString = "inputs.nixpkgs";
