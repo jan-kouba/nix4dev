@@ -22,7 +22,7 @@
               },
               {
                 "name": "Setup project root",
-                "run": "PRJ_ROOT=\"$(pwd)\"\n",
+                "run": "export PRJ_ROOT=\"$(pwd)\"\n",
               },
               {
                 "name": "Run `check`",
