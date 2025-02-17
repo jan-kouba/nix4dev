@@ -21,6 +21,10 @@
                 "run": "git config --global user.email \"nix4dev-ci@github.com\"\ngit config --global user.name \"nix4dev CI\"\n",
               },
               {
+                "name": "Setup project root",
+                "run": "PRJ_ROOT=\"$(pwd)\"\n",
+              },
+              {
                 "name": "Run `check`",
                 "run": "nix run ./nix4dev#check\n"
               },
