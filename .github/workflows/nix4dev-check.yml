@@ -22,7 +22,7 @@
               },
               {
                 "name": "Run `check`",
-                "run": "nix develop ./nix4dev -c check\n",
+                "run": "PRJ_ROOT=\"$(pwd)\" nix run ./nix4dev#check\n"
               },
             ],
           "strategy": { "matrix": { "runs-on": ["ubuntu-22.04", "macos-14"] } },
