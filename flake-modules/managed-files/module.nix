@@ -232,7 +232,8 @@
             -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" "${fileListPath}") \
             -f'-! */' \
             ${managedFilesDir}/ \
-            "$outDir"
+            "$outDir" \
+          | { grep -v '^cannot delete non-empty directory: ' || true; }
 
 
           # Update managed files list to contain just the new files
