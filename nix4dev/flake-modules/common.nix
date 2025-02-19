@@ -26,6 +26,11 @@
           };
         };
       };
+
+      managedFiles.files.".gitignore".source.lines = ''
+        # Do not commit flake lock file
+        /flake.lock
+      '';
     };
   };
 }
