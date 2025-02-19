@@ -37,7 +37,7 @@
         checkJob = workflowJob {
           mainStepName = "Run `check`";
           mainStepCommand = ''
-            nix develop ./nix4dev -c check
+            PRJ_ROOT="$(pwd)" nix run ./nix4dev#check
           '';
         };
 
