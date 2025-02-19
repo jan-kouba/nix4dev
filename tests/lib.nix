@@ -15,7 +15,7 @@
     pushd "$tmp_dir"/repo
 
     # Initializing repo
-    nix run ${repoPath}#init
+    nix run --no-write-lock-file ${repoPath}#init
 
     git init .
     git add .
