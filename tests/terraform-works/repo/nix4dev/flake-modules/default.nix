@@ -1,16 +1,10 @@
 {
-  perSystem = {pkgs, ...}: {
+  perSystem = { ...}: {
     nix4dev.terraform.enable = true;
 
     nix4dev.overlays = [
-      (_prev: _self: {
-        terraform = pkgs.writeShellApplication {
-          name = "terraform";
-          runtimeInputs = [pkgs.opentofu];
-          text = ''
-            exec tofu "$@"
-          '';
-        };
+      (_self: prev: {
+        terraform = prev.terraform.withPlugins (p: [p.local]);
       })
     ];
   };
