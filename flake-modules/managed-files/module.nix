@@ -233,7 +233,7 @@
             -f'-! */' \
             ${managedFilesDir}/ \
             "$outDir" \
-          | grep -v '^cannot delete non-empty directory: '
+          | { grep -v '^cannot delete non-empty directory: ' || true; }
 
 
           # Update managed files list to contain just the new files
