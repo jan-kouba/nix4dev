@@ -1,0 +1,34 @@
+# EditorConfig is awesome:
+# https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Default settings:
+# A newline ending every file
+[*]
+insert_final_newline = true
+indent_style = space
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Bash
+[*.sh]
+indent_size = 2
+
+# JSON
+[*.{json,json5}]
+indent_size = 2
+
+# Markdown
+[*.md]
+indent_size = 4
+
+# Nix language
+[*.nix]
+indent_size = 2
+
+# YAML
+[*.{yml, yaml}]
+indent_size = 2

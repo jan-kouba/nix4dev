@@ -6,6 +6,7 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
+    ".editorconfig",
     ".envrc",
     ".git/hooks/commit-msg",
     ".github/workflows/nix4dev-check.yml",
