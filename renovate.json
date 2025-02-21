@@ -4,7 +4,10 @@
   "extends": ["config:recommended"],
 
   "nix": {
-    "enabled": true
+    "enabled": true,
+    "fileMatch": [
+      "^nix4dev/flake\\.nix$"
+    ]
   },
 
   "ignorePaths": ["tests/**"]
