@@ -6,7 +6,7 @@
   "nix": {
     "enabled": true,
     "fileMatch": [
-      "^nix4dev/flake\\.nix$"
+      "(^|/)nix4dev/flake\\.nix$"
     ]
   },
 
