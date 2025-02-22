@@ -51,11 +51,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1740008229,
-        "narHash": "sha256-/QYfc3HDb5BzoW0Cx8vT9TYFrilE1A1HN304mxOOpzY=",
+        "lastModified": 1740181676,
+        "narHash": "sha256-BCG5vGf6fW/dey/pHTXsajov5QGQ0xwGyaM7k7a9yO0=",
         "owner": "jan-kouba",
         "repo": "nix4dev",
-        "rev": "1288da848161d5b62a91a32c69f1463a5b300262",
+        "rev": "9cab9a3d2b09c0c38fcf55a9b23073580dc45391",
         "type": "github"
       },
       "original": {
