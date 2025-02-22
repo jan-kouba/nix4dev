@@ -5,6 +5,9 @@
     "nix4dev" = {
       "url" = "github:jan-kouba/nix4dev";
     };
+    "project-flake" = {
+      "url" = "./..";
+    };
   };
 
   outputs = inputs:

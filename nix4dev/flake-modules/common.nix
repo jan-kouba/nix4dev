@@ -5,6 +5,11 @@
     nix4dev = {
       conventionalCommits.enable = true;
 
+      flake.extraInputs = {
+        # Add the root flake as dependency, so we have its dependencies captured
+        project-flake.url = "./..";
+      };
+
       projectFlake = {
         enable = true;
 
