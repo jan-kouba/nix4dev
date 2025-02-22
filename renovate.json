@@ -3,6 +3,15 @@
 
   "extends": ["config:recommended"],
 
+  "packageRules": [
+    {
+      "matchManagers": ["nix"],
+      "lockFileMaintenance": {
+        "enabled": true
+      }
+    }
+  ],
+
   "nix": {
     "enabled": true,
     "fileMatch": [
