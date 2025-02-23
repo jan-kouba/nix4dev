@@ -14,7 +14,7 @@ t.makeTest (
 
     cat test.nix
 
-    nix run ./nix4dev#prepare
+    ${t.nix "run" "./nix4dev"} ./nix4dev#prepare
 
     cat > test.nix.expected <<EOF
     {

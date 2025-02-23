@@ -17,7 +17,7 @@ t.makeTest (
     EOF
 
     git add .
-    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
 
     git add .
     git commit -m "Added repo files"
@@ -30,19 +30,19 @@ t.makeTest (
     mkdir repo_seeded
     cd repo_seeded
 
-    nix run ../repo#init
+    ${t.nix "run" "../repo"} ../repo#init
     mv nix4dev/flake-modules/default.nix nix4dev/flake-modules/seed.nix
     cp -r ${./repo_seeded}/* .
 
-    nix flake update --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
+    ${t.nix "flake update" "./nix4dev"} --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
 
     # Test that the module from seed is loaded
-    nix develop ./nix4dev -c test-success
+    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
 
     # Test that setup does not break things
-    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
-    nix flake update --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    ${t.nix "flake update" "./nix4dev"} --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
 
-    nix develop ./nix4dev -c test-success
+    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
   ''
 )

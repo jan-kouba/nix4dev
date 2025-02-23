@@ -2,7 +2,45 @@
   pkgs,
   repoPath,
   testName,
+  inputs,
+  lib
 }: let
+  nixInputOverrides = prefix: ''
+    --override-input ${prefix}nixpkgs ${inputs.root-flake-input-nixpkgs} \
+    --override-input ${prefix}devshell ${inputs.root-flake-input-devshell} \
+    --override-input ${prefix}flake-parts ${inputs.root-flake-input-flake-parts} \
+    --override-input ${prefix}systems ${inputs.root-flake-input-systems} \
+    --override-input ${prefix}treefmt-nix ${inputs.root-flake-input-treefmt-nix} \
+  '';
+
+  freezeInputs = flakeUrl: let
+    overrideFlakeInput = flakeUrl: inputFullName:
+      if (builtins.substring 0 2 flakeUrl) == "./" then
+        overrideLocalFlakeInputs inputFullName (./. + flakeUrl)
+      else
+        [ (overrideRemoteInput flakeUrl inputFullName) ];
+
+    overrideLocalFlakeInputs = inputFullName: flakePath: let
+      inputs = (import "${flakePath}/flake.nix").inputs;
+    in lib.lists.flatten (
+      lib.attrsets.mapAttrsToList (name: value:
+        overrideFlakeInput value.url (if inputFullName != "" then "${inputFullName}/${name}" else name)
+      ) inputs
+    );
+
+    overrideRemoteInput = flakeUrl: inputFullName:
+      "--override-input ${inputFullName} ${inputs."root-flake-input-${inputFullName}"}";
+  in
+    overrideLocalFlakeInputs "" flakeUrl;
+
+  nix = command: localFlakeUrl: ''
+    nix flake metadata ${localFlakeUrl} --override-input nix4dev ${repoPath} --json | jq .
+
+    nix ${command} \
+      --override-input nix4dev ${repoPath} \
+      --offline \
+    '';
+
   withLockedRepo = testScript: ''
     set -x
     export NIX_CONFIG="
@@ -15,13 +53,13 @@
     pushd "$tmp_dir"/repo
 
     # Initializing repo
-    nix run --no-write-lock-file ${repoPath}#init
+    ${nix "run" repoPath} --no-write-lock-file ${repoPath}#init
 
     git init .
     git add .
     git commit -m "Init"
 
-    nix flake update --override-input nix4dev ${repoPath} --print-build-logs --flake nix4dev/
+    ${nix "flake update" "./nix4dev"} --print-build-logs --flake ./nix4dev/
     git add nix4dev/flake.lock
     git commit -m "Add nix4dev/flake.lock"
 
@@ -45,13 +83,14 @@
       inherit text;
     };
 
-  lib = {
+  testLib = {
     inherit
       withLockedRepo
       makeTest
       pkgs
       repoPath
+      nix
       ;
   };
 in
-  lib
+  testLib
