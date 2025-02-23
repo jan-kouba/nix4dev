@@ -33,11 +33,33 @@
   in
     overrideLocalFlakeInputs "" flakeUrl;
 
-  nix = command: localFlakeUrl: ''
-    nix flake metadata ${localFlakeUrl} --override-input nix4dev ${repoPath} --json | jq .
+  nix4devInputOverrides = prefix: ''
+    --override-input ${prefix}nix4dev ${repoPath} \
+    --override-input ${prefix}devshell ${inputs.root-flake-input-devshell} \
+    --override-input ${prefix}flake-parts ${inputs.root-flake-input-flake-parts} \
+    --override-input ${prefix}nixpkgs ${inputs.root-flake-input-nixpkgs} \
+    --override-input ${prefix}systems ${inputs.root-flake-input-systems} \
+    --override-input ${prefix}treefmt-nix ${inputs.root-flake-input-treefmt-nix} \
+  '';
 
+  overrides = ''
+    ${nix4devInputOverrides ""} \
+    ${nix4devInputOverrides "nix4dev/"} \
+  '';
+
+  nix = command: localFlakeUrl: ''
+    ! nix flake metadata ${localFlakeUrl} \
+      --json \
+      ${overrides} \
+      --no-write-lock-file | \
+      jq -e '
+        .locks.nodes |
+        del(.root) |
+        map(select(.locked.type != "path")) |
+        if . == [] then null else . end
+      ' && \
     nix ${command} \
-      --override-input nix4dev ${repoPath} \
+      ${overrides} \
       --offline \
     '';
 
