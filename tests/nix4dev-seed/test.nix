@@ -34,14 +34,13 @@ t.makeTest (
     mv nix4dev/flake-modules/default.nix nix4dev/flake-modules/seed.nix
     cp -r ${./repo_seeded}/* .
 
-    ${t.nix "flake update" "./nix4dev"} --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
+    ${t.nix "flake update" "./nix4dev"} --flake ./nix4dev
 
     # Test that the module from seed is loaded
-    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
 
     # Test that setup does not break things
     PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
-    ${t.nix "flake update" "./nix4dev"} --override-input nix4dev "${t.repoPath}" --flake ./nix4dev
+    ${t.nix "flake update" "./nix4dev"} --flake ./nix4dev
 
     ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
   ''

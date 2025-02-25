@@ -1,4 +1,4 @@
-{ lib, ...}: {
+{lib, ...}: {
   perSystem = {
     devshells.default.name = "nix4dev";
 
@@ -8,12 +8,15 @@
       # Add the root flake as dependency, so we have its dependencies captured
       flake.extraInputs = let
         projectFlakeInputs = (import ./../../flake.nix).inputs;
-        testInputs = lib.attrsets.mapAttrs' (name: value: {
-          name = "root-flake-input-${name}";
-          inherit value;
-        }) projectFlakeInputs;
+        testInputs =
+          lib.attrsets.mapAttrs' (name: value: {
+            name = "root-flake-input-${name}";
+            inherit value;
+          })
+          projectFlakeInputs;
       in
-        testInputs // {
+        testInputs
+        // {
           nixpkgs.follows = "nix4dev/nixpkgs";
         };
 

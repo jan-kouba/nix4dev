@@ -45,23 +45,42 @@
   overrides = ''
     ${nix4devInputOverrides ""} \
     ${nix4devInputOverrides "nix4dev/"} \
+    ${nix4devInputOverrides "my-seed/"} \
+    ${nix4devInputOverrides "my-seed/nix4dev/"} \
+    --override-input foo ${inputs.root-flake-input-nixpkgs} \
+    --override-input my-seed/flake-parts/nixpkgs-lib ${inputs.root-flake-input-nixpkgs} \
+    --override-input foo-nixpkgs ${inputs.root-flake-input-nixpkgs} \
   '';
 
   nix = command: localFlakeUrl: ''
-    ! nix flake metadata ${localFlakeUrl} \
-      --json \
-      ${overrides} \
-      --no-write-lock-file | \
-      jq -e '
-        .locks.nodes |
-        del(.root) |
-        map(select(.locked.type != "path")) |
-        if . == [] then null else . end
-      ' && \
-    nix ${command} \
-      ${overrides} \
-      --offline \
-    '';
+    bash -c '
+      set -euo pipefail
+
+      if nix flake metadata ${localFlakeUrl} \
+        --json \
+        ${overrides} \
+        --no-write-lock-file | \
+        jq -e '"'"'
+          .locks.nodes |
+            del(.root) |
+            map(select(.locked.type != "path")) |
+            if . == [] then null else . end
+        '"'"' >&2
+      then
+        RED='"'"'\033[0;31m'"'"'
+        NC='"'"'\033[0m'"'"'
+
+        echo -e "''${RED}Lock file in tests contains non-local input (type != "path")" >&2
+        echo -e "See the output above''${NC}" >&2
+
+        false
+      fi
+
+      nix ${command} \
+        ${overrides} \
+        "$@"
+    ' bash \
+  '';
 
   withLockedRepo = testScript: ''
     set -x
