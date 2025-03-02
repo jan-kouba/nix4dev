@@ -11,13 +11,13 @@ t.makeTest (
       {inputs, ...}: {
         perSystem.nix4dev.projectFlake = {
           enable = true;
-          extraInputs.nix4dev.url = "${t.repoPath}";
+          extraInputs.nix4dev.url = "github:jan-kouba/nix4dev";
         };
       }
     EOF
 
     git add .
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev#setup
 
     git add .
     git commit -m "Added repo files"
@@ -30,18 +30,19 @@ t.makeTest (
     mkdir repo_seeded
     cd repo_seeded
 
-    ${t.nix "run" "../repo"} ../repo#init
+    ${t.nix "run" "../repo" ./overrides-repo.nix} ../repo#init
     mv nix4dev/flake-modules/default.nix nix4dev/flake-modules/seed.nix
     cp -r ${./repo_seeded}/* .
 
-    ${t.nix "flake update" "./nix4dev"} --flake ./nix4dev
+    ${t.nix "flake update" "./nix4dev" ../overrides-nix4dev.nix} --flake ./nix4dev
 
     # Test that the module from seed is loaded
+    ${t.nix "develop" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev -c test-success
 
     # Test that setup does not break things
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
-    ${t.nix "flake update" "./nix4dev"} --flake ./nix4dev
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev#setup
+    ${t.nix "flake update" "./nix4dev" ../overrides-nix4dev.nix} --flake ./nix4dev
 
-    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
+    ${t.nix "develop" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev -c test-success
   ''
 )

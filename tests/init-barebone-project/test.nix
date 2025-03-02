@@ -5,7 +5,7 @@ t.makeTest (
     echo "{}" > nix4dev/flake-modules/default.nix
     git add nix4dev/flake-modules/default.nix
 
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#check
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev#check
 
     # Check that the project directory looks as expected
     rm -rf .git nix4dev/flake.lock

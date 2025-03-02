@@ -4,11 +4,11 @@ t.makeTest (
     mkdir -p nix4dev/flake-modules
     echo "{ perSystem.nix4dev.projectFlake.enable = true; }" > nix4dev/flake-modules/default.nix
     git add .
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev#setup
     git add .
     git commit -m "chore: Setup project"
 
-    if ${t.nix "flake check" "."}  3>&1 1>&2 2>&3 | tee err.out ; then
+    if ${t.nix "flake check" "." ./overrides.nix}  3>&1 1>&2 2>&3 | tee err.out ; then
       echo "flake check not failed when it supposed to" >&2
       exit 1
     fi

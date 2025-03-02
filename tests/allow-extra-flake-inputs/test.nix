@@ -14,11 +14,11 @@ t.makeTest (
       }
     EOF
     git add nix4dev/flake-modules/default.nix
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev#setup
 
     # Check that all the generated files are correctly formatted
-    ${t.nix "run" "./nix4dev"} ./nix4dev#prepare
+    ${t.nix "run" "./nix4dev" ./overrides.nix} ./nix4dev#prepare
 
-    test "$(${t.nix "run" "./nix4dev"} ./nix4dev#bar)" == "Hello, world!"
+    test "$(${t.nix "run" "./nix4dev" ./overrides.nix} ./nix4dev#bar)" == "Hello, world!"
   ''
 )
