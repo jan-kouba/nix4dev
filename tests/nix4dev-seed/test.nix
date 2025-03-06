@@ -34,7 +34,7 @@ t.makeTest (
     mv nix4dev/flake-modules/default.nix nix4dev/flake-modules/seed.nix
     cp -r ${./repo_seeded}/* .
 
-    ${t.nix "flake update" "./nix4dev" ../overrides-nix4dev.nix} --flake ./nix4dev
+    ${t.nix "flake update" "./nix4dev" ./overrides-nix4dev.nix} --flake ./nix4dev
 
     # Test that the module from seed is loaded
     ${t.nix "develop" "./nix4dev" ../overrides-nix4dev.nix} ./nix4dev -c test-success
