@@ -3,85 +3,36 @@
   repoPath,
   testName,
   inputs,
-  lib
+  lib,
 }: let
-  nixInputOverrides = prefix: ''
-    --override-input ${prefix}nixpkgs ${inputs.root-flake-input-nixpkgs} \
-    --override-input ${prefix}devshell ${inputs.root-flake-input-devshell} \
-    --override-input ${prefix}flake-parts ${inputs.root-flake-input-flake-parts} \
-    --override-input ${prefix}systems ${inputs.root-flake-input-systems} \
-    --override-input ${prefix}treefmt-nix ${inputs.root-flake-input-treefmt-nix} \
-  '';
-
-  freezeInputs = flakeUrl: let
-    overrideFlakeInput = flakeUrl: inputFullName:
-      if (builtins.substring 0 2 flakeUrl) == "./" then
-        overrideLocalFlakeInputs inputFullName (./. + flakeUrl)
-      else
-        [ (overrideRemoteInput flakeUrl inputFullName) ];
-
-    overrideLocalFlakeInputs = inputFullName: flakePath: let
-      inputs = (import "${flakePath}/flake.nix").inputs;
-    in lib.lists.flatten (
-      lib.attrsets.mapAttrsToList (name: value:
-        overrideFlakeInput value.url (if inputFullName != "" then "${inputFullName}/${name}" else name)
-      ) inputs
-    );
-
-    overrideRemoteInput = flakeUrl: inputFullName:
-      "--override-input ${inputFullName} ${inputs."root-flake-input-${inputFullName}"}";
-  in
-    overrideLocalFlakeInputs "" flakeUrl;
-
-  nix4devInputOverrides = prefix: ''
-    --override-input ${prefix}nix4dev ${repoPath} \
-    --override-input ${prefix}devshell ${inputs.root-flake-input-devshell} \
-    --override-input ${prefix}flake-parts ${inputs.root-flake-input-flake-parts} \
-    --override-input ${prefix}nixpkgs ${inputs.root-flake-input-nixpkgs} \
-    --override-input ${prefix}systems ${inputs.root-flake-input-systems} \
-    --override-input ${prefix}treefmt-nix ${inputs.root-flake-input-treefmt-nix} \
-  '';
-
-  overrides = ''
-    ${nix4devInputOverrides ""} \
-    ${nix4devInputOverrides "nix4dev/"} \
-    ${nix4devInputOverrides "my-seed/"} \
-    ${nix4devInputOverrides "my-seed/nix4dev/"} \
-    --override-input foo ${inputs.root-flake-input-nixpkgs} \
-    --override-input my-seed/flake-parts/nixpkgs-lib ${inputs.root-flake-input-nixpkgs} \
-    --override-input foo-nixpkgs ${inputs.root-flake-input-nixpkgs} \
-  '';
 
   nix = command: localFlakeUrl: overrideFile: let
     overridesConfig = import overrideFile;
-    overrides = lib.strings.concatStringsSep " \\\n" (
-      lib.attrsets.mapAttrsToList (
-        src: dest:
-          "--override-input ${src} ${if dest == "nix4dev" then repoPath else inputs."root-flake-input-${dest}"}"
-      ) (if lib.hasAttr "overrides" overridesConfig then overridesConfig.overrides else {})
-    );
 
-    localInputs = (
-      lib.attrsets.mapAttrs' (
-        name: value: (
-          { name = lib.strings.removePrefix "root-flake-input-" name;
-          inherit value;}
-        )
-      ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "root-flake-input-" name) inputs)
-    ) // {
-      foo = inputs.root-flake-input-nixpkgs;
-      foo-nixpkgs = inputs.root-flake-input-nixpkgs;
-    };
+    localInputs =
+      (
+        lib.attrsets.mapAttrs' (
+          name: value: {
+            name = lib.strings.removePrefix "root-flake-input-" name;
+            inherit value;
+          }
+        ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "root-flake-input-" name) inputs)
+      )
+      // {
+        foo = inputs.root-flake-input-nixpkgs;
+        foo-nixpkgs = inputs.root-flake-input-nixpkgs;
+      };
 
     localInputsPath = pkgs.writeText "local-inputs" ''
       {
         ${
-          lib.strings.concatStringsSep "\n" (
-            lib.attrsets.mapAttrsToList (name: value:
-              "${name} = \"${value}\";"
-            ) localInputs
+        lib.strings.concatStringsSep "\n" (
+          lib.attrsets.mapAttrsToList (
+            name: value: "${name} = \"${value}\";"
           )
-        }
+          localInputs
+        )
+      }
       }
     '';
   in ''
