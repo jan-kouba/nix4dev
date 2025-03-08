@@ -5,6 +5,7 @@ t.makeTest (
     chmod -R u+w .
     git add .
 
+    export repo_dir
     repo_dir="$(pwd)"
 
     pushd terraform/test-module

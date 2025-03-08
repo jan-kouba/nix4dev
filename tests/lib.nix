@@ -60,6 +60,30 @@
           "--override-input ${src} ${if dest == "nix4dev" then repoPath else inputs."root-flake-input-${dest}"}"
       ) (if lib.hasAttr "overrides" overridesConfig then overridesConfig.overrides else {})
     );
+
+    localInputs = (
+      lib.attrsets.mapAttrs' (
+        name: value: (
+          { name = lib.strings.removePrefix "root-flake-input-" name;
+          inherit value;}
+        )
+      ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "root-flake-input-" name) inputs)
+    ) // {
+      foo = inputs.root-flake-input-nixpkgs;
+      foo-nixpkgs = inputs.root-flake-input-nixpkgs;
+    };
+
+    localInputsPath = pkgs.writeText "local-inputs" ''
+      {
+        ${
+          lib.strings.concatStringsSep "\n" (
+            lib.attrsets.mapAttrsToList (name: value:
+              "${name} = \"${value}\";"
+            ) localInputs
+          )
+        }
+      }
+    '';
   in ''
     bash -c '
       set -euo pipefail
@@ -68,22 +92,35 @@
       NC='"'"'\033[0m'"'"'
 
       flakeNix="$(realpath "${localFlakeUrl}/flake.nix")"
-      actualFlakeInputsHash="$(nix hash file --type sha256 --sri \
-        <(nix eval --expr "builtins.toJSON (import \"$flakeNix\").inputs" --impure --raw | jq .) \
+      # actualFlakeInputsHash="$(nix hash file --type sha256 --sri \
+      #   <(nix eval --expr "builtins.toJSON (import \"$flakeNix\").inputs" --impure --raw | jq .) \
+      # )"
+
+      # if [ "$actualFlakeInputsHash" != "${overridesConfig.inputsHash}" ]; then
+      #   nix eval --expr "builtins.toJSON (import \"$flakeNix\").inputs" --impure --raw | jq . >&2
+
+      #   echo -e "''${RED}Overrides file ${overrideFile} for flake $flakeNix is not up to date!" >&2
+      #   echo -e "See the actual inputs printed above, update the overrides and update the hash to "$actualFlakeInputsHash" ''${NC}" >&2
+
+      #   false
+      # fi
+
+      # echo nix eval --raw --file ${./override-flake-inputs.nix} \
+      #     --arg flakePath "$flakeNix" \
+      #     --arg nixpkgs ${inputs.nixpkgs} options \
+      #     --arg localInputsPath "${localInputsPath}" \
+
+      overrideOptions="$( \
+        nix eval --raw --file ${./override-flake-inputs.nix} \
+          --arg flakePath "$flakeNix" \
+          --arg nixpkgs ${inputs.nixpkgs} options \
+          --arg localInputsPath "${localInputsPath}" \
+          --arg nix4devRepoPath "${repoPath}" \
       )"
-
-      if [ "$actualFlakeInputsHash" != "${overridesConfig.inputsHash}" ]; then
-        nix eval --expr "builtins.toJSON (import \"$flakeNix\").inputs" --impure --raw | jq . >&2
-
-        echo -e "''${RED}Overrides file ${overrideFile} for flake $flakeNix is not up to date!" >&2
-        echo -e "See the actual inputs printed above, update the overrides and update the hash to "$actualFlakeInputsHash" ''${NC}" >&2
-
-        false
-      fi
 
       if nix flake metadata ${localFlakeUrl} \
         --json \
-        ${overrides} \
+        $overrideOptions \
         --no-write-lock-file | \
         jq -e '"'"'
           .locks.nodes |
@@ -93,7 +130,7 @@
         '"'"' >&2
       then
         nix flake metadata ${localFlakeUrl} \
-          ${overrides} \
+          $overrideOptions \
           --no-write-lock-file >&2
 
         echo -e "''${RED}Lock file in tests contains non-local input (type != "path") in flake $flakeNix" >&2
@@ -103,7 +140,7 @@
       fi
 
       nix ${command} \
-        ${overrides} \
+        $overrideOptions \
         "$@"
     ' bash \
   '';
