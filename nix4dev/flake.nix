@@ -8,7 +8,7 @@
     "nixpkgs" = {
       "follows" = "nix4dev/nixpkgs";
     };
-    "root-flake-input-devshell" = {
+    "test-input-devshell" = {
       "inputs" = {
         "nixpkgs" = {
           "follows" = "nixpkgs";
@@ -16,7 +16,7 @@
       };
       "url" = "github:numtide/devshell";
     };
-    "root-flake-input-flake-parts" = {
+    "test-input-flake-parts" = {
       "inputs" = {
         "nixpkgs-lib" = {
           "follows" = "nixpkgs";
@@ -24,13 +24,13 @@
       };
       "url" = "github:hercules-ci/flake-parts";
     };
-    "root-flake-input-nixpkgs" = {
+    "test-input-nixpkgs" = {
       "url" = "github:NixOS/nixpkgs/nixos-24.11";
     };
-    "root-flake-input-systems" = {
+    "test-input-systems" = {
       "url" = "github:nix-systems/default";
     };
-    "root-flake-input-treefmt-nix" = {
+    "test-input-treefmt-nix" = {
       "inputs" = {
         "nixpkgs" = {
           "follows" = "nixpkgs";

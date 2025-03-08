@@ -10,7 +10,7 @@
         projectFlakeInputs = (import ./../../flake.nix).inputs;
         testInputs =
           lib.attrsets.mapAttrs' (name: value: {
-            name = "root-flake-input-${name}";
+            name = "test-input-${name}";
             inherit value;
           })
           projectFlakeInputs;

@@ -10,14 +10,14 @@
       (
         lib.attrsets.mapAttrs' (
           name: value: {
-            name = lib.strings.removePrefix "root-flake-input-" name;
+            name = lib.strings.removePrefix "test-input-" name;
             inherit value;
           }
-        ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "root-flake-input-" name) inputs)
+        ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "test-input-" name) inputs)
       )
       // {
-        foo = inputs.root-flake-input-nixpkgs;
-        foo-nixpkgs = inputs.root-flake-input-nixpkgs;
+        foo = inputs.test-input-nixpkgs;
+        foo-nixpkgs = inputs.test-input-nixpkgs;
       };
 
     localInputsPath = pkgs.writeText "local-inputs" ''

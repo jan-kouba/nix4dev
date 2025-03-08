@@ -1,3 +1,8 @@
+/*
+Given flake.nix file, returns --input-override options that override all non-local inputs
+used by the flake (including transitive inputs).
+A local flake is detected by checking if the url field of the input starts with '/'.
+*/
 {
   flakePath,
   nixpkgs,
