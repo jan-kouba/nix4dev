@@ -5,7 +5,6 @@
     ...
   }: let
     testDirs = lib.filterAttrs (_name: type: type == "directory") (builtins.readDir ../../tests);
-    # testDirs = lib.filterAttrs (name: type: (type == "directory") && (name == "init-barebone-project")) (builtins.readDir ../../tests);
 
     writeTestRunner = pkg:
       pkgs.writeShellApplication {
