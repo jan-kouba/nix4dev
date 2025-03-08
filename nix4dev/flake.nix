@@ -5,6 +5,39 @@
     "nix4dev" = {
       "url" = "github:jan-kouba/nix4dev";
     };
+    "nixpkgs" = {
+      "follows" = "nix4dev/nixpkgs";
+    };
+    "test-input-devshell" = {
+      "inputs" = {
+        "nixpkgs" = {
+          "follows" = "nixpkgs";
+        };
+      };
+      "url" = "github:numtide/devshell";
+    };
+    "test-input-flake-parts" = {
+      "inputs" = {
+        "nixpkgs-lib" = {
+          "follows" = "nixpkgs";
+        };
+      };
+      "url" = "github:hercules-ci/flake-parts";
+    };
+    "test-input-nixpkgs" = {
+      "url" = "github:NixOS/nixpkgs/nixos-24.11";
+    };
+    "test-input-systems" = {
+      "url" = "github:nix-systems/default";
+    };
+    "test-input-treefmt-nix" = {
+      "inputs" = {
+        "nixpkgs" = {
+          "follows" = "nixpkgs";
+        };
+      };
+      "url" = "github:numtide/treefmt-nix";
+    };
   };
 
   outputs = inputs:

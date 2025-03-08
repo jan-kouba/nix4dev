@@ -5,12 +5,12 @@ t.makeTest (
     chmod -R u+w .
     git add .
 
-    PRJ_ROOT=$(pwd) nix run ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
     git add .
     git commit -am "Setup project level flake"
 
-    test "$(nix run .#foo)" == "Hello, world!"
-    test "$(nix run .#bar)" == "Hello, world!"
+    test "$(${t.nix "run" "."} .#foo)" == "Hello, world!"
+    test "$(${t.nix "run" "."} .#bar)" == "Hello, world!"
 
     grep 'description = "This is test of project flake";' flake.nix
   ''

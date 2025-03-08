@@ -1,9 +1,24 @@
-{
+{lib, ...}: {
   perSystem = {
     devshells.default.name = "nix4dev";
 
     nix4dev = {
       conventionalCommits.enable = true;
+
+      # Add the root flake as dependency, so we have its dependencies captured
+      flake.extraInputs = let
+        projectFlakeInputs = (import ./../../flake.nix).inputs;
+        testInputs =
+          lib.attrsets.mapAttrs' (name: value: {
+            name = "test-input-${name}";
+            inherit value;
+          })
+          projectFlakeInputs;
+      in
+        testInputs
+        // {
+          nixpkgs.follows = "nix4dev/nixpkgs";
+        };
 
       projectFlake = {
         enable = true;
