@@ -32,12 +32,12 @@
       }
       }
     '';
-  in ''
-    bash -c '
+
+    makeAndCheckOverrides = pkgs.writeText "make-and-check-overrides" ''
       set -euo pipefail
 
-      RED='"'"'\033[0;31m'"'"'
-      NC='"'"'\033[0m'"'"'
+      RED='\033[0;31m'
+      NC='\033[0m'
 
       flakeNix="$(realpath "${localFlakeUrl}/flake.nix")"
 
@@ -53,12 +53,12 @@
         --json \
         $overrideOptions \
         --no-write-lock-file | \
-        jq -e '"'"'
+        jq -e '
           .locks.nodes |
             del(.root) |
             map(select(.locked.type != "path")) |
             if . == [] then null else . end
-        '"'"' >&2
+        ' >&2
       then
         nix flake metadata ${localFlakeUrl} \
           $overrideOptions \
@@ -69,6 +69,10 @@
 
         false
       fi
+    '';
+  in ''
+    bash -c '
+      . ${makeAndCheckOverrides}
 
       nix ${command} \
         $overrideOptions \
