@@ -27,6 +27,17 @@
           # Enable formatting of .nix files
           treefmt.programs.alejandra.enable = true;
           nix4dev.managedFiles.treefmt.enable = true;
+
+          # Enable formatting of YAML files
+          # treefmt.programs.prettier = {
+          #   enable = true;
+
+          #   includes = [
+          #     "*.yml"
+          #     "*.yaml"
+          #   ];
+          # };
+          treefmt.programs.yamlfmt.enable = true;
         };
       };
 

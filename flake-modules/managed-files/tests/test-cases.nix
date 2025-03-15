@@ -22,6 +22,14 @@
           foo = [  "barr"    ];
           }
         '';
+
+        files."test.yaml".source.text = builtins.toJSON {
+          foo = "bar";
+        };
+
+        # files."test.yaml".source.text = ''
+        #   foo:       "bar"
+        # '';
       }
     ];
   };
