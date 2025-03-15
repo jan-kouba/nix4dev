@@ -1,5 +1,9 @@
 {lib, ...}: {
-  perSystem = {config, pkgs, ...}: {
+  perSystem = {
+    config,
+    pkgs,
+    ...
+  }: {
     options = {
       nix4dev.yaml.disable = lib.mkEnableOption "YAML support";
     };
@@ -21,7 +25,7 @@
             ''
             "--" # bash swallows the second argument when using -c
           ];
-          includes = [ "*.yaml" "*.yml" ];
+          includes = ["*.yaml" "*.yml"];
           priority = -100;
         };
       };

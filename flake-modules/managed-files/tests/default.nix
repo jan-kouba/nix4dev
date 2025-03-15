@@ -27,36 +27,6 @@
           # Enable formatting of .nix files
           treefmt.programs.alejandra.enable = true;
           nix4dev.managedFiles.treefmt.enable = true;
-
-          # Enable formatting of YAML files
-          treefmt.programs.prettier = {
-            enable = true;
-
-            includes = [
-              "*.yml"
-              "*.yaml"
-            ];
-          };
-          # treefmt.programs.yamlfmt.enable = true;
-
-          treefmt.settings.formatter = {
-            "yq-json" = {
-              command = "${pkgs.bash}/bin/bash";
-              options = [
-                "-euc"
-                ''
-                  for file in "$@"; do
-                    ${lib.getExe pkgs.yq-go} -i -P "$file"
-                  done
-                ''
-                "--" # bash swallows the second argument when using -c
-              ];
-              includes = [ "*.yaml" "*.yml" ];
-              priority = -100;
-            };
-          };
-
-          # treefmt.programs.yq-json.priority = -100;
         };
       };
 
