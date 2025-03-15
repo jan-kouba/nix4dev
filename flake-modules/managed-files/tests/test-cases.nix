@@ -24,12 +24,11 @@
         '';
 
         files."test.yaml".source.text = builtins.toJSON {
-          foo = "bar";
+          foo = ''
+            bar
+            baz
+          '';
         };
-
-        # files."test.yaml".source.text = ''
-        #   foo:       "bar"
-        # '';
       }
     ];
   };
