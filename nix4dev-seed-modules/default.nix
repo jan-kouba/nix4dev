@@ -42,7 +42,7 @@ in {
   };
 
   config = {
-    perSystem = {system, ...}: {
+    perSystem = {system, pkgs, self', ...}: {
       config = {
         # Setup project to use nix4dev shell.
         packages.init = let
@@ -63,5 +63,17 @@ in {
           initialSetupProjectFlake.packages.${system}.init;
       };
     };
+
+    flake.templates.default = {
+        description = "Initial nix4dev setup";
+        welcomeText = ''
+          # Welcome to **nix4dev dev-shell**!
+
+          * Tune `./nix4dev/flake-modules`
+          * run `direnv allow` or `nix develop`
+          * **Enjoy!**
+        '';
+        path = ./templates/init;
+      };
   };
 }
