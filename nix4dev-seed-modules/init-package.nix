@@ -51,10 +51,47 @@ in {
   in {
     config = {
       packages.init = init;
+
+      # nix4dev.managedFiles.files = let
+      #   initTemplate = pkgs.runCommand "init-template" {} ''
+      #     mkdir $out
+
+      #     export PRJ_ROOT
+      #     PRJ_ROOT="$out"
+
+      #     ${self'.packages.setup}
+
+      #     ${pkgs.coreutils}/bin/install -D "${seededModule}" "$out"/nix4dev/flake-modules/default.nix
+      #   '';
+      #   initFiles = lib.filesystem.listFilesRecursive initTemplate;
+      # in lib.listToAttrs (
+      #   lib.lists.map (path: let
+      #       relPath = lib.path.removePrefix initTemplate path;
+      #     in {
+      #       name = relPath;
+      #       value = {
+      #         source.file = path;
+      #       };
+      #     }
+      #   ) initFiles
+      # );
+
       nix4dev.flake = {
         extraInputs = extraFixedFlakeInputs;
         extraFlakeModules = extraFixedModules;
       };
     };
   };
+
+  config.flake.templates.default = {
+        description = "Initial nix4dev setup";
+        welcomeText = ''
+          # Welcome to **nix4dev dev-shell**!
+
+          * Tune `./nix4dev/flake-modules`
+          * run `direnv allow` or `nix develop`
+          * **Enjoy!**
+        '';
+        path = ./templates/init;
+      };
 }
