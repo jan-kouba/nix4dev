@@ -14,6 +14,7 @@ in {
     ./nixlang.nix
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake
+    ./seed.nix
     (fpl.importApply ./shell nix4devInputs)
     ./terraform.nix
     ./yaml.nix
