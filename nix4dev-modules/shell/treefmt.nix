@@ -5,6 +5,9 @@
 
       # Set projectRoot to point to the whole repository, not just the `nix4dev` directory
       projectRoot = self + "/..";
+
+      # Do not print the warning when a file with no configured formatter is found
+      settings.global.on-unmatched = "debug";
     };
 
     devshells.default = {
