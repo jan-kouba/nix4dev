@@ -228,6 +228,7 @@
           ${pkgs.rsync}/bin/rsync \
             -r \
             --delete \
+            --checksum \
             --from0 \
             -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" "${fileListPath}") \
             -f'-! */' \
