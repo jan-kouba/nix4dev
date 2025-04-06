@@ -194,18 +194,20 @@
       updateFilesScript = let
         fileListPaths = assert l.asserts.assertMsg ((l.length cfg.fileListPaths) > 0) "`fileListPaths` can not be an empty list"; cfg.fileListPaths;
         fileListPath = "$outDir/${l.head fileListPaths}";
+        fileListPathNew = "$tmpFileListPath";
       in
         pkgs.writeShellScript "update-managed-files" ''
           set -euo pipefail
 
           outDir="$1"
+          tmpFileListPath="$(mktemp --tmpdir -- nix4dev-file-list-new-XXXXXX.json)"
 
 
           # Update managed files list to contain both old and new files
           mkdir -p "$(dirname "${fileListPath}")"
 
-          ${pkgs.jq}/bin/jq --raw-output -s '([.[] | .managedFiles] | flatten | unique | { managedFiles: . }) + (.[0] | {_comment})' \
-            > "${fileListPath}.new" \
+          ${pkgs.jq}/bin/jq --raw-output -sS '([.[] | .managedFiles] | flatten | unique | { managedFiles: . }) + (.[0] | {_comment})' \
+            > "${fileListPathNew}" \
             <(
               cat "${managedFilesList}"
               ${
@@ -219,7 +221,9 @@
             cfg.fileListPaths
           }
             )
-          mv "${fileListPath}.new" "${fileListPath}"
+          ${pkgs.rsync}/bin/rsync \
+            --checksum \
+            "${fileListPathNew}" "${fileListPath}"
 
 
           # Update managed files
@@ -238,12 +242,17 @@
 
 
           # Update managed files list to contain just the new files
-          ${pkgs.jq}/bin/jq --raw-output '.' "${managedFilesList}" > "${fileListPath}.new"
+          ${pkgs.jq}/bin/jq --raw-output -S '.' "${managedFilesList}" > "${fileListPathNew}"
 
-          mv "${fileListPath}.new" "${fileListPath}"
+          ${pkgs.rsync}/bin/rsync \
+            --checksum \
+            "${fileListPathNew}" "${fileListPath}"
+
           ${
             l.strings.concatMapStringsSep "\n" (f: "rm -f \"$outDir/${f}\"") (l.tail cfg.fileListPaths)
           }
+
+          rm "$tmpFileListPath"
         '';
 
       writeFilesCommand = pkgs.writeShellApplication {
