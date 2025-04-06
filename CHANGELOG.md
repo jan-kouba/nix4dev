@@ -1,5 +1,36 @@
 # Changelog
 
+### [v0.1.2](https://github.com/jan-kouba/nix4dev/compare/v0.1.1...v0.1.2) (2025-04-06)
+
+#### Features
+
+* Do not overwrite unchanged managed files on setup, attempt 2 (#76)
+([27918c2](https://github.com/jan-kouba/nix4dev/commit/27918c28927a368eaa0de8aa428a97e2e799e1c8)),
+closes [#76](https://github.com/jan-kouba/nix4dev/issues/76)
+* Do not overwrite unchanged managed files on setup (#75)
+([02b9fbe](https://github.com/jan-kouba/nix4dev/commit/02b9fbe1b8da0053dab6f2fd40e33644fb08927d)),
+closes [#75](https://github.com/jan-kouba/nix4dev/issues/75)
+* Do not print warning when a file with no configured formatter is found (#74)
+([f80cb1f](https://github.com/jan-kouba/nix4dev/commit/f80cb1f8ce5af26d25a9776f67f7b5ab11e1be6b)),
+closes [#74](https://github.com/jan-kouba/nix4dev/issues/74)
+* Make formatted .yaml files look like YAML when they contain a valid JSON
+(#70)
+([73ed88f](https://github.com/jan-kouba/nix4dev/commit/73ed88f8576e25be13147e93b32d4965cf9d0b6d)),
+closes [#70](https://github.com/jan-kouba/nix4dev/issues/70)
+* Do not print the "cannot delete non-empty directory" warnings when updating
+the managed files (#59)
+([1288da8](https://github.com/jan-kouba/nix4dev/commit/1288da848161d5b62a91a32c69f1463a5b300262)),
+closes [#59](https://github.com/jan-kouba/nix4dev/issues/59)
+* Remove flake.lock (#57)
+([78dc016](https://github.com/jan-kouba/nix4dev/commit/78dc0167d1c6f6ee4340bdcfd8f9b656ee4a35e5)),
+closes [#57](https://github.com/jan-kouba/nix4dev/issues/57)
+
+#### Fixes
+
+* Set the treefmt.projectRoot to point to the whole repository (#73)
+([36d851c](https://github.com/jan-kouba/nix4dev/commit/36d851cfd0c6d0d560e72fc68f99aa6e48d985a1)),
+closes [#73](https://github.com/jan-kouba/nix4dev/issues/73)
+
 ### [v0.1.1](https://github.com/jan-kouba/nix4dev/compare/v0.1.0...v0.1.1) (2025-02-17)
 
 #### Features
