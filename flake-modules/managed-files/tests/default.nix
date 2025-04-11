@@ -69,12 +69,20 @@
     : If set to `true`, format the managed files using treefmt.
     */
     managedFilesTest = {
-      assertion,
-      expected,
-      initDirectory ? null,
+      testDescription,
       managedFilesConfigs,
+      testDir,
       enableTreefmt ? true,
     }: let
+      assertion = "managed files ${testDescription}";
+      expected = testDir + "/expected";
+      initDirectory = let
+        d = testDir + "/init";
+      in
+        if lib.filesystem.pathIsDirectory d
+        then d
+        else null;
+
       step = managedFilesConfig: ''
         ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out/root"
       '';
@@ -104,14 +112,15 @@
         '';
       };
 
+    testDirs = builtins.attrNames (lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir ./.));
     tests =
-      lib.attrsets.mapAttrsToList (
-        testDescription: testAttrs:
+      lib.lists.map (
+        testDir:
           managedFilesTest (
-            {assertion = "managed files ${testDescription}";} // testAttrs
+            import (./. + "/${testDir}")
           )
       )
-      (import ./test-cases.nix);
+      testDirs;
   in {
     checks.managedFilesCheck = pkgs.writeText "managed-files-check" ''
       Test outputs:

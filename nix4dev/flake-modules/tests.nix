@@ -50,7 +50,7 @@
   in {
     treefmt.settings.global.excludes = [
       "tests/formatters-work/repo/**"
-      "flake-modules/managed-files/tests/expected/**"
+      "flake-modules/managed-files/tests/*/expected"
     ];
 
     devshells.default = {
