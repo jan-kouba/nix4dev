@@ -1,4 +1,5 @@
-{
+{lib, ...}:
+lib.managedFilesTest {
   testDescription = "can write file";
 
   managedFilesConfigs = [

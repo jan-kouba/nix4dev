@@ -115,10 +115,11 @@
     testDirs = builtins.attrNames (lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir ./.));
     tests =
       lib.lists.map (
-        testDir:
-          managedFilesTest (
-            import (./. + "/${testDir}")
-          )
+        testDir: (
+          import (./. + "/${testDir}") {
+            lib = lib // {inherit managedFilesTest;};
+          }
+        )
       )
       testDirs;
   in {
