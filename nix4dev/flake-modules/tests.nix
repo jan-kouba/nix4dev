@@ -53,6 +53,8 @@
       "flake-modules/managed-files/tests/*/expected/**"
     ];
 
+    nix4dev.envrc.watchDirectories = ["tests"];
+
     devshells.default = {
       commands =
         (
