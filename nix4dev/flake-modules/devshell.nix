@@ -1,8 +1,5 @@
 {
   perSystem = {...}: {
-    nix4dev.envrc.watchDirectories = [
-      "nix4dev-modules"
-      "tests"
-    ];
+    nix4dev.envrc.watchDirectories = ["nix4dev-modules"];
   };
 }
