@@ -1,25 +1,18 @@
 {
   inputs,
-  self,
   lib,
+  self,
   ...
 }: {
   perSystem = {
+    config,
     pkgs,
     system,
     ...
   }: let
-    evalFlakeModules = modules:
-      inputs.flake-parts.lib.mkFlake
-      {inherit inputs;}
-      {
-        imports = modules;
-        systems = [system];
-      };
-
-    updateManagedFilesScript = {
-      managedFilesConfig,
+    managedFilesTestStepModule = {
       enableTreefmt,
+      managedFilesConfig,
     }: let
       treefmtModule = {
         imports = [inputs.treefmt-nix.flakeModule];
@@ -29,41 +22,34 @@
           nix4dev.managedFiles.treefmt.enable = true;
         };
       };
+    in {
+      imports =
+        [self.flakeModules.managedFiles]
+        ++ (
+          if enableTreefmt
+          then [treefmtModule]
+          else []
+        );
 
-      module = {
-        imports =
-          [self.flakeModules.managedFiles]
-          ++ (
-            if enableTreefmt
-            then [treefmtModule]
-            else []
-          );
-        perSystem = {config, ...}: {
-          nix4dev.managedFiles = managedFilesConfig;
-          packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
-        };
+      perSystem = {config, ...}: {
+        nix4dev.managedFiles = managedFilesConfig;
+        packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
       };
-
-      flake = evalFlakeModules [module];
-    in
-      flake.packages.${system}.updateManagedFiles;
+    };
 
     /*
     Runs managed files test.
 
     # Inputs
 
-    `assertion`
-    : The description of this assertion
-
-    `expected`
-    : The expected output of the managed files application.
-
-    `initDirectory`
-    : The directory to start the test with.
+    `testDescription`
+    : The description of this test
 
     `managedFilesConfigs`
-    : The managed files configurations to apply sequentially.
+    : The configurations of managed files to apply sequentionally before checking the assertions.
+
+    `testDir`
+    : The test directory.
 
     `enableTreefmt`
     : If set to `true`, format the managed files using treefmt.
@@ -74,42 +60,32 @@
       testDir,
       enableTreefmt ? true,
     }: let
-      assertion = "managed files ${testDescription}";
-      expected = testDir + "/expected";
-      initDirectory = let
+      expectedDir = testDir + "/expected";
+      initDir = let
         d = testDir + "/init";
       in
         if lib.filesystem.pathIsDirectory d
         then d
         else null;
 
-      step = managedFilesConfig: ''
-        ${updateManagedFilesScript {inherit managedFilesConfig enableTreefmt;}} "$out/root"
-      '';
-      actual = pkgs.runCommand "${assertion}-actual" {} ''
-        mkdir -p "$out/root"
+      steps =
+        lib.map (managedFilesConfig: {
+          module = managedFilesTestStepModule {
+            inherit enableTreefmt managedFilesConfig;
+          };
 
-        # Copy initial files
-        ${lib.strings.optionalString (initDirectory != null) "${pkgs.rsync}/bin/rsync -r ${initDirectory}/ \"$out/root\""}
-
-        # Update managed files
-        ${lib.strings.concatMapStringsSep "\n" step managedFilesConfigs}
-      '';
+          commandsToExecute = flake: let
+            command = ''
+              ${flake.packages.${system}.updateManagedFiles} "$out/root"
+            '';
+          in [command];
+        })
+        managedFilesConfigs;
     in
-      pkgs.testers.testEqualContents {
-        inherit actual assertion;
-        # This copying is needed in order for the tests to not fail on OSX,
-        # because the actual and expected files have different group owner.
-        expected = pkgs.runCommand "${assertion}-expected" {} ''
-          set -euo pipefail
+      config.nix4devTestLib.nix4devTest {
+        inherit initDir steps expectedDir;
 
-          ls -la $(dirname $out)
-          mkdir -p "$out/root"
-
-          ls -la  $out
-
-          ${pkgs.rsync}/bin/rsync -r "${expected}/" "$out/root"
-        '';
+        testDescription = "managed files ${testDescription}";
       };
 
     testDirs = builtins.attrNames (lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir ./.));
