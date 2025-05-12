@@ -1,5 +1,5 @@
 {
   imports = [./tests];
 
-  flake.flakeModules.managedFiles = ./module.nix;
+  flake.flakeModules.managedFiles = ./flake-module.nix;
 }
