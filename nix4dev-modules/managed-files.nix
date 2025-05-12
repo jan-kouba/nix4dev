@@ -1,5 +1,5 @@
 {
-  imports = [../flake-modules/managed-files/module.nix];
+  imports = [../flake-modules/managed-files/flake-module.nix];
 
   perSystem = {config, ...}: {
     config = {
