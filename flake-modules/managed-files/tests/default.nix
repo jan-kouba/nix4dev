@@ -56,102 +56,63 @@
         `enableTreefmt`
         : If set to `true`, format the managed files using treefmt.
       */
-      managedFilesTest =
-        {
-          testDescription,
-          steps,
-          testDir,
-        }:
-        let
-          expectedDir = testDir + "/expected";
-          initDir =
-            let
-              d = testDir + "/init";
-            in
-            if lib.filesystem.pathIsDirectory d then d else null;
-        in
-        config.nix4devTestLib.testFlakeParts {
-          inherit initDir steps expectedDir;
-
-          testDescription = "managed files ${testDescription}";
-        };
 
       testSuiteManagedFiles =
         { testsDir }:
         testSuiteFlakeParts {
           inherit testsDir;
-          testFunc =
-            { testDir }:
-            (import testDir {
-              lib = lib // {
-                managedFilesTest = (
-                  {
-                    testDescription,
-                    managedFilesConfigs,
-                    testDir,
-                    enableTreefmt ? true,
-                  }:
-                  {
-                    inherit testDir;
+          testExprToDescriptionAndSteps =
+            {
+              testDescription,
+              managedFilesConfigs,
+              enableTreefmt ? true,
+            }:
+            {
+              testDescription = "managed files ${testDescription}";
 
-                    testDescription = "managed files ${testDescription}";
+              steps = lib.map (managedFilesConfig: {
+                module = managedFilesTestStepModule {
+                  inherit enableTreefmt managedFilesConfig;
+                };
 
-                    steps = lib.map (managedFilesConfig: {
-                      module = managedFilesTestStepModule {
-                        inherit enableTreefmt managedFilesConfig;
-                      };
-
-                      commandsToExecute =
-                        flake:
-                        let
-                          command = ''
-                            ${flake.packages.${system}.updateManagedFiles} "$out"
-                          '';
-                        in
-                        [ command ];
-                    }) managedFilesConfigs;
-                  }
-                );
-              };
-            });
+                commandsToExecute =
+                  flake:
+                  let
+                    command = ''
+                      ${flake.packages.${system}.updateManagedFiles} "$out"
+                    '';
+                  in
+                  [ command ];
+              }) managedFilesConfigs;
+            };
         };
 
       testSuiteFlakeParts =
-        { testsDir, testFunc }:
+        { testsDir, testExprToDescriptionAndSteps }:
         let
           runTest =
-            {
-              testDescription,
-              steps,
-              testDir,
-            }:
+            testDir:
             let
-              expectedDir = testDir + "/expected";
+              testDirAbs = testsDir + "/${testDir}";
+              testExpr = import testDirAbs;
+              descAndSteps = testExprToDescriptionAndSteps testExpr;
+              expectedDir = testDirAbs + "/expected";
               initDir =
                 let
-                  d = testDir + "/init";
+                  d = testDirAbs + "/init";
                 in
                 if lib.filesystem.pathIsDirectory d then d else null;
             in
             config.nix4devTestLib.testFlakeParts {
-              inherit
-                initDir
-                steps
-                expectedDir
-                testDescription
-                ;
+              inherit initDir expectedDir;
+              inherit (descAndSteps) testDescription steps;
             };
 
           testDirs = builtins.attrNames (
             lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir testsDir)
           );
 
-          tests = lib.lists.map (
-            testDir:
-            runTest (testFunc {
-              testDir = testsDir + "/${testDir}";
-            })
-          ) testDirs;
+          tests = lib.lists.map runTest testDirs;
         in
         pkgs.writeText "managed-files-check" ''
           Test outputs:

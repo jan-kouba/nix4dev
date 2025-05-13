@@ -1,5 +1,4 @@
-{ lib, ... }:
-lib.managedFilesTest {
+{
   testDescription = "can write formatted file";
 
   managedFilesConfigs = [
@@ -11,6 +10,4 @@ lib.managedFilesTest {
       '';
     }
   ];
-
-  testDir = ./.;
 }

@@ -1,5 +1,4 @@
-{ lib, ... }:
-lib.managedFilesTest {
+{
   testDescription = "can write file";
 
   managedFilesConfigs = [
@@ -12,6 +11,4 @@ lib.managedFilesTest {
     }
   ];
   enableTreefmt = false;
-
-  testDir = ./.;
 }

@@ -1,5 +1,4 @@
-{ lib, ... }:
-lib.managedFilesTest {
+{
   testDescription = "does not delete files it should not";
 
   managedFilesConfigs = [
@@ -17,6 +16,4 @@ lib.managedFilesTest {
       files."file".source.text = "file";
     }
   ];
-
-  testDir = ./.;
 }
