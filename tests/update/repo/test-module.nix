@@ -2,10 +2,14 @@
   inputs,
   lib,
   ...
-}: let
+}:
+let
   l = lib // builtins;
-in {
-  perSystem = {pkgs, ...}: {
-    packages.foo = pkgs.writeText "foo" (l.readFile "${inputs.dep}/foo");
-  };
+in
+{
+  perSystem =
+    { pkgs, ... }:
+    {
+      packages.foo = pkgs.writeText "foo" (l.readFile "${inputs.dep}/foo");
+    };
 }

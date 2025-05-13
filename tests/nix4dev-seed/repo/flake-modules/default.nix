@@ -2,8 +2,9 @@
   inputs,
   self,
   ...
-}: {
-  imports = [inputs.nix4dev.flakeModules.nix4devSeed];
+}:
+{
+  imports = [ inputs.nix4dev.flakeModules.nix4devSeed ];
 
   config = {
     systems = import inputs.nix4dev.inputs.systems;
@@ -14,7 +15,7 @@
       extraFixedFlakeInputs = {
         my-seed.url = "${self}";
       };
-      extraFixedModules = ["inputs.my-seed.flakeModules.default"];
+      extraFixedModules = [ "inputs.my-seed.flakeModules.default" ];
     };
   };
 }

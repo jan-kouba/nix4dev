@@ -1,15 +1,17 @@
-nix4devInputs: {
+nix4devInputs:
+{
   config,
   lib,
   ...
-}: let
+}:
+let
   l = lib // builtins;
   t = l.types;
 
   topCfg = config.nix4dev;
   overlaysOption = lib.mkOption {
     type = lib.types.listOf (lib.types.functionTo (lib.types.functionTo lib.types.attrs));
-    default = [];
+    default = [ ];
     description = "Overlays to apply when constructing the pkgs from nixpkgs.";
     example = ''
       final: prev: {
@@ -17,7 +19,8 @@ nix4devInputs: {
       }
     '';
   };
-in {
+in
+{
   options = {
     nix4dev = {
       overlays = overlaysOption;
@@ -32,38 +35,41 @@ in {
   };
 
   config = {
-    perSystem = {
-      system,
-      config,
-      ...
-    }: let
-      cfg = config.nix4dev;
-    in {
-      options = {
-        nix4dev = {
-          overlays = overlaysOption;
+    perSystem =
+      {
+        system,
+        config,
+        ...
+      }:
+      let
+        cfg = config.nix4dev;
+      in
+      {
+        options = {
+          nix4dev = {
+            overlays = overlaysOption;
 
-          allowUnfreePackages = l.mkOption {
-            type = t.listOf t.str;
-            description = ''
-              List of unfree packages to allow in the flake.
-            '';
-            default = [];
-            example = ["terraform"];
+            allowUnfreePackages = l.mkOption {
+              type = t.listOf t.str;
+              description = ''
+                List of unfree packages to allow in the flake.
+              '';
+              default = [ ];
+              example = [ "terraform" ];
+            };
+          };
+        };
+
+        config = {
+          _module.args.pkgs = import topCfg.nixpkgs {
+            inherit system;
+            overlays = topCfg.overlays ++ cfg.overlays;
+
+            config = {
+              allowUnfreePredicate = pkg: l.elem (l.getName pkg) cfg.allowUnfreePackages;
+            };
           };
         };
       };
-
-      config = {
-        _module.args.pkgs = import topCfg.nixpkgs {
-          inherit system;
-          overlays = topCfg.overlays ++ cfg.overlays;
-
-          config = {
-            allowUnfreePredicate = pkg: l.elem (l.getName pkg) cfg.allowUnfreePackages;
-          };
-        };
-      };
-    };
   };
 }
