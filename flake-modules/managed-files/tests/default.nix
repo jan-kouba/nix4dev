@@ -76,7 +76,7 @@
 
           commandsToExecute = flake: let
             command = ''
-              ${flake.packages.${system}.updateManagedFiles} "$out/root"
+              ${flake.packages.${system}.updateManagedFiles} "$out"
             '';
           in [command];
         })

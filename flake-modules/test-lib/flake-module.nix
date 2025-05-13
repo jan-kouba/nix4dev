@@ -63,10 +63,10 @@ Library for tests.
         '';
 
         actual = pkgs.runCommand "${testDescription}-actual" {} ''
-          mkdir -p "$out/root"
+          mkdir -p "$out"
 
           # Copy initial files
-          ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out/root\""}
+          ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out\""}
 
           # Update managed files
           ${lib.strings.concatMapStringsSep "\n" step steps}
@@ -82,12 +82,9 @@ Library for tests.
           expected = pkgs.runCommand "${testDescription}-expected" {} ''
             set -euo pipefail
 
-            ls -la $(dirname $out)
-            mkdir -p "$out/root"
+            mkdir -p "$out"
 
-            ls -la  $out
-
-            ${pkgs.rsync}/bin/rsync -r "${expectedDir}/" "$out/root"
+            ${pkgs.rsync}/bin/rsync -r "${expectedDir}/" "$out"
           '';
         };
     };
