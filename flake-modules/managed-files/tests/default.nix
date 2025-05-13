@@ -59,9 +59,8 @@
       managedFilesTest =
         {
           testDescription,
-          managedFilesConfigs,
+          steps,
           testDir,
-          enableTreefmt ? true,
         }:
         let
           expectedDir = testDir + "/expected";
@@ -70,21 +69,6 @@
               d = testDir + "/init";
             in
             if lib.filesystem.pathIsDirectory d then d else null;
-
-          steps = lib.map (managedFilesConfig: {
-            module = managedFilesTestStepModule {
-              inherit enableTreefmt managedFilesConfig;
-            };
-
-            commandsToExecute =
-              flake:
-              let
-                command = ''
-                  ${flake.packages.${system}.updateManagedFiles} "$out"
-                '';
-              in
-              [ command ];
-          }) managedFilesConfigs;
         in
         config.nix4devTestLib.testFlakeParts {
           inherit initDir steps expectedDir;
@@ -94,16 +78,78 @@
 
       testSuiteManagedFiles =
         { testsDir }:
+        testSuiteFlakeParts {
+          inherit testsDir;
+          testFunc =
+            { testDir }:
+            (import testDir {
+              lib = lib // {
+                managedFilesTest = (
+                  {
+                    testDescription,
+                    managedFilesConfigs,
+                    testDir,
+                    enableTreefmt ? true,
+                  }:
+                  {
+                    inherit testDir;
+
+                    testDescription = "managed files ${testDescription}";
+
+                    steps = lib.map (managedFilesConfig: {
+                      module = managedFilesTestStepModule {
+                        inherit enableTreefmt managedFilesConfig;
+                      };
+
+                      commandsToExecute =
+                        flake:
+                        let
+                          command = ''
+                            ${flake.packages.${system}.updateManagedFiles} "$out"
+                          '';
+                        in
+                        [ command ];
+                    }) managedFilesConfigs;
+                  }
+                );
+              };
+            });
+        };
+
+      testSuiteFlakeParts =
+        { testsDir, testFunc }:
         let
+          runTest =
+            {
+              testDescription,
+              steps,
+              testDir,
+            }:
+            let
+              expectedDir = testDir + "/expected";
+              initDir =
+                let
+                  d = testDir + "/init";
+                in
+                if lib.filesystem.pathIsDirectory d then d else null;
+            in
+            config.nix4devTestLib.testFlakeParts {
+              inherit
+                initDir
+                steps
+                expectedDir
+                testDescription
+                ;
+            };
+
           testDirs = builtins.attrNames (
             lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir testsDir)
           );
+
           tests = lib.lists.map (
             testDir:
-            (import (testsDir + "/${testDir}") {
-              lib = lib // {
-                inherit managedFilesTest;
-              };
+            runTest (testFunc {
+              testDir = testsDir + "/${testDir}";
             })
           ) testDirs;
         in
@@ -111,6 +157,7 @@
           Test outputs:
           ${lib.strings.concatLines tests}
         '';
+
     in
     {
       checks.managedFilesCheck = testSuiteManagedFiles { testsDir = ./.; };
