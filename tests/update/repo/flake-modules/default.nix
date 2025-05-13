@@ -1,5 +1,6 @@
-{inputs, ...}: {
-  imports = [../test-module.nix];
+{ inputs, ... }:
+{
+  imports = [ ../test-module.nix ];
 
   systems = import inputs.systems;
 }

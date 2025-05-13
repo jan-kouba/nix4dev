@@ -1,4 +1,5 @@
-{...}: {
+{ ... }:
+{
   perSystem = {
     config.nix4dev.projectFlake = {
       enable = true;

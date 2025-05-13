@@ -1,12 +1,14 @@
-{lib, ...}: {
-  perSystem = {
-    config,
-    pkgs,
-    ...
-  }: let
-    mdformat =
-      (
-        pkgs.python3.withPackages (p: [
+{ lib, ... }:
+{
+  perSystem =
+    {
+      config,
+      pkgs,
+      ...
+    }:
+    let
+      mdformat =
+        (pkgs.python3.withPackages (p: [
           p.mdformat
           p.mdformat-admon
           p.mdformat-beautysh
@@ -19,27 +21,29 @@
           p.mdformat-simple-breaks
           p.mdformat-tables
           p.mdformat-toc
-        ])
-      )
-      .overrideAttrs (_: {
-        meta.mainProgram = "mdformat";
-      });
-  in {
-    options = {
-      nix4dev.markdown.disable = lib.mkEnableOption "markdown support";
-    };
-
-    config = lib.mkIf (! config.nix4dev.markdown.disable) {
-      treefmt.programs.mdformat = {
-        enable = true;
-        package = mdformat;
+        ])).overrideAttrs
+          (_: {
+            meta.mainProgram = "mdformat";
+          });
+    in
+    {
+      options = {
+        nix4dev.markdown.disable = lib.mkEnableOption "markdown support";
       };
 
-      nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkIf (! config.nix4dev.editorconfig.disable) ''
-        # Markdown
-        [*.md]
-        indent_size = 4
-      '';
+      config = lib.mkIf (!config.nix4dev.markdown.disable) {
+        treefmt.programs.mdformat = {
+          enable = true;
+          package = mdformat;
+        };
+
+        nix4dev.managedFiles.files.".editorconfig".source.lines =
+          lib.mkIf (!config.nix4dev.editorconfig.disable)
+            ''
+              # Markdown
+              [*.md]
+              indent_size = 4
+            '';
+      };
     };
-  };
 }

@@ -1,6 +1,9 @@
-nix4devInputs: {flake-parts-lib, ...}: let
+nix4devInputs:
+{ flake-parts-lib, ... }:
+let
   fpl = flake-parts-lib;
-in {
+in
+{
   imports = [
     nix4devInputs.devshell.flakeModule
     nix4devInputs.treefmt-nix.flakeModule

@@ -36,31 +36,27 @@
     };
   };
 
-  outputs = inputs:
-    inputs.flake-parts.lib.mkFlake
-    {inherit inputs;}
-    {
-      imports = let
-        l = inputs.nixpkgs.lib // builtins;
-        assertFileExists = path: msg:
-          assert (
-            l.asserts.assertMsg
-            (l.filesystem.pathIsRegularFile path)
-            msg
-          ); path;
-      in [
-        (
-          assertFileExists
-          ./flake-modules/default.nix
-          ''
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports =
+        let
+          l = inputs.nixpkgs.lib // builtins;
+          assertFileExists =
+            path: msg:
+            assert (l.asserts.assertMsg (l.filesystem.pathIsRegularFile path) msg);
+            path;
+        in
+        [
+
+          (assertFileExists ./flake-modules/default.nix ''
             Default flake module not found. To create an empty default module execute:
 
             mkdir -p ./flake-modules
             echo "{}" > ./flake-modules/default.nix
 
             in the directory containing the flake.nix file.
-          ''
-        )
-      ];
+          '')
+        ];
     };
 }

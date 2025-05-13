@@ -1,4 +1,4 @@
-{lib, ...}:
+{ lib, ... }:
 lib.managedFilesTest {
   testDescription = "can write file";
 

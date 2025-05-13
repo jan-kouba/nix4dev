@@ -1,14 +1,17 @@
-{nix4devFlake}: {
+{ nix4devFlake }:
+{
   config,
   lib,
   flake-parts-lib,
   ...
-}: let
+}:
+let
   l = lib // builtins;
   t = l.types;
 
   cfg = config.nix4dev.seed;
-in {
+in
+{
   options = {
     nix4dev.seed = {
       extraFixedFlakeInputs = l.mkOption {
@@ -35,33 +38,38 @@ in {
             "my-flake.flakeModules.default"
           ]
         '';
-        default = [];
+        default = [ ];
         defaultText = l.literalExpression "[]";
       };
     };
   };
 
   config = {
-    perSystem = {system, ...}: {
-      config = {
-        # Setup project to use nix4dev shell.
-        packages.init = let
-          initialSetupProjectFlake =
-            nix4devFlake.inputs.flake-parts.lib.mkFlake
-            {
-              inputs =
-                nix4devFlake.inputs
-                // {self = initialSetupProjectFlake;};
-            }
-            {
-              imports = [
-                nix4devFlake.flakeModules.default
-                (flake-parts-lib.importApply ./init-package.nix {inherit (cfg) extraFixedFlakeInputs extraFixedModules;})
-              ];
-            };
-        in
-          initialSetupProjectFlake.packages.${system}.init;
+    perSystem =
+      { system, ... }:
+      {
+        config = {
+          # Setup project to use nix4dev shell.
+          packages.init =
+            let
+              initialSetupProjectFlake =
+                nix4devFlake.inputs.flake-parts.lib.mkFlake
+                  {
+                    inputs = nix4devFlake.inputs // {
+                      self = initialSetupProjectFlake;
+                    };
+                  }
+                  {
+                    imports = [
+                      nix4devFlake.flakeModules.default
+                      (flake-parts-lib.importApply ./init-package.nix {
+                        inherit (cfg) extraFixedFlakeInputs extraFixedModules;
+                      })
+                    ];
+                  };
+            in
+            initialSetupProjectFlake.packages.${system}.init;
+        };
       };
-    };
   };
 }

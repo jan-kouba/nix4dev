@@ -4,81 +4,76 @@
   testName,
   inputs,
   lib,
-}: let
-  nix = command: localFlakeUrl: let
-    localInputs =
-      (
-        lib.attrsets.mapAttrs' (
-          name: value: {
-            name = lib.strings.removePrefix "test-input-" name;
-            inherit value;
-          }
-        ) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "test-input-" name) inputs)
-      )
-      // {
-        foo = inputs.test-input-nixpkgs;
-        foo-nixpkgs = inputs.test-input-nixpkgs;
-      };
+}:
+let
+  nix =
+    command: localFlakeUrl:
+    let
+      localInputs =
+        (lib.attrsets.mapAttrs' (name: value: {
+          name = lib.strings.removePrefix "test-input-" name;
+          inherit value;
+        }) (lib.attrsets.filterAttrs (name: _: lib.strings.hasPrefix "test-input-" name) inputs))
+        // {
+          foo = inputs.test-input-nixpkgs;
+          foo-nixpkgs = inputs.test-input-nixpkgs;
+        };
 
-    localInputsPath = pkgs.writeText "local-inputs" ''
-      {
-        ${
-        lib.strings.concatStringsSep "\n" (
-          lib.attrsets.mapAttrsToList (
-            name: value: "${name} = \"${value}\";"
-          )
-          localInputs
-        )
-      }
-      }
-    '';
+      localInputsPath = pkgs.writeText "local-inputs" ''
+        {
+          ${lib.strings.concatStringsSep "\n" (
+            lib.attrsets.mapAttrsToList (name: value: "${name} = \"${value}\";") localInputs
+          )}
+        }
+      '';
 
-    makeAndCheckOverrides = pkgs.writeText "make-and-check-overrides" ''
-      set -euo pipefail
+      makeAndCheckOverrides = pkgs.writeText "make-and-check-overrides" ''
+        set -euo pipefail
 
-      RED='\033[0;31m'
-      NC='\033[0m'
+        RED='\033[0;31m'
+        NC='\033[0m'
 
-      flakeNix="$(realpath "${localFlakeUrl}/flake.nix")"
+        flakeNix="$(realpath "${localFlakeUrl}/flake.nix")"
 
-      overrideOptions="$( \
-        nix eval --raw --file ${./override-flake-inputs.nix} \
-          --arg flakePath "$flakeNix" \
-          --arg nixpkgs ${inputs.nixpkgs} options \
-          --arg localInputsPath "${localInputsPath}" \
-          --arg nix4devRepoPath "${repoPath}" \
-      )"
+        overrideOptions="$( \
+          nix eval --raw --file ${./override-flake-inputs.nix} \
+            --arg flakePath "$flakeNix" \
+            --arg nixpkgs ${inputs.nixpkgs} options \
+            --arg localInputsPath "${localInputsPath}" \
+            --arg nix4devRepoPath "${repoPath}" \
+        )"
 
-      if nix flake metadata ${localFlakeUrl} \
-        --json \
-        $overrideOptions \
-        --no-write-lock-file | \
-        jq -e '
-          .locks.nodes |
-            del(.root) |
-            map(select(.locked.type != "path")) |
-            if . == [] then null else . end
-        ' >&2
-      then
-        nix flake metadata ${localFlakeUrl} \
+        if nix flake metadata ${localFlakeUrl} \
+          --json \
           $overrideOptions \
-          --no-write-lock-file >&2
+          --no-write-lock-file | \
+          jq -e '
+            .locks.nodes |
+              del(.root) |
+              map(select(.locked.type != "path")) |
+              if . == [] then null else . end
+          ' >&2
+        then
+          nix flake metadata ${localFlakeUrl} \
+            $overrideOptions \
+            --no-write-lock-file >&2
 
-        echo -e "''${RED}Lock file in tests contains non-local input (type != "path") in flake $flakeNix" >&2
-        echo -e "This should not happen!''${NC}" >&2
+          echo -e "''${RED}Lock file in tests contains non-local input (type != "path") in flake $flakeNix" >&2
+          echo -e "This should not happen!''${NC}" >&2
 
-        false
-      fi
+          false
+        fi
+      '';
+    in
+    ''
+      bash -c '
+        . ${makeAndCheckOverrides}
+
+        nix ${command} \
+          $overrideOptions \
+          "$@"
+      ' bash \
     '';
-  in ''
-    bash -c '
-      . ${makeAndCheckOverrides}
-
-      nix ${command} \
-        $overrideOptions \
-        "$@"
-    ' bash \
-  '';
 
   withLockedRepo = testScript: ''
     set -x
@@ -110,7 +105,8 @@
     rm -rf "$tmp_dir"
   '';
 
-  makeTest = text:
+  makeTest =
+    text:
     pkgs.writeShellApplication {
       name = "test-${testName}";
 
@@ -132,4 +128,4 @@
       ;
   };
 in
-  testLib
+testLib

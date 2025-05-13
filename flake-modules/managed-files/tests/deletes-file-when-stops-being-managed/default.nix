@@ -1,4 +1,4 @@
-{lib, ...}:
+{ lib, ... }:
 lib.managedFilesTest {
   testDescription = "deletes file when stops being managed";
 

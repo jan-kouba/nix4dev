@@ -1,4 +1,4 @@
-{lib, ...}:
+{ lib, ... }:
 lib.managedFilesTest {
   testDescription = "does not delete files it should not";
 
