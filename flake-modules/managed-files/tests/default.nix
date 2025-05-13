@@ -13,32 +13,41 @@
       ...
     }:
     let
-      managedFilesTestStepModule =
+      stepOverride =
         {
-          enableTreefmt,
-          step,
+          enableTreefmt ? true,
+          ...
         }:
-        let
-          treefmtModule = {
-            imports = [ inputs.treefmt-nix.flakeModule ];
-            perSystem = {
-              # Enable formatting of .nix files
-              treefmt.programs.alejandra.enable = true;
-              nix4dev.managedFiles.treefmt.enable = true;
-            };
-          };
-        in
-        {
-          imports =
-            [ self.flakeModules.managedFiles ]
-            ++ [ step.flakeModule ]
-            ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
+        step: {
+          module =
+            let
+              treefmtModule = {
+                imports = [ inputs.treefmt-nix.flakeModule ];
+                perSystem = {
+                  # Enable formatting of .nix files
+                  treefmt.programs.alejandra.enable = true;
+                  nix4dev.managedFiles.treefmt.enable = true;
+                };
+              };
 
-          perSystem =
-            { config, ... }:
+              managedFilesTestModule = {
+                imports = [ self.flakeModules.managedFiles ];
+
+                perSystem =
+                  { config, ... }:
+                  {
+                    packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
+                  };
+              };
+            in
             {
-              packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
+              imports =
+                [ managedFilesTestModule ]
+                ++ [ step.flakeModule ]
+                ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
             };
+
+          commandsToExecute = flake: [ ''${flake.packages.${system}.updateManagedFiles} "$out"'' ];
         };
 
       /*
@@ -63,41 +72,27 @@
         { testsDir }:
         testSuiteFlakeParts {
           inherit testsDir;
-          testExprToDescriptionAndSteps =
-            {
-              testDescription,
-              enableTreefmt ? true,
-              steps ? null,
-            }:
-            {
-              testDescription = "managed files ${testDescription}";
-
-              steps = lib.map (step: {
-                module = managedFilesTestStepModule {
-                  inherit enableTreefmt step;
-                };
-
-                commandsToExecute =
-                  flake:
-                  let
-                    command = ''
-                      ${flake.packages.${system}.updateManagedFiles} "$out"
-                    '';
-                  in
-                  [ command ];
-              }) steps;
-            };
+          overrideTest =
+            testExpr: testExpr // { testDescription = "managed files ${testExpr.testDescription}"; };
+          overrideStep = stepOverride;
         };
 
       testSuiteFlakeParts =
-        { testsDir, testExprToDescriptionAndSteps }:
+        {
+          testsDir,
+          overrideStep ? (_prevTest: prevStep: prevStep),
+          overrideTest ? (prevTest: prevTest),
+        }:
         let
           runTest =
             testDir:
             let
               testDirAbs = testsDir + "/${testDir}";
               testExpr = import testDirAbs;
-              descriptionAndSteps = testExprToDescriptionAndSteps testExpr;
+              finalTest = overrideTest testExpr;
+              finalTestWithFinalSteps = finalTest // {
+                steps = lib.map (overrideStep testExpr) finalTest.steps;
+              };
               expectedDir = testDirAbs + "/expected";
               initDir =
                 let
@@ -107,7 +102,7 @@
             in
             config.nix4devTestLib.testFlakeParts {
               inherit initDir expectedDir;
-              inherit (descriptionAndSteps) testDescription steps;
+              inherit (finalTestWithFinalSteps) testDescription steps;
             };
 
           testDirs = builtins.attrNames (
@@ -120,7 +115,6 @@
           Test outputs:
           ${lib.strings.concatLines tests}
         '';
-
     in
     {
       checks.managedFilesCheck = testSuiteManagedFiles { testsDir = ./.; };
