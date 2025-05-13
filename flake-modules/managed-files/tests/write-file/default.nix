@@ -1,9 +1,9 @@
 {
   testDescription = "can write file";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."test.nix".source.text = ''
+      flakeModule.perSystem.nix4dev.managedFiles.files."test.nix".source.text = ''
         {
         foo = [  "barr"    ];
         }

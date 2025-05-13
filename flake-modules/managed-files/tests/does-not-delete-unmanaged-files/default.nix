@@ -1,9 +1,9 @@
 {
   testDescription = "does not delete unmanaged files";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."second.nix".source.text = ''
+      flakeModule.perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }

@@ -16,7 +16,7 @@
       managedFilesTestStepModule =
         {
           enableTreefmt,
-          managedFilesConfig,
+          step,
         }:
         let
           treefmtModule = {
@@ -29,12 +29,14 @@
           };
         in
         {
-          imports = [ self.flakeModules.managedFiles ] ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
+          imports =
+            [ self.flakeModules.managedFiles ]
+            ++ [ step.flakeModule ]
+            ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
 
           perSystem =
             { config, ... }:
             {
-              nix4dev.managedFiles = managedFilesConfig;
               packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
             };
         };
@@ -64,15 +66,15 @@
           testExprToDescriptionAndSteps =
             {
               testDescription,
-              managedFilesConfigs,
               enableTreefmt ? true,
+              steps ? null,
             }:
             {
               testDescription = "managed files ${testDescription}";
 
-              steps = lib.map (managedFilesConfig: {
+              steps = lib.map (step: {
                 module = managedFilesTestStepModule {
-                  inherit enableTreefmt managedFilesConfig;
+                  inherit enableTreefmt step;
                 };
 
                 commandsToExecute =
@@ -83,7 +85,7 @@
                     '';
                   in
                   [ command ];
-              }) managedFilesConfigs;
+              }) steps;
             };
         };
 
@@ -95,7 +97,7 @@
             let
               testDirAbs = testsDir + "/${testDir}";
               testExpr = import testDirAbs;
-              descAndSteps = testExprToDescriptionAndSteps testExpr;
+              descriptionAndSteps = testExprToDescriptionAndSteps testExpr;
               expectedDir = testDirAbs + "/expected";
               initDir =
                 let
@@ -105,7 +107,7 @@
             in
             config.nix4devTestLib.testFlakeParts {
               inherit initDir expectedDir;
-              inherit (descAndSteps) testDescription steps;
+              inherit (descriptionAndSteps) testDescription steps;
             };
 
           testDirs = builtins.attrNames (

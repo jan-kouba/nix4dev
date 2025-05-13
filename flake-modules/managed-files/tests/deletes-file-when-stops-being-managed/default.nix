@@ -1,14 +1,14 @@
 {
   testDescription = "deletes file when stops being managed";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."first.nix".source.text = ''
+      flakeModule.perSystem.nix4dev.managedFiles.files."first.nix".source.text = ''
         "first"
       '';
     }
     {
-      files."second.nix".source.text = ''
+      flakeModule.perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }
