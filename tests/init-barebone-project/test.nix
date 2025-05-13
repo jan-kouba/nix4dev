@@ -2,7 +2,7 @@ t:
 t.makeTest (
   t.withLockedRepo ''
     mkdir -p nix4dev/flake-modules
-    echo "{}" > nix4dev/flake-modules/default.nix
+    echo "{ }" > nix4dev/flake-modules/default.nix
     git add nix4dev/flake-modules/default.nix
 
     PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#check

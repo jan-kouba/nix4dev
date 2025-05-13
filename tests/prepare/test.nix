@@ -18,7 +18,7 @@ t.makeTest (
 
     cat > test.nix.expected <<EOF
     {
-      foo = ["bar"];
+      foo = [ "bar" ];
     }
     EOF
 
