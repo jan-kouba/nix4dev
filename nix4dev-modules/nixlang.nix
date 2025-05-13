@@ -7,7 +7,7 @@
     config = lib.mkIf (! config.nix4dev.nixlang.disable) {
       treefmt.programs = {
         deadnix.enable = true;
-        alejandra.enable = true;
+        nixfmt.enable = true;
       };
 
       formatter = config.treefmt.programs.nixpkgs-fmt.package;

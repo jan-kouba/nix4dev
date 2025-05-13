@@ -49,6 +49,7 @@
     };
   in {
     treefmt.settings.global.excludes = [
+      "tests/init-barebone-project/expected/**"
       "tests/formatters-work/repo/**"
       "flake-modules/managed-files/tests/*/expected/**"
     ];
