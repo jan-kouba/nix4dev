@@ -84,7 +84,7 @@
             }
             ```
           */
-          flakePartsTest =
+          testFlakeParts =
             {
               testDescription,
               initDir,
@@ -107,7 +107,7 @@
                 # Copy initial files
                 ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out\""}
 
-                # Update managed files
+                # Apply updates
                 ${lib.strings.concatMapStringsSep "\n" step steps}
               '';
             in

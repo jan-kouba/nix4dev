@@ -86,28 +86,33 @@
               [ command ];
           }) managedFilesConfigs;
         in
-        config.nix4devTestLib.nix4devTest {
+        config.nix4devTestLib.testFlakeParts {
           inherit initDir steps expectedDir;
 
           testDescription = "managed files ${testDescription}";
         };
 
-      testDirs = builtins.attrNames (
-        lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir ./.)
-      );
-      tests = lib.lists.map (
-        testDir:
-        (import (./. + "/${testDir}") {
-          lib = lib // {
-            inherit managedFilesTest;
-          };
-        })
-      ) testDirs;
+      testSuiteManagedFiles =
+        { testsDir }:
+        let
+          testDirs = builtins.attrNames (
+            lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir testsDir)
+          );
+          tests = lib.lists.map (
+            testDir:
+            (import (testsDir + "/${testDir}") {
+              lib = lib // {
+                inherit managedFilesTest;
+              };
+            })
+          ) testDirs;
+        in
+        pkgs.writeText "managed-files-check" ''
+          Test outputs:
+          ${lib.strings.concatLines tests}
+        '';
     in
     {
-      checks.managedFilesCheck = pkgs.writeText "managed-files-check" ''
-        Test outputs:
-        ${lib.strings.concatLines tests}
-      '';
+      checks.managedFilesCheck = testSuiteManagedFiles { testsDir = ./.; };
     };
 }
