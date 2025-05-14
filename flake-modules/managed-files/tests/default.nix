@@ -13,14 +13,26 @@
       ...
     }:
     let
-      treefmtModule = {
-        imports = [ inputs.treefmt-nix.flakeModule ];
-        perSystem = {
-          # Enable formatting of .nix files
-          treefmt.programs.alejandra.enable = true;
-          nix4dev.managedFiles.treefmt.enable = true;
+      treefmtModule =
+        { lib, ... }:
+        {
+          imports = [ inputs.treefmt-nix.flakeModule ];
+          perSystem =
+            { config, ... }:
+            {
+              options = {
+                test.enableTreefmt = lib.options.mkEnableOption "treefmt";
+              };
+
+              config = {
+                test.enableTreefmt = lib.mkDefault true;
+
+                # Enable formatting of .nixf files
+                treefmt.programs.alejandra.enable = config.test.enableTreefmt;
+                nix4dev.managedFiles.treefmt.enable = config.test.enableTreefmt;
+              };
+            };
         };
-      };
 
       managedFilesTestModule = {
         imports = [ self.flakeModules.managedFiles ];
