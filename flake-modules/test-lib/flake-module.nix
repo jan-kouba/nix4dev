@@ -92,13 +92,33 @@
               expectedDir,
             }:
             let
+              testSetupModule =
+                { flake-parts-lib, ... }:
+                {
+                  options = {
+                    perSystem = flake-parts-lib.mkPerSystemOption (
+                      { ... }:
+                      {
+                        options.test = {
+                          commandsToExecute = lib.mkOption {
+                            type = lib.types.listOf lib.types.str;
+                            description = ''
+                              The commands to execute in this step.
+                            '';
+                          };
+                        };
+                      }
+                    );
+                  };
+                };
+
               step =
                 step:
                 let
-                  flake = evalFlakeModules step.flakeModules;
+                  flake = evalFlakeModules ([ testSetupModule ] ++ step.flakeModules);
                 in
-                builtins.trace (builtins.attrNames flake.config.perSystem) ''
-                  ${lib.strings.concatStringsSep "\n" (step.commandsToExecute flake.config.flake)}
+                ''
+                  ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
                 '';
 
               actual = pkgs.runCommand "${testDescription}-actual" { } ''

@@ -9,7 +9,6 @@
     {
       config,
       pkgs,
-      system,
       ...
     }:
     let
@@ -40,7 +39,7 @@
         perSystem =
           { config, ... }:
           {
-            packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
+            test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
           };
       };
 
@@ -73,14 +72,6 @@
             managedFilesTestModule
             treefmtModule
           ];
-          overrideStep =
-            {
-              ...
-            }:
-            _step: {
-              commandsToExecute = flake: [ ''${flake.packages.${system}.updateManagedFiles} "$out"'' ];
-            };
-
         };
 
       testSuiteFlakeParts =
@@ -102,8 +93,7 @@
                   step:
                   let
                     step1 = step // {
-                      flakeModules =
-                        extraFlakeModules ++ (if builtins.hasAttr "flakeModules" step then step.flakeModules else [ ]);
+                      flakeModules = extraFlakeModules ++ step.flakeModules;
                     };
                   in
                   step1 // (overrideStep testExpr step1)
