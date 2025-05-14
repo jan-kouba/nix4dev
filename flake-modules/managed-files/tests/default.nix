@@ -13,42 +13,24 @@
       ...
     }:
     let
-      stepOverride =
-        {
-          enableTreefmt ? true,
-          ...
-        }:
-        step: {
-          module =
-            let
-              treefmtModule = {
-                imports = [ inputs.treefmt-nix.flakeModule ];
-                perSystem = {
-                  # Enable formatting of .nix files
-                  treefmt.programs.alejandra.enable = true;
-                  nix4dev.managedFiles.treefmt.enable = true;
-                };
-              };
-
-              managedFilesTestModule = {
-                imports = [ self.flakeModules.managedFiles ];
-
-                perSystem =
-                  { config, ... }:
-                  {
-                    packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
-                  };
-              };
-            in
-            {
-              imports =
-                [ managedFilesTestModule ]
-                ++ [ step.flakeModule ]
-                ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
-            };
-
-          commandsToExecute = flake: [ ''${flake.packages.${system}.updateManagedFiles} "$out"'' ];
+      treefmtModule = {
+        imports = [ inputs.treefmt-nix.flakeModule ];
+        perSystem = {
+          # Enable formatting of .nix files
+          treefmt.programs.alejandra.enable = true;
+          nix4dev.managedFiles.treefmt.enable = true;
         };
+      };
+
+      managedFilesTestModule = {
+        imports = [ self.flakeModules.managedFiles ];
+
+        perSystem =
+          { config, ... }:
+          {
+            packages.updateManagedFiles = config.nix4dev.managedFiles.updateFiles;
+          };
+      };
 
       /*
         Runs managed files test.
@@ -74,14 +56,27 @@
           inherit testsDir;
           overrideTest =
             testExpr: testExpr // { testDescription = "managed files ${testExpr.testDescription}"; };
-          overrideStep = stepOverride;
+
+          extraFlakeModules = [ managedFilesTestModule ];
+          overrideStep =
+            {
+              enableTreefmt ? true,
+              ...
+            }:
+            step: {
+              flakeModules = step.flakeModules ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
+
+              commandsToExecute = flake: [ ''${flake.packages.${system}.updateManagedFiles} "$out"'' ];
+            };
+
         };
 
       testSuiteFlakeParts =
         {
           testsDir,
-          overrideStep ? (_prevTest: prevStep: prevStep),
+          extraFlakeModules ? [ ],
           overrideTest ? (prevTest: prevTest),
+          overrideStep ? (_prevTest: prevStep: prevStep),
         }:
         let
           runTest =
@@ -91,7 +86,16 @@
               testExpr = import testDirAbs;
               finalTest = overrideTest testExpr;
               finalTestWithFinalSteps = finalTest // {
-                steps = lib.map (overrideStep testExpr) finalTest.steps;
+                steps = lib.map (
+                  step:
+                  overrideStep testExpr (
+                    step
+                    // {
+                      flakeModules =
+                        extraFlakeModules ++ (if builtins.hasAttr "flakeModules" step then step.flakeModules else [ ]);
+                    }
+                  )
+                ) finalTest.steps;
               };
               expectedDir = testDirAbs + "/expected";
               initDir =

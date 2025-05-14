@@ -68,7 +68,7 @@
               initDir = ./init;
               steps = [
                 {
-                  modules = [
+                  flakeModules = [
                     nix4devModule
                     { nix4dev.managedFiles.files."foo".source.text = "bar"; }
                   ];
@@ -95,7 +95,7 @@
               step =
                 step:
                 let
-                  flake = evalFlakeModules [ step.module ];
+                  flake = evalFlakeModules step.flakeModules;
                 in
                 ''
                   ${lib.strings.concatStringsSep "\n" (step.commandsToExecute flake)}

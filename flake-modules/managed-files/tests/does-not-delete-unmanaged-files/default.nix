@@ -3,9 +3,13 @@
 
   steps = [
     {
-      flakeModule.perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
-        "second"
-      '';
+      flakeModules = [
+        {
+          perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
+            "second"
+          '';
+        }
+      ];
     }
   ];
 }
