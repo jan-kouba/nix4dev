@@ -69,15 +69,15 @@
           overrideTest =
             testExpr: testExpr // { testDescription = "managed files ${testExpr.testDescription}"; };
 
-          extraFlakeModules = [ managedFilesTestModule ];
+          extraFlakeModules = [
+            managedFilesTestModule
+            treefmtModule
+          ];
           overrideStep =
             {
-              enableTreefmt ? true,
               ...
             }:
-            step: {
-              flakeModules = step.flakeModules ++ (if enableTreefmt then [ treefmtModule ] else [ ]);
-
+            _step: {
               commandsToExecute = flake: [ ''${flake.packages.${system}.updateManagedFiles} "$out"'' ];
             };
 
@@ -100,13 +100,13 @@
               finalTestWithFinalSteps = finalTest // {
                 steps = lib.map (
                   step:
-                  overrideStep testExpr (
-                    step
-                    // {
+                  let
+                    step1 = step // {
                       flakeModules =
                         extraFlakeModules ++ (if builtins.hasAttr "flakeModules" step then step.flakeModules else [ ]);
-                    }
-                  )
+                    };
+                  in
+                  step1 // (overrideStep testExpr step1)
                 ) finalTest.steps;
               };
               expectedDir = testDirAbs + "/expected";
