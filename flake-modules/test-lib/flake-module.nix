@@ -31,7 +31,7 @@
       let
         evalFlakeModules =
           modules:
-          flake-parts-lib.mkFlake { inherit inputs; } {
+          flake-parts-lib.evalFlakeModule { inherit inputs; } {
             imports = modules;
             systems = [ system ];
           };
@@ -97,8 +97,8 @@
                 let
                   flake = evalFlakeModules step.flakeModules;
                 in
-                ''
-                  ${lib.strings.concatStringsSep "\n" (step.commandsToExecute flake)}
+                builtins.trace (builtins.attrNames flake.config.perSystem) ''
+                  ${lib.strings.concatStringsSep "\n" (step.commandsToExecute flake.config.flake)}
                 '';
 
               actual = pkgs.runCommand "${testDescription}-actual" { } ''
