@@ -1,5 +1,5 @@
 {
-  testDescription = "does not delete unmanaged files";
+  testDescription = "managed files does not delete unmanaged files";
 
   steps = [
     {

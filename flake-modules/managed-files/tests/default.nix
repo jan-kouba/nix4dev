@@ -61,24 +61,10 @@
         : If set to `true`, format the managed files using treefmt.
       */
 
-      testSuiteManagedFiles =
-        { testsDir }:
-        testSuiteFlakeParts {
-          inherit testsDir;
-          overrideTest =
-            testExpr: testExpr // { testDescription = "managed files ${testExpr.testDescription}"; };
-
-          extraFlakeModules = [
-            managedFilesTestModule
-            treefmtModule
-          ];
-        };
-
       testSuiteFlakeParts =
         {
           testsDir,
           extraFlakeModules ? [ ],
-          overrideTest ? (prevTest: prevTest),
         }:
         let
           runTest =
@@ -86,11 +72,10 @@
             let
               testDirAbs = testsDir + "/${testDir}";
               testExpr = import testDirAbs;
-              finalTest = overrideTest testExpr;
-              finalTestWithFinalSteps = finalTest // {
+              finalTestExpr = testExpr // {
                 steps = lib.map (step: {
                   imports = extraFlakeModules ++ [ step ];
-                }) finalTest.steps;
+                }) testExpr.steps;
               };
               expectedDir = testDirAbs + "/expected";
               initDir =
@@ -101,7 +86,7 @@
             in
             config.nix4devTestLib.testFlakeParts {
               inherit initDir expectedDir;
-              inherit (finalTestWithFinalSteps) testDescription steps;
+              inherit (finalTestExpr) testDescription steps;
             };
 
           testDirs = builtins.attrNames (
@@ -116,6 +101,13 @@
         '';
     in
     {
-      checks.managedFilesCheck = testSuiteManagedFiles { testsDir = ./.; };
+      checks.managedFilesCheck = testSuiteFlakeParts {
+        testsDir = ./.;
+
+        extraFlakeModules = [
+          managedFilesTestModule
+          treefmtModule
+        ];
+      };
     };
 }

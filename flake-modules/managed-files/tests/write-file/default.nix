@@ -1,5 +1,5 @@
 {
-  testDescription = "can write file";
+  testDescription = "managed files can write file";
 
   steps = [
     {

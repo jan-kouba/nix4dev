@@ -1,5 +1,5 @@
 {
-  testDescription = "deletes file when stops being managed";
+  testDescription = "managed files deletes file when it stops being managed";
 
   steps = [
     {
