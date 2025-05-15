@@ -29,123 +29,208 @@
         ...
       }:
       let
-        evalFlakeModules =
-          modules:
-          flake-parts-lib.evalFlakeModule { inherit inputs; } {
-            imports = modules;
-            systems = [ system ];
-          };
-      in
-      {
-        nix4devTestLib = {
-          /**
-            Runs flake-parts test.
-            Starts with optional initial directory, then applies modification steps and in the end checks that the end result
-            is equal to the expected directory.
-            Each modification step is defined as the list of flake-parts modules configuring a flake and a list of functions
-            that given the flake produced by the modules returns command that modifies the project.
-            The commands must assume the project is at path specified in the `$out` environment variable.
+        /**
+          Runs flake-parts test.
+          Starts with optional initial directory, then applies modification steps and in the end checks that the end result
+          is equal to the expected directory.
+          Each modification step is defined as the list of flake-parts modules configuring a flake and a list of functions
+          that given the flake produced by the modules returns command that modifies the project.
+          The commands must assume the project is at path specified in the `$out` environment variable.
 
-            # Arguments
+          # Arguments
+
+          `testDescription` (String)
+          : The description of this test
+
+          `initDirectory` (Path)
+          : The directory to start this test with.
+
+          `steps` (ListOf { modules (ListOf Any); commandsToExecute (ListOf (Any -> String)) })
+          : The steps to sequentionally apply to produce the output directory of this test.
+
+          `expectedDir`
+          : The expected output of this test.
+
+          # Example
+
+          ```
+          nix4devTest {
+            testDescription = "managed-files-work";
+            initDir = ./init;
+            steps = [
+              {
+                flakeModules = [
+                  nix4devModule
+                  { nix4dev.managedFiles.files."foo".source.text = "bar"; }
+                ];
+                commandsToExecute = [
+                  ( flake: ''
+                      ${flake.packages.${system}.updateManagedFiles} "$out"
+                    ''
+                  )
+                ];
+              }
+            ];
+            expectedDir = ./expected;
+          }
+          ```
+        */
+        testFlakeParts =
+          {
+            testDescription,
+            initDir,
+            steps,
+            expectedDir,
+          }:
+          let
+            evalFlakeModules =
+              modules:
+              flake-parts-lib.evalFlakeModule { inherit inputs; } {
+                imports = modules;
+                systems = [ system ];
+              };
+
+            testSetupModule =
+              { flake-parts-lib, ... }:
+              {
+                options = {
+                  perSystem = flake-parts-lib.mkPerSystemOption (
+                    { ... }:
+                    {
+                      options.test = {
+                        commandsToExecute = lib.mkOption {
+                          type = lib.types.listOf lib.types.str;
+                          description = ''
+                            The commands to execute in this step.
+                          '';
+                        };
+                      };
+                    }
+                  );
+                };
+              };
+
+            step =
+              step:
+              let
+                flake = evalFlakeModules ([ testSetupModule ] ++ [ step ]);
+              in
+              ''
+                ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
+              '';
+
+            actual = pkgs.runCommand "${testDescription}-actual" { } ''
+              mkdir -p "$out"
+
+              # Copy initial files
+              ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out\""}
+
+              # Apply updates
+              ${lib.strings.concatMapStringsSep "\n" step steps}
+            '';
+          in
+          pkgs.testers.testEqualContents {
+            inherit actual;
+
+            assertion = testDescription;
+
+            # This copying is needed in order for the tests to not fail on OSX,
+            # because the actual and expected files have different group owner.
+            expected = pkgs.runCommand "${testDescription}-expected" { } ''
+              set -euo pipefail
+
+              mkdir -p "$out"
+
+              ${pkgs.rsync}/bin/rsync -r "${expectedDir}/" "$out"
+            '';
+          };
+
+        /**
+          Runs test suite of flake parts tests.
+
+          # Arguments
+
+          `testsDir` (Path)
+          : The directory with tests.
+            Each subdirectory of this directory is considered a test.
+            The test directory must contain `default.nix` file that exports the following attributes:
 
             `testDescription` (String)
             : The description of this test
 
-            `initDirectory` (Path)
-            : The directory to start this test with.
-
-            `steps` (ListOf { modules (ListOf Any); commandsToExecute (ListOf (Any -> String)) })
+            `steps` (ListOf Attrs)
             : The steps to sequentionally apply to produce the output directory of this test.
+              Each step is defined as a flake-parts module configuring a flake.
+              The flake module can use `test.commandsToExecute` option to specify commands that modifies the project.
+              The commands must assume the project is at path specified in the `$out` environment variable.
 
-            `expectedDir`
-            : The expected output of this test.
+            The test directory can optionally contain `init` directory with files that will be copied to the output directory before applying the steps.
 
-            # Example
+          `extraFlakeModules`
+          : The extra modules to import in every step of every test.
+            It can be used to do some common setup (e.g. of the commands to run in every step).
 
-            ```
-            nix4devTest {
-              testDescription = "managed-files-work";
-              initDir = ./init;
-              steps = [
+          # Example
+
+          ```
+          testSuiteFlakeParts {
+            testsDir = ./.;
+
+            extraFlakeModules = [
+              nix4dev.flakeModules.managedFiles
+              {
+                perSystem =
+                { config, ... }:
                 {
-                  flakeModules = [
-                    nix4devModule
-                    { nix4dev.managedFiles.files."foo".source.text = "bar"; }
-                  ];
-                  commandsToExecute = [
-                    ( flake: ''
-                        ${flake.packages.${system}.updateManagedFiles} "$out"
-                      ''
-                    )
-                  ];
-                }
-              ];
-              expectedDir = ./expected;
-            }
-            ```
-          */
-          testFlakeParts =
-            {
-              testDescription,
-              initDir,
-              steps,
-              expectedDir,
-            }:
-            let
-              testSetupModule =
-                { flake-parts-lib, ... }:
-                {
-                  options = {
-                    perSystem = flake-parts-lib.mkPerSystemOption (
-                      { ... }:
-                      {
-                        options.test = {
-                          commandsToExecute = lib.mkOption {
-                            type = lib.types.listOf lib.types.str;
-                            description = ''
-                              The commands to execute in this step.
-                            '';
-                          };
-                        };
-                      }
-                    );
-                  };
+                  test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
                 };
+              }
+            ];
+          }
+          ```
+        */
+        testSuiteFlakeParts =
+          {
+            testsDir,
+            extraFlakeModules ? [ ],
+          }:
+          let
+            runTest =
+              testDir:
+              let
+                testDirAbs = testsDir + "/${testDir}";
+                testExpr = import testDirAbs;
+                finalTestExpr = testExpr // {
+                  steps = lib.map (step: {
+                    imports = extraFlakeModules ++ [ step ];
+                  }) testExpr.steps;
+                };
+                expectedDir = testDirAbs + "/expected";
+                initDir =
+                  let
+                    d = testDirAbs + "/init";
+                  in
+                  if lib.filesystem.pathIsDirectory d then d else null;
+              in
+              testFlakeParts {
+                inherit initDir expectedDir;
+                inherit (finalTestExpr) testDescription steps;
+              };
 
-              step =
-                step:
-                let
-                  flake = evalFlakeModules ([ testSetupModule ] ++ [ step ]);
-                in
-                ''
-                  ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
-                '';
+            testDirs = builtins.attrNames (
+              lib.attrsets.filterAttrs (_: value: value == "directory") (builtins.readDir testsDir)
+            );
 
-              actual = pkgs.runCommand "${testDescription}-actual" { } ''
-                mkdir -p "$out"
-
-                # Copy initial files
-                ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out\""}
-
-                # Apply updates
-                ${lib.strings.concatMapStringsSep "\n" step steps}
-              '';
-            in
-            pkgs.testers.testEqualContents {
-              inherit actual;
-
-              assertion = testDescription;
-
-              # This copying is needed in order for the tests to not fail on OSX,
-              # because the actual and expected files have different group owner.
-              expected = pkgs.runCommand "${testDescription}-expected" { } ''
-                set -euo pipefail
-
-                mkdir -p "$out"
-
-                ${pkgs.rsync}/bin/rsync -r "${expectedDir}/" "$out"
-              '';
-            };
+            tests = lib.lists.map runTest testDirs;
+          in
+          pkgs.writeText "managed-files-check" ''
+            Test outputs:
+            ${lib.strings.concatLines tests}
+          '';
+      in
+      {
+        nix4devTestLib = {
+          inherit testFlakeParts testSuiteFlakeParts;
         };
       };
   };
