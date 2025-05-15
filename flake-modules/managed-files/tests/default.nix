@@ -79,7 +79,6 @@
           testsDir,
           extraFlakeModules ? [ ],
           overrideTest ? (prevTest: prevTest),
-          overrideStep ? (_prevTest: prevStep: prevStep),
         }:
         let
           runTest =
@@ -89,15 +88,9 @@
               testExpr = import testDirAbs;
               finalTest = overrideTest testExpr;
               finalTestWithFinalSteps = finalTest // {
-                steps = lib.map (
-                  step:
-                  let
-                    step1 = step // {
-                      flakeModules = extraFlakeModules ++ step.flakeModules;
-                    };
-                  in
-                  step1 // (overrideStep testExpr step1)
-                ) finalTest.steps;
+                steps = lib.map (step: {
+                  imports = extraFlakeModules ++ [ step ];
+                }) finalTest.steps;
               };
               expectedDir = testDirAbs + "/expected";
               initDir =

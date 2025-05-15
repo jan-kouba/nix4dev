@@ -115,7 +115,7 @@
               step =
                 step:
                 let
-                  flake = evalFlakeModules ([ testSetupModule ] ++ step.flakeModules);
+                  flake = evalFlakeModules ([ testSetupModule ] ++ [ step ]);
                 in
                 ''
                   ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
