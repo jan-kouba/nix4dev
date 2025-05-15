@@ -1,16 +1,13 @@
-{ lib, ... }:
-lib.managedFilesTest {
-  testDescription = "can write formatted file";
+{
+  testDescription = "managed files can write formatted file";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."test.nix".source.text = ''
+      perSystem.nix4dev.managedFiles.files."test.nix".source.text = ''
         {
         foo = [  "barr"    ];
         }
       '';
     }
   ];
-
-  testDir = ./.;
 }

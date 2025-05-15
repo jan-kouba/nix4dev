@@ -1,19 +1,16 @@
-{ lib, ... }:
-lib.managedFilesTest {
-  testDescription = "deletes file when stops being managed";
+{
+  testDescription = "managed files deletes file when it stops being managed";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."first.nix".source.text = ''
+      perSystem.nix4dev.managedFiles.files."first.nix".source.text = ''
         "first"
       '';
     }
     {
-      files."second.nix".source.text = ''
+      perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }
   ];
-
-  testDir = ./.;
 }

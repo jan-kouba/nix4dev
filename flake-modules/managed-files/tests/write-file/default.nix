@@ -1,17 +1,17 @@
-{ lib, ... }:
-lib.managedFilesTest {
-  testDescription = "can write file";
+{
+  testDescription = "managed files can write file";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."test.nix".source.text = ''
-        {
-        foo = [  "barr"    ];
-        }
-      '';
+      perSystem = {
+        test.enableTreefmt = false;
+
+        nix4dev.managedFiles.files."test.nix".source.text = ''
+          {
+          foo = [  "barr"    ];
+          }
+        '';
+      };
     }
   ];
-  enableTreefmt = false;
-
-  testDir = ./.;
 }

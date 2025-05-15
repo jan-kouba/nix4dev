@@ -1,14 +1,11 @@
-{ lib, ... }:
-lib.managedFilesTest {
-  testDescription = "does not delete unmanaged files";
+{
+  testDescription = "managed files does not delete unmanaged files";
 
-  managedFilesConfigs = [
+  steps = [
     {
-      files."second.nix".source.text = ''
+      perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }
   ];
-
-  testDir = ./.;
 }
