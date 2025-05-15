@@ -30,23 +30,26 @@
       }:
       let
         /**
-          Runs flake-parts test.
+          Runs flake-parts test on a directory.
           Starts with optional initial directory, then applies modification steps and in the end checks that the end result
           is equal to the expected directory.
-          Each modification step is defined as the list of flake-parts modules configuring a flake and a list of functions
-          that given the flake produced by the modules returns command that modifies the project.
+          Each modification step is defined as a flake-parts module configuring a flake and a list of commands to modify or test the test directory.
           The commands must assume the project is at path specified in the `$out` environment variable.
+          The check fails if the produced directory differs from the expected directory, or if any of the configured steps commands fails.
 
           # Arguments
 
           `testDescription` (String)
           : The description of this test
 
-          `initDirectory` (Path)
-          : The directory to start this test with.
+          `initDirectory` (NullOr Path)
+          : Optional directory to start this test with.
+            If specified, the contents of the directory will be copied into the test directory at the start of the test.
 
-          `steps` (ListOf { modules (ListOf Any); commandsToExecute (ListOf (Any -> String)) })
+          `steps` (ListOf FlakePartsModule)
           : The steps to sequentionally apply to produce the output directory of this test.
+            Every step is defined as a flake-parts module configuring a flake.
+            The `config.perSystem.test.commandsToExecute` option must be defined for every step.
 
           `expectedDir`
           : The expected output of this test.
@@ -54,28 +57,28 @@
           # Example
 
           ```
-          nix4devTest {
+          testFlakePartsWithDir {
             testDescription = "managed-files-work";
             initDir = ./init;
             steps = [
               {
-                flakeModules = [
+                import = [
                   nix4devModule
-                  { nix4dev.managedFiles.files."foo".source.text = "bar"; }
                 ];
-                commandsToExecute = [
-                  ( flake: ''
-                      ${flake.packages.${system}.updateManagedFiles} "$out"
-                    ''
-                  )
-                ];
+
+                perSystem = { config, ...}: {
+                  nix4dev.managedFiles.files."foo".source.text = "bar";
+                  test.commandsToExecute = [
+                    ''${flake.packages.${system}.updateManagedFiles} "$out"''
+                  ];
+                };
               }
             ];
             expectedDir = ./expected;
           }
           ```
         */
-        testFlakeParts =
+        testFlakePartsWithDir =
           {
             testDescription,
             initDir,
@@ -153,27 +156,17 @@
           `testsDir` (Path)
           : The directory with tests.
             Each subdirectory of this directory is considered a test.
-            The test directory must contain `default.nix` file that exports the following attributes:
-
-            `testDescription` (String)
-            : The description of this test
-
-            `steps` (ListOf Attrs)
-            : The steps to sequentionally apply to produce the output directory of this test.
-              Each step is defined as a flake-parts module configuring a flake.
-              The flake module can use `test.commandsToExecute` option to specify commands that modifies the project.
-              The commands must assume the project is at path specified in the `$out` environment variable.
-
-            The test directory can optionally contain `init` directory with files that will be copied to the output directory before applying the steps.
+            The test directory must contain `default.nix` file with attrset defining the test.inherit
+            The attrset is passed into the `testFlakePartsWithDir` function.
 
           `extraFlakeModules`
-          : The extra modules to import in every step of every test.
+          : The extra flake modules to import in every step of every test when constructing the flake.
             It can be used to do some common setup (e.g. of the commands to run in every step).
 
           # Example
 
           ```
-          testSuiteFlakeParts {
+          testSuiteFlakePartsWithDir {
             testsDir = ./.;
 
             extraFlakeModules = [
@@ -189,7 +182,7 @@
           }
           ```
         */
-        testSuiteFlakeParts =
+        testSuiteFlakePartsWithDir =
           {
             testsDir,
             extraFlakeModules ? [ ],
@@ -212,7 +205,7 @@
                   in
                   if lib.filesystem.pathIsDirectory d then d else null;
               in
-              testFlakeParts {
+              testFlakePartsWithDir {
                 inherit initDir expectedDir;
                 inherit (finalTestExpr) testDescription steps;
               };
@@ -230,7 +223,7 @@
       in
       {
         nix4devTestLib = {
-          inherit testFlakeParts testSuiteFlakeParts;
+          inherit testSuiteFlakePartsWithDir testFlakePartsWithDir;
         };
       };
   };

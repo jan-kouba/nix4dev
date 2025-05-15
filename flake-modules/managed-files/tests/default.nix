@@ -40,7 +40,7 @@
       };
     in
     {
-      checks.managedFilesCheck = config.nix4devTestLib.testSuiteFlakeParts {
+      checks.managedFilesCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
         testsDir = ./.;
 
         extraFlakeModules = [
