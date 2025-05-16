@@ -39,8 +39,11 @@
 
           # Arguments
 
-          `testDescription` (String)
-          : The description of this test
+          `testName` (String)
+          : The name of this test.
+
+          `testDescription` (NullOr String)
+          : Optional description of this test
 
           `initDirectory` (NullOr Path)
           : Optional directory to start this test with.
@@ -80,7 +83,8 @@
         */
         testFlakePartsWithDir =
           {
-            testDescription,
+            testName,
+            testDescription ? null,
             initDir,
             steps,
             expectedDir,
@@ -122,7 +126,7 @@
                 ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
               '';
 
-            actual = pkgs.runCommand "${testDescription}-actual" { } ''
+            actual = pkgs.runCommand "${testName}-actual" { } ''
               mkdir -p "$out"
 
               # Copy initial files
@@ -135,11 +139,11 @@
           pkgs.testers.testEqualContents {
             inherit actual;
 
-            assertion = testDescription;
+            assertion = if testDescription != null then testDescription else testName;
 
             # This copying is needed in order for the tests to not fail on OSX,
             # because the actual and expected files have different group owner.
-            expected = pkgs.runCommand "${testDescription}-expected" { } ''
+            expected = pkgs.runCommand "${testName}-expected" { } ''
               set -euo pipefail
 
               mkdir -p "$out"
@@ -156,10 +160,23 @@
           `testsDir` (Path)
           : The directory with tests.
             Each subdirectory of this directory is considered a test.
-            The test directory must contain `default.nix` file with attrset defining the test.inherit
-            The attrset is passed into the `testFlakePartsWithDir` function.
+            The test directory must contain `default.nix` file with attrset defining the test.
 
-          `extraFlakeModules`
+            Attributes of `default.nix` file:
+
+            `steps` (ListOf FlakePartsModule)
+            : As required by the `testFlakePartsWithDir` function.
+              The steps to sequentionally apply to produce the output directory of this test.
+              Every step is defined as a flake-parts module configuring a flake.
+              The `config.perSystem.test.commandsToExecute` option must be defined for every step.
+
+            `testName` (NullOr String)
+            : Optional test name. If not specified, the name of the test directory is used.
+
+            `testDescription` (NullOr String)
+            : Optional test description. If not specified, the name of the test is used.
+
+          `extraFlakeModules` (ListOf FlakePartsModule)
           : The extra flake modules to import in every step of every test when constructing the flake.
             It can be used to do some common setup (e.g. of the commands to run in every step).
 
@@ -198,6 +215,9 @@
                     imports = extraFlakeModules ++ [ step ];
                   }) testExpr.steps;
                 };
+                testNameOrNull = finalTestExpr.testName or null;
+                testName = if testNameOrNull != null then testNameOrNull else testDir;
+                testDescription = finalTestExpr.testDescription or null;
                 expectedDir = testDirAbs + "/expected";
                 initDir =
                   let
@@ -206,8 +226,13 @@
                   if lib.filesystem.pathIsDirectory d then d else null;
               in
               testFlakePartsWithDir {
-                inherit initDir expectedDir;
-                inherit (finalTestExpr) testDescription steps;
+                inherit
+                  initDir
+                  expectedDir
+                  testName
+                  testDescription
+                  ;
+                inherit (finalTestExpr) steps;
               };
 
             testDirs = builtins.attrNames (
