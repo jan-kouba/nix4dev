@@ -57,6 +57,11 @@
           `expectedDir`
           : The expected output of this test.
 
+          `excludeFiles`
+          : The files to exclude from test.
+            The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
+            Defaults to `[]`.
+
           # Example
 
           ```
@@ -88,6 +93,7 @@
             initDir,
             steps,
             expectedDir,
+            excludeFiles ? [ ],
           }:
           let
             evalFlakeModules =
@@ -126,6 +132,10 @@
                 ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
               '';
 
+            deleteExcluded = file: ''
+              rm -d "$out/${file}"
+            '';
+
             actual = pkgs.runCommand "${testName}-actual" { } ''
               mkdir -p "$out"
 
@@ -134,6 +144,9 @@
 
               # Apply updates
               ${lib.strings.concatMapStringsSep "\n" step steps}
+
+              # Delete excluded files
+              ${lib.strings.concatMapStringsSep "\n" deleteExcluded excludeFiles}
             '';
           in
           pkgs.testers.testEqualContents {
@@ -176,9 +189,20 @@
             `testDescription` (NullOr String)
             : Optional test description. If not specified, the name of the test is used.
 
+            `excludeFiles`
+            : The files to exclude from tests.
+              The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
+              This will be merged with the excludeFiles passed as the parameter to the `testSuiteFlakePartsWithDir` function.
+              Defaults to `[]`.
+
           `extraFlakeModules` (ListOf FlakePartsModule)
           : The extra flake modules to import in every step of every test when constructing the flake.
             It can be used to do some common setup (e.g. of the commands to run in every step).
+
+          `excludeFiles`
+          : The files to exclude from tests.
+            The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
+            Defaults to `[]`.
 
           # Example
 
@@ -203,6 +227,7 @@
           {
             testsDir,
             extraFlakeModules ? [ ],
+            excludeFiles ? [ ],
           }:
           let
             runTest =
@@ -219,6 +244,7 @@
                 testName = if testNameOrNull != null then testNameOrNull else testDir;
                 testDescription = finalTestExpr.testDescription or null;
                 expectedDir = testDirAbs + "/expected";
+                finalExcludeFiles = lib.lists.unique ((finalTestExpr.excludeFiles or [ ]) ++ excludeFiles);
                 initDir =
                   let
                     d = testDirAbs + "/init";
@@ -233,6 +259,7 @@
                   testDescription
                   ;
                 inherit (finalTestExpr) steps;
+                excludeFiles = finalExcludeFiles;
               };
 
             testDirs = builtins.attrNames (
