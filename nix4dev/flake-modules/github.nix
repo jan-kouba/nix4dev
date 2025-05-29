@@ -26,10 +26,6 @@
                     uses = "DeterminateSystems/nix-installer-action@main";
                   }
                   {
-                    name = "Setup Nix cache";
-                    uses = "DeterminateSystems/magic-nix-cache-action@main";
-                  }
-                  {
                     name = "Setup git for test";
                     run = ''
                       git config --global user.email "nix4dev-ci@github.com"
