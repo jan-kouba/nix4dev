@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   imports = [ ../flake-modules/managed-files/flake-module.nix ];
 
@@ -11,6 +12,11 @@
             "./nix4dev/.managed-files.list"
           ];
         };
+
+        # Disable treefmt for managed files, because they are formated on every write.
+        treefmt.settings.global.excludes = lib.attrsets.mapAttrsToList (
+          _: file: file.target
+        ) config.nix4dev.managedFiles.files;
 
         devshells.default.commands = [
           {
