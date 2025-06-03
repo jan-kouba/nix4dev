@@ -133,7 +133,8 @@
               '';
 
             deleteExcluded = file: ''
-              rm -d "$out/${file}"
+              rm "$out/${file}" && \
+                rmdir -p --ignore-fail-on-non-empty "$(realpath "$(dirname "$out/${file}")")"
             '';
 
             actual = pkgs.runCommand "${testName}-actual" { } ''
@@ -147,6 +148,9 @@
 
               # Delete excluded files
               ${lib.strings.concatMapStringsSep "\n" deleteExcluded excludeFiles}
+
+              # Make sure the $out directory exists; it might have been deleted when deleting the excluded files
+              mkdir -p "$out"
             '';
           in
           pkgs.testers.testEqualContents {
