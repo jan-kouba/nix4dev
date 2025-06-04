@@ -163,9 +163,7 @@
             expected = pkgs.runCommand "${testName}-expected" { } ''
               set -euo pipefail
 
-              mkdir -p "$out"
-
-              ${pkgs.rsync}/bin/rsync -r "${expectedDir}/" "$out"
+              cp -r "${expectedDir}" "$out"
             '';
           };
 
