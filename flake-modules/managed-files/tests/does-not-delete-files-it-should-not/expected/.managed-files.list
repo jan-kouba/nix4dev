@@ -6,11 +6,11 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    "bracket[0-9]",
-    "file",
-    "new\nline",
-    "questionmark?",
-    "star*",
-    "starstar**"
+    "./bracket[0-9]",
+    "./file",
+    "./new\nline",
+    "./questionmark?",
+    "./star*",
+    "./starstar**"
   ]
 }

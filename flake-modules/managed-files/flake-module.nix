@@ -95,7 +95,7 @@
           };
 
           config = {
-            target = name;
+            target = lib.path.subpath.normalise name;
             preparedSourceFile =
               if cfg.treefmt.enable then
                 nix4devLib.writeFormattedFile {
@@ -234,7 +234,7 @@
 
 
               # Update managed files
-              jq_filter='.managedFiles[] | gsub("\\*"; "\\*") | gsub("\\?"; "\\?") | gsub("\\["; "\\[") | "/" + .'
+              jq_filter='.managedFiles[] | gsub("\\*"; "\\*") | gsub("\\?"; "\\?") | gsub("\\["; "\\[") | gsub("^\\./"; "") | "/" + .'
 
               ${pkgs.rsync}/bin/rsync \
                 -r \
