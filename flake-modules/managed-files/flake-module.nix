@@ -10,8 +10,6 @@
       l = lib // builtins;
       t = l.types;
 
-      nix4devLib = import ../../nix4dev-lib { inherit pkgs; };
-
       topCfg = config;
       cfg = config.nix4dev.managedFiles;
 
@@ -86,25 +84,34 @@
               description = "Relative path to the target file.";
             };
 
-            preparedSourceFile = l.mkOption {
-              type = t.pathInStore;
+            allTargetFiles = l.mkOption {
+              type = t.listOf t.str;
               internal = true;
               readOnly = true;
-              description = "Path to the prepared source file.";
+              description = ''
+                The list of all the target files.
+                If `target` is a directory this list is set to all the non-directory files in the directory.
+              '';
             };
           };
 
           config = {
             target = lib.path.subpath.normalise name;
-            preparedSourceFile =
-              if cfg.treefmt.enable then
-                nix4devLib.writeFormattedFile {
-                  treefmtConfig = topCfg.treefmt;
-                  fileToFormat = config.source.file;
-                  outputFileName = l.baseNameOf config.target;
-                }
+            allTargetFiles =
+              if lib.filesystem.pathIsDirectory config.source.file then
+                let
+                  sourceFilesFullPaths = lib.filesystem.listFilesRecursive config.source.file;
+                  sourceFilesRelPaths = lib.map (
+                    f:
+                    lib.path.subpath.join [
+                      config.target
+                      (lib.path.removePrefix config.source.file f)
+                    ]
+                  ) sourceFilesFullPaths;
+                in
+                sourceFilesRelPaths
               else
-                config.source.file;
+                [ config.target ];
           };
         }
       );
@@ -166,9 +173,11 @@
           installCmd =
             _: managedFile:
             let
-              inst =
-                mode:
-                ''${pkgs.coreutils}/bin/install -D -m ${mode} "${managedFile.preparedSourceFile}" "$out"/'${managedFile.target}' '';
+              inst = mode: ''
+                mkdir -p "$(dirname "$out"/'${managedFile.target}')"
+                ${pkgs.coreutils}/bin/cp -r -- "${managedFile.source.file}" "$out"/'${managedFile.target}'
+                ${if managedFile.executable then ''chmod ${mode} "$out"/'${managedFile.target}' '' else ""}
+              '';
               executeMode = if managedFile.executable then "x" else "";
               # Make the managed files that are always overwritten read-only.
               # Users are not supposed to change them.
@@ -180,12 +189,30 @@
             '';
 
           managedFilesDir = pkgs.runCommand "managed-files-dir" { } ''
+            set -eu
+
             ${l.strings.concatLines (l.mapAttrsToList installCmd cfg.files)}
+
+            chmod -R u+w "$out"
+
+            ${
+              if cfg.treefmt.enable then
+                ''
+                  ${topCfg.treefmt.package}/bin/treefmt \
+                    --tree-root "$out" \
+                    --config-file ${topCfg.treefmt.build.configFile} \
+                    --no-cache
+                ''
+              else
+                ""
+            }
           '';
 
           managedFilesList = pkgs.writeText "managed-files-list" (
             let
-              managedFilesTargets = l.attrsets.mapAttrsToList (_: file: file.target) cfg.files;
+              managedFilesTargets = l.lists.flatten (
+                l.attrsets.mapAttrsToList (_: file: file.allTargetFiles) cfg.files
+              );
             in
             builtins.toJSON {
               _comment = [
