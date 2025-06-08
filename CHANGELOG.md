@@ -1,5 +1,35 @@
 # Changelog
 
+### [v0.1.3](https://github.com/jan-kouba/nix4dev/compare/v0.1.2...v0.1.3) (2025-06-08)
+
+#### Features
+
+* Do not format managed files on prepare (#89)
+([89d98c9](https://github.com/jan-kouba/nix4dev/commit/89d98c9349dab7bc78d1fc2b3ff0a68443bff752)),
+closes [#89](https://github.com/jan-kouba/nix4dev/issues/89)
+* Allow to exclude files in flake parts tests (#88)
+([f478a36](https://github.com/jan-kouba/nix4dev/commit/f478a368ea4c4d071c96cd8241c8be91a8d72834)),
+closes [#88](https://github.com/jan-kouba/nix4dev/issues/88)
+* **test-lib:** Make `testDescription` optional in test suite (#87)
+([6f75785](https://github.com/jan-kouba/nix4dev/commit/6f75785cafc1d4116f4ea582321f448029c4fa31)),
+closes [#87](https://github.com/jan-kouba/nix4dev/issues/87)
+* Rework nix4devTest function into testFlakePartsWithDir and
+testSuiteFlakePartsWithDir (#86)
+([9f10268](https://github.com/jan-kouba/nix4dev/commit/9f10268a1a0a174b18c9c7a4ae2826b91923ea86)),
+closes [#86](https://github.com/jan-kouba/nix4dev/issues/86)
+* Change nix formatter to nixfmt (#84)
+([3082b76](https://github.com/jan-kouba/nix4dev/commit/3082b7696f7497d67809e4d62e338b09c78a48e2)),
+closes [#84](https://github.com/jan-kouba/nix4dev/issues/84)
+
+#### Fixes
+
+* Fix test-lib to work also with deeply nested files produced by test (#94)
+([88b8715](https://github.com/jan-kouba/nix4dev/commit/88b8715f81d27e9b351086fb489bab7ae3174a90)),
+closes [#94](https://github.com/jan-kouba/nix4dev/issues/94)
+* **test-lib:** Delete empty parent directories of excluded files (#92)
+([3439cb4](https://github.com/jan-kouba/nix4dev/commit/3439cb4405185ef0df4a51b433662854e4ac6dff)),
+closes [#92](https://github.com/jan-kouba/nix4dev/issues/92)
+
 ### [v0.1.2](https://github.com/jan-kouba/nix4dev/compare/v0.1.1...v0.1.2) (2025-04-06)
 
 #### Features
