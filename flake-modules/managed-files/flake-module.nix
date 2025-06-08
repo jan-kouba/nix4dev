@@ -10,8 +10,6 @@
       l = lib // builtins;
       t = l.types;
 
-      nix4devLib = import ../../nix4dev-lib { inherit pkgs; };
-
       topCfg = config;
       cfg = config.nix4dev.managedFiles;
 
@@ -99,14 +97,21 @@
 
           config = {
             target = lib.path.subpath.normalise name;
-            allTargetFiles = if lib.filesystem.pathIsDirectory config.source.file
-              then let
+            allTargetFiles =
+              if lib.filesystem.pathIsDirectory config.source.file then
+                let
                   sourceFilesFullPaths = lib.filesystem.listFilesRecursive config.source.file;
                   sourceFilesRelPaths = lib.map (
-                    f: lib.path.subpath.join [ config.target (lib.path.removePrefix config.source.file f) ]
-                    ) sourceFilesFullPaths;
-                in sourceFilesRelPaths
-              else [ config.target ];
+                    f:
+                    lib.path.subpath.join [
+                      config.target
+                      (lib.path.removePrefix config.source.file f)
+                    ]
+                  ) sourceFilesFullPaths;
+                in
+                sourceFilesRelPaths
+              else
+                [ config.target ];
           };
         }
       );
@@ -168,16 +173,11 @@
           installCmd =
             _: managedFile:
             let
-              inst =
-                mode:
-                ''
-                  mkdir -p "$(dirname "$out"/'${managedFile.target}')"
-                  ${pkgs.coreutils}/bin/cp -r -- "${managedFile.source.file}" "$out"/'${managedFile.target}'
-                  ${
-                    if managedFile.executable then ''chmod ${mode} "$out"/'${managedFile.target}' ''
-                    else ""
-                  }
-                '';
+              inst = mode: ''
+                mkdir -p "$(dirname "$out"/'${managedFile.target}')"
+                ${pkgs.coreutils}/bin/cp -r -- "${managedFile.source.file}" "$out"/'${managedFile.target}'
+                ${if managedFile.executable then ''chmod ${mode} "$out"/'${managedFile.target}' '' else ""}
+              '';
               executeMode = if managedFile.executable then "x" else "";
               # Make the managed files that are always overwritten read-only.
               # Users are not supposed to change them.
@@ -210,7 +210,9 @@
 
           managedFilesList = pkgs.writeText "managed-files-list" (
             let
-              managedFilesTargets = l.lists.flatten (l.attrsets.mapAttrsToList (_: file: file.allTargetFiles) cfg.files);
+              managedFilesTargets = l.lists.flatten (
+                l.attrsets.mapAttrsToList (_: file: file.allTargetFiles) cfg.files
+              );
             in
             builtins.toJSON {
               _comment = [

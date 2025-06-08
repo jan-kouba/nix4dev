@@ -57,6 +57,8 @@
         "tests/init-barebone-project/expected/**"
         "tests/formatters-work/repo/**"
         "flake-modules/managed-files/tests/*/expected/**"
+        "flake-modules/managed-files/tests/write-directory/test-dir/**"
+        "flake-modules/managed-files/tests/write-formatted-directory/test-dir/**"
       ];
 
       nix4dev.envrc.watchDirectories = [ "tests" ];
