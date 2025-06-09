@@ -268,6 +268,7 @@
                 --delete \
                 --checksum \
                 --from0 \
+                --chmod=D+w,F-w,+X \
                 -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" "${fileListPath}") \
                 -f'-! */' \
                 ${managedFilesDir}/ \
