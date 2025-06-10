@@ -6,12 +6,12 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    ".editorconfig",
-    ".envrc",
-    ".git/hooks/commit-msg",
-    ".github/workflows/nix4dev-check.yml",
-    ".gitignore",
-    "flake.nix",
-    "nix4dev/flake.nix"
+    "./.editorconfig",
+    "./.envrc",
+    "./.git/hooks/commit-msg",
+    "./.github/workflows/nix4dev-check.yml",
+    "./.gitignore",
+    "./flake.nix",
+    "./nix4dev/flake.nix"
   ]
 }
