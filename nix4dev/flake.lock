@@ -51,11 +51,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1749587318,
-        "narHash": "sha256-Ta2VMQN0wbKEXfchIs2TSMhQkydFFFfRDfRApizbD5w=",
+        "lastModified": 1749590838,
+        "narHash": "sha256-ll5GIp9DYZPR5212BzuJ0QByI0OMFdGn5j61a2R5BsM=",
         "ref": "refs/heads/update-nix4dev",
-        "rev": "f261e8060498ecd0772f7805aaa041748f9597cb",
-        "revCount": 101,
+        "rev": "49d9900e73118296905cfe428a2e81f84ab4ac73",
+        "revCount": 102,
         "type": "git",
         "url": "file:///home/honza/var/wrk/work/nix4dev"
       },
@@ -67,16 +67,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1749173751,
-        "narHash": "sha256-ENY3y3v6S9ZmLDDLI3LUT8MXmfXg/fSt2eA4GCnMVCE=",
+        "lastModified": 1749494155,
+        "narHash": "sha256-FG4DEYBpROupu758beabUk9lhrblSf5hnv84v1TLqMc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ed29f002b6d6e5e7e32590deb065c34a31dc3e91",
+        "rev": "88331c17ba434359491e8d5889cce872464052c2",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-24.11",
+        "ref": "nixos-25.05",
         "repo": "nixpkgs",
         "type": "github"
       }
