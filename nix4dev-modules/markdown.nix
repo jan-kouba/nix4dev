@@ -15,12 +15,11 @@
           p.mdformat-footnote
           p.mdformat-frontmatter
           p.mdformat-gfm
-          p.mdformat-gfm-alerts
           p.mdformat-mkdocs
           p.mdformat-nix-alejandra
           p.mdformat-simple-breaks
           p.mdformat-tables
-          p.mdformat-toc
+          # p.mdformat-toc # disable because the package is marked as broken
         ])).overrideAttrs
           (_: {
             meta.mainProgram = "mdformat";

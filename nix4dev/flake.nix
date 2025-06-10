@@ -26,7 +26,7 @@
       "url" = "github:hercules-ci/flake-parts";
     };
     "test-input-nixpkgs" = {
-      "url" = "github:NixOS/nixpkgs/nixos-24.11";
+      "url" = "github:NixOS/nixpkgs/nixos-25.05";
     };
     "test-input-systems" = {
       "url" = "github:nix-systems/default";
