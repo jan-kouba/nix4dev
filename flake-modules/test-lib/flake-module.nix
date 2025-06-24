@@ -134,7 +134,7 @@
 
             deleteExcluded = file: ''
               rm "$out/${file}" && \
-                rmdir -p --ignore-fail-on-non-empty "$(realpath "$(dirname "$out/${file}")")"
+                rmdir -p --ignore-fail-on-non-empty "$(${pkgs.coreutils}/bin/realpath "$(dirname "$out/${file}")")"
             '';
 
             actual = pkgs.runCommand "${testName}-actual" { } ''

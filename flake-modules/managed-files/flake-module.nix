@@ -104,7 +104,7 @@
               in
               ''
                 ${pkgs.findutils}/bin/find ${escapedSourceFile} -type f -printf ${lib.strings.escapeShellArg targetEscapedForPrintf}'/%P\0' \
-                  | ${pkgs.findutils}/bin/xargs -0 realpath -ms --relative-to=. -z
+                  | ${pkgs.findutils}/bin/xargs -0 ${pkgs.coreutils}/bin/realpath -ms --relative-to=. -z
               '';
           };
         }
