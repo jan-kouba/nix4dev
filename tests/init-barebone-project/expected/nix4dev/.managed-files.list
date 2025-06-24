@@ -6,9 +6,9 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    "./.editorconfig",
-    "./.envrc",
-    "./.gitignore",
-    "./nix4dev/flake.nix"
+    ".editorconfig",
+    ".envrc",
+    ".gitignore",
+    "nix4dev/flake.nix"
   ]
 }
