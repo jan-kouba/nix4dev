@@ -6,6 +6,6 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    "./dir/foo"
+    "dir/foo"
   ]
 }
