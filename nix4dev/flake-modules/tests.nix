@@ -59,6 +59,7 @@
         "flake-modules/managed-files/tests/*/expected/**"
         "flake-modules/managed-files/tests/write-directory/test-dir/**"
         "flake-modules/managed-files/tests/write-formatted-directory/test-dir/**"
+        "flake-modules/managed-files/tests/write-directory-produced-by-derivation/test-dir/**"
       ];
 
       nix4dev.envrc.watchDirectories = [ "tests" ];

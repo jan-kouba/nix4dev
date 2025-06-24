@@ -33,7 +33,7 @@ let
         RED='\033[0;31m'
         NC='\033[0m'
 
-        flakeNix="$(realpath "${localFlakeUrl}/flake.nix")"
+        flakeNix="$(${pkgs.coreutils}/bin/realpath "${localFlakeUrl}/flake.nix")"
 
         overrideOptions="$( \
           nix eval --raw --file ${./override-flake-inputs.nix} \

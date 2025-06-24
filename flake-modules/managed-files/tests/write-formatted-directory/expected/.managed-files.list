@@ -6,7 +6,7 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    "./dir/test1.nix",
-    "./dir/test2.nix"
+    "dir/test1.nix",
+    "dir/test2.nix"
   ]
 }
