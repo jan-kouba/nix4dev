@@ -45,7 +45,7 @@
           `testDescription` (NullOr String)
           : Optional description of this test
 
-          `initDirectory` (NullOr Path)
+          `initDir` (NullOr Path)
           : Optional directory to start this test with.
             If specified, the contents of the directory will be copied into the test directory at the start of the test.
 
@@ -97,11 +97,23 @@
           }:
           let
             evalFlakeModules =
-              modules:
-              flake-parts-lib.evalFlakeModule { inherit inputs; } {
-                imports = modules;
-                systems = [ system ];
-              };
+              modules: flakeDir:
+              let
+                self =
+                  flake-parts-lib.evalFlakeModule
+                    {
+                      inherit inputs;
+                      self = self // {
+                        inherit inputs;
+                        outPath = flakeDir;
+                      };
+                    }
+                    {
+                      imports = modules;
+                      systems = [ system ];
+                    };
+              in
+              self;
 
             testSetupModule =
               { flake-parts-lib, ... }:
@@ -124,11 +136,23 @@
               };
 
             step =
-              step:
+              flakeDir: step:
               let
-                flake = evalFlakeModules ([ testSetupModule ] ++ [ step ]);
+                flake = evalFlakeModules ([ testSetupModule ] ++ [ step ]) (
+                  if flakeDir != null then flakeDir else ./empty-dir
+                );
               in
-              ''
+              pkgs.runCommand "${testName}-steps-applied" { } ''
+                set -eu
+
+                mkdir -p "$out"
+
+                # Copy previous flake files
+                ${lib.strings.optionalString (
+                  flakeDir != null
+                ) "${pkgs.rsync}/bin/rsync -r --perms --chmod=u=rwX ${flakeDir}/ \"$out\""}
+
+                # Apply updates
                 ${lib.strings.concatStringsSep "\n" (flake.config.allSystems.${system}.test.commandsToExecute)}
               '';
 
@@ -137,14 +161,15 @@
                 rmdir -p --ignore-fail-on-non-empty "$(${pkgs.coreutils}/bin/realpath "$(dirname "$out/${file}")")"
             '';
 
+            stepsApplied = lib.lists.foldl step initDir steps;
+
             actual = pkgs.runCommand "${testName}-actual" { } ''
+              set -eu
+
               mkdir -p "$out"
 
-              # Copy initial files
-              ${lib.strings.optionalString (initDir != null) "${pkgs.rsync}/bin/rsync -r ${initDir}/ \"$out\""}
-
-              # Apply updates
-              ${lib.strings.concatMapStringsSep "\n" step steps}
+              # Copy previous flake files
+              ${pkgs.rsync}/bin/rsync -r --perms --chmod=u=rwX ${stepsApplied}/ "$out"
 
               # Delete excluded files
               ${lib.strings.concatMapStringsSep "\n" deleteExcluded excludeFiles}
