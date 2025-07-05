@@ -1,6 +1,4 @@
 {
-  testDescription = "test lib works with deeply nested files";
-
   steps = [
     {
       perSystem.test.commandsToExecute = [

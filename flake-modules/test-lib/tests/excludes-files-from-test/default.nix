@@ -1,6 +1,4 @@
 {
-  testDescription = "managed files can write file";
-
   excludeFiles = [
     "./test-exclude-file"
     "na"
