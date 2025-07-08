@@ -19,10 +19,21 @@ Currently only the default nix4dev setup is supported.
 To setup default template in the root flake add the following settings into the `./nix4dev` flake:
 
 ```nix
-perSystem.nix4dev.seeds.default = { }
+perSystem.nix4dev.seeds.default = {
+  description = "My cool seed";
+  welcomeText = ''
+    # My Cool Seed
+
+    Welcome to my cool seed!
+  '';
+}
 ```
 
-You also need to setup the template in the root flake.
+Then you can initialize nix4dev in a new project using the following command:
+
+```bash
+nix flake new <new-project-dir> -t <flake-with-the-template>
+```
 
 ## Setup nix4dev Seed (legacy)
 
