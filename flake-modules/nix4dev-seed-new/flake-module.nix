@@ -71,9 +71,11 @@ in
       let
         hasSeeds = topCfg.nix4dev.seeds != { };
 
-        seedFlake = flake-parts-lib.mkFlake { inputs = { }; } {
+        nix4devInputs = inputs.nix4dev.inputs;
+
+        seedFlake = flake-parts-lib.mkFlake { inputs = nix4devInputs; } {
           imports = [
-            (flake-parts-lib.importApply ../../nix4dev-modules inputs)
+            (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
           ];
         };
         seedProjectDir = pkgs.runCommand "seed-project" { } ''
