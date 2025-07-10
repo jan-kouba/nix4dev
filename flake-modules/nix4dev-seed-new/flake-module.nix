@@ -1,3 +1,4 @@
+nix4devInputs:
 {
   config,
   flake-parts-lib,
@@ -71,8 +72,6 @@ in
       let
         hasSeeds = topCfg.nix4dev.seeds != { };
 
-        nix4devInputs = inputs.nix4dev.inputs;
-
         seedFlake = flake-parts-lib.mkFlake { inputs = nix4devInputs; } {
           imports = [
             (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
@@ -88,13 +87,7 @@ in
           };
         }) topCfg.nix4dev.seeds;
 
-        escapeNixIndentedString =
-          s:
-          let
-            s' = lib.strings.replaceStrings [ "''" ] [ "'''" ] s;
-            s'' = lib.strings.replaceStrings [ "$" ] [ "\\$" ] s';
-          in
-          "''${s''}''";
+        escapeNixIndentedString = s: "''${lib.strings.replaceStrings [ "''" "$" ] [ "'''" "\\$" ] s} ''";
 
         templateDef = seed: ''
           ${lib.strings.escapeNixIdentifier seed.templateName} = {
