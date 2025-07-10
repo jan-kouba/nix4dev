@@ -42,6 +42,7 @@
     {
       checks.managedFilesCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
         testsDir = ./.;
+        inputs.nixpkgs = inputs.nixpkgs;
 
         extraFlakeModules = [
           self.flakeModules.managedFiles
