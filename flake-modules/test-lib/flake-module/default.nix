@@ -1,7 +1,6 @@
 # Library for tests.
 {
   flake-parts-lib,
-  inputs,
   lib,
   ...
 }:
@@ -43,7 +42,10 @@
           : The name of this test.
 
           `testDescription` (NullOr String)
-          : Optional description of this test
+          : Optional description of this test,
+
+          `inputs` (Any)
+          : The inputs that should be provided to the test flake.
 
           `initDir` (NullOr Path)
           : Optional directory to start this test with.
@@ -90,6 +92,7 @@
           {
             testName,
             testDescription ? null,
+            inputs,
             initDir,
             steps,
             expectedDir,
@@ -222,6 +225,9 @@
               This will be merged with the excludeFiles passed as the parameter to the `testSuiteFlakePartsWithDir` function.
               Defaults to `[]`.
 
+          `inputs` (Any)
+          : The inputs that should be provided to the test flakes.
+
           `extraFlakeModules` (ListOf FlakePartsModule)
           : The extra flake modules to import in every step of every test when constructing the flake.
             It can be used to do some common setup (e.g. of the commands to run in every step).
@@ -253,6 +259,7 @@
         testSuiteFlakePartsWithDir =
           {
             testsDir,
+            inputs,
             extraFlakeModules ? [ ],
             excludeFiles ? [ ],
           }:
@@ -284,6 +291,7 @@
                   expectedDir
                   testName
                   testDescription
+                  inputs
                   ;
                 inherit (finalTestExpr) steps;
                 excludeFiles = finalExcludeFiles;
