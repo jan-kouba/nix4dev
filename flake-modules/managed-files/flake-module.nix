@@ -20,7 +20,7 @@
             lines = l.mkOption {
               type = t.lines;
               description = ''
-                The source for the managed file.
+                The source for the file.
                 The target will be overwritten by a file with this string as content.
                 Ignored, if the `file` or `text` option is set.
               '';
@@ -33,7 +33,7 @@
             text = l.mkOption {
               type = t.str;
               description = ''
-                The source for the managed file.
+                The source for the file.
                 The target will be overwritten by a file with this string as content.
                 Ignored, if the `file` option is set.
               '';
@@ -43,7 +43,7 @@
             file = l.mkOption {
               type = t.pathInStore;
               description = ''
-                The source for the managed file.
+                The source for the file.
                 Path in store (file or directory) which will be recursively copied over the target.
               '';
               example = ''../examples/hello'';
@@ -51,7 +51,7 @@
           };
 
           config = {
-            file = l.mkDefault (pkgs.writeText "managed-file-source" config.text);
+            file = l.mkDefault (pkgs.writeText "file-source" config.text);
             text = l.mkDefault config.lines;
           };
         }
@@ -66,7 +66,7 @@
         {
           options = {
             source = l.mkOption {
-              description = "The managed file source.";
+              description = "The file source.";
               type = sourceType;
             };
 
