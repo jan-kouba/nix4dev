@@ -11,14 +11,14 @@ nix4devInputs:
     perSystem = flake-parts-lib.mkPerSystemOption (
       { options, ... }:
       let
-        seedType = lib.types.submodule (
+        templateType = lib.types.submodule (
           { name, ... }:
           {
             options = {
               templateName = lib.mkOption {
                 type = lib.types.str;
                 description = ''
-                  Name of template produced by this seed.
+                  Name of this template.
                 '';
                 default = name;
                 defaultText = "\${attrName}";
@@ -27,13 +27,13 @@ nix4devInputs:
               description = lib.mkOption {
                 type = lib.types.str;
                 description = ''A one-line description of the template, in CommonMark syntax.'';
-                example = "A simple nix4dev seed";
+                example = "A simple nix4dev template";
               };
 
               welcomeText = lib.mkOption {
                 type = lib.types.str;
                 description = ''
-                  A block of markdown text to display when a user initializes a new flake based on this seed.
+                  A block of markdown text to display when a user initializes a new flake based on this template.
                 '';
                 example = ''
                   # Simple nix4dev Template
@@ -44,7 +44,7 @@ nix4devInputs:
 
               extraFiles = options.nix4dev.managedFiles.files // {
                 description = ''
-                  The extra files to add to the template created by the seed.
+                  The extra files to add to this template.
                 '';
               };
             };
@@ -52,17 +52,16 @@ nix4devInputs:
         );
       in
       {
-        options.nix4dev.seeds = lib.mkOption {
-          type = lib.types.attrsOf seedType;
+        options.nix4dev.templates = lib.mkOption {
+          type = lib.types.attrsOf templateType;
           description = ''
-            The nix4dev seeds that should be provided by this project's flake.
-            Every seed defines a new nix flake template which contains the common nix4dev files
-            and optionally also some extra files.
+            The nix flake templates that should be provided by this project's flake.
+            Every template contains the common nix4dev files and optionally also some extra files.
           '';
           default = { };
           example = {
             default = {
-              description = "A simple nix4dev seed";
+              description = "A simple nix4dev template";
               welcomeText = ''
                 # Simple nix4dev Template
 
@@ -90,18 +89,18 @@ nix4devInputs:
         ...
       }:
       let
-        hasSeeds = config.nix4dev.seeds != { };
+        hasTemplates = config.nix4dev.templates != { };
 
-        seedTemplateFiles =
-          seed:
+        templateFiles =
+          template:
           let
-            seedFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
+            templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
               imports = [
                 (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
               ];
             };
 
-            seedProjectDir = pkgs.runCommand "seed-project" { } ''
+            templateProjectDir = pkgs.runCommand "template-project" { } ''
               mkdir -p $out
               cd $out
 
@@ -118,47 +117,47 @@ nix4devInputs:
                     ${srcFileArg} \
                     ${targetFileRelPathArg}
                 ''
-              ) seed.extraFiles}
+              ) template.extraFiles}
 
-              ${seedFlakeModule.config.allSystems.${system}.nix4dev.managedFiles.updateFiles} $out
+              ${templateFlakeModule.config.allSystems.${system}.nix4dev.managedFiles.updateFiles} $out
             '';
           in
           {
-            "nix4dev/seeds/${seed.templateName}" = {
-              source.file = seedProjectDir;
+            "nix4dev/templates/${template.templateName}" = {
+              source.file = templateProjectDir;
             };
           };
 
-        generatedTemplatesDirs = lib.concatMapAttrs (_: seedTemplateFiles) config.nix4dev.seeds;
+        generatedTemplatesDirs = lib.concatMapAttrs (_: templateFiles) config.nix4dev.templates;
 
         escapeNixIndentedString = s: "''${lib.strings.replaceStrings [ "''" "$" ] [ "'''" "\\$" ] s} ''";
 
-        templateDef = seed: ''
-          ${lib.strings.escapeNixIdentifier seed.templateName} = {
-            description = ${lib.strings.escapeNixString seed.description};
-            welcomeText = ${escapeNixIndentedString seed.welcomeText};
-            path = ../nix4dev/seeds + ${lib.strings.escapeNixString "/${seed.templateName}"};
+        templateDef = template: ''
+          ${lib.strings.escapeNixIdentifier template.templateName} = {
+            description = ${lib.strings.escapeNixString template.description};
+            welcomeText = ${escapeNixIndentedString template.welcomeText};
+            path = ../nix4dev/templates + ${lib.strings.escapeNixString "/${template.templateName}"};
           };
         '';
 
-        seedsNixFile = pkgs.writeText "seeds.nix" ''
+        templatesNixFile = pkgs.writeText "templates.nix" ''
           {
             flake.templates = {
-              ${lib.strings.concatMapAttrsStringSep "" (_: templateDef) config.nix4dev.seeds}
+              ${lib.strings.concatMapAttrsStringSep "" (_: templateDef) config.nix4dev.templates}
             };
           }
         '';
       in
       {
         nix4dev.managedFiles.files = {
-          "flake-modules/seeds.nix" = lib.mkIf hasSeeds {
-            source.file = seedsNixFile;
+          "flake-modules/templates.nix" = lib.mkIf hasTemplates {
+            source.file = templatesNixFile;
           };
         } // generatedTemplatesDirs;
 
-        nix4dev.projectFlake = lib.mkIf hasSeeds {
+        nix4dev.projectFlake = lib.mkIf hasTemplates {
           enable = true;
-          extraFlakeModules = [ "./flake-modules/seeds.nix" ];
+          extraFlakeModules = [ "./flake-modules/templates.nix" ];
         };
       };
   };

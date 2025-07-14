@@ -3,7 +3,7 @@
   perSystem =
     { config, ... }:
     {
-      checks.seedCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
+      checks.templatesCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
         testsDir = ./.;
 
         inputs = { };

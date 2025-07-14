@@ -10,25 +10,25 @@ To use this in a project, make sure you have [nix installed](https://nixos.org/d
 nix run github:jan-kouba/nix4dev#init
 ```
 
-## Custom nix4dev Templates (new)
+## Custom Templates
 
-You can easily set up your own nix4dev based devshell.
+You can easily set up your own nix4dev based template for devshell.
 
 To setup default template in the root flake add the following settings into the `./nix4dev` flake:
 
 ```nix
-perSystem.nix4dev.seeds.default = {
-  description = "My cool seed";
+perSystem.nix4dev.templates.default = {
+  description = "My cool template";
   welcomeText = ''
-    # My Cool Seed
+    # My Cool Template
 
-    Welcome to my cool seed!
+    Welcome to my cool template!
   '';
-  extraFiles."nix4dev/flake-modules/default.nix".source.file = ./seed-default.nix;
+  extraFiles."nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
 }
 ```
 
-Then you can initialize nix4dev in a new project using the following command:
+Then, you can initialize nix4dev in a new project using the following command:
 
 ```bash
 nix flake new <new-project-dir> -t <flake-with-the-template>

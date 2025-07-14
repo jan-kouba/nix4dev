@@ -13,7 +13,7 @@
     (flake-parts-lib.importApply ../nix4dev-seed-modules { nix4devFlake = self; })
     ./output.nix
     ./managed-files
-    ./nix4dev-seed-new
+    ./nix4dev-templates
     ./test-lib
   ];
 

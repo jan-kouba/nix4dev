@@ -1,14 +1,14 @@
 let
-  seedSettingsModule = {
-    perSystem.nix4dev.seeds.seed = {
-      description = "A seed";
+  templateSettingsModule = {
+    perSystem.nix4dev.templates.test = {
+      description = "A test template";
       welcomeText = ''
-        # A seed
+        # A test template
         Hello
       '';
 
       extraFiles = {
-        "nix4dev/flake-modules/default.nix".source.file = ./seed-default.nix;
+        "nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
       };
     };
   };
@@ -16,7 +16,7 @@ in
 {
   steps = [
     {
-      imports = [ seedSettingsModule ];
+      imports = [ templateSettingsModule ];
 
       perSystem =
         { config, ... }:
