@@ -3,6 +3,9 @@
 
   # To change flake inputs, use the `nix4dev.flake.extraInputs` option.
   inputs = {
+    "dummy-flake" = {
+      "url" = "github:jan-kouba/dummy-repo";
+    };
     "nix4dev" = {
       "url" = "github:jan-kouba/nix4dev";
     };
@@ -21,6 +24,7 @@
         in
         [
           inputs.nix4dev.flakeModules.default
+          inputs.dummy-flake.flakeModules.default
           (assertFileExists ./flake-modules/default.nix ''
             Default flake module not found. To create an empty default module execute:
 

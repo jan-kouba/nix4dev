@@ -55,8 +55,20 @@ nix4devInputs:
         options.nix4dev.templates = lib.mkOption {
           type = lib.types.attrsOf templateType;
           description = ''
-            The nix flake templates that should be provided by this project's flake.
-            Every template contains the common nix4dev files and optionally also some extra files.
+            The nix flake templates that will be provided by this project's flake.
+
+            Every template contains the common nix4dev files and optionally also some extra files
+            configured using the `extraFiles` option.
+
+            The template is constructed as if a basic nix4dev devshell was initialized in a directory,
+            the extra files were added into the directory
+            and the `setup` command was called in such devshell.
+            The default flake module provided by the nix4dev flake is imported automatically.
+
+            The devshell (in which the setup command is run) has only the nix4dev flake as input.
+            It is not possible to add other inputs. However, it is possible to configure
+            the `perSystem.nix4dev.flake.extraInputs` option which will add the extra inputs into
+            the generated template, so they can be used in the devshells initialized using the generated template.
           '';
           default = { };
           example = {
@@ -94,13 +106,7 @@ nix4devInputs:
         templateFiles =
           template:
           let
-            templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
-              imports = [
-                (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
-              ];
-            };
-
-            templateProjectDir = pkgs.runCommand "template-project" { } ''
+            templateExtraFiles = pkgs.runCommand "template-extra-files-dir" { } ''
               mkdir -p $out
               cd $out
 
@@ -118,6 +124,37 @@ nix4devInputs:
                     ${targetFileRelPathArg}
                 ''
               ) template.extraFiles}
+            '';
+
+            templateFlakeDefaultNix =
+              let
+                defaultNixRelPath = "nix4dev/flake-modules/default.nix";
+                defaultNixFile = "${templateExtraFiles}/${defaultNixRelPath}";
+              in
+              assert (
+                lib.asserts.assertMsg (lib.filesystem.pathIsRegularFile defaultNixFile) ''
+                  The template `${template.templateName}` did not provide the `${defaultNixRelPath}` file.
+                  Please add it using the `extraFiles` option.
+                ''
+              );
+              defaultNixFile;
+
+            templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
+              imports = [
+                (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
+                templateFlakeDefaultNix
+              ];
+            };
+
+            templateProjectDir = pkgs.runCommand "template-project" { } ''
+              mkdir -p $out
+              cd $out
+
+              ${pkgs.rsync}/bin/rsync \
+                -r \
+                --perms --chmod=u=rwX \
+                ${templateExtraFiles}/ \
+                .
 
               ${templateFlakeModule.config.allSystems.${system}.nix4dev.managedFiles.updateFiles} $out
             '';
