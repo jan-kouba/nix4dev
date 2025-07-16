@@ -26,7 +26,7 @@ in
           perSystem.nix4dev.flake = {
             extraInputs = ${nix4devLib.printFlakeInputs extraFixedFlakeInputs};
             extraFlakeModules = [
-              ${l.strings.concatMapStringsSep " " (x: ''"${x}"'') extraFixedModules}
+              ${l.strings.concatMapStringsSep " " l.strings.escapeNixString extraFixedModules}
             ];
           };
         }
