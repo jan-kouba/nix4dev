@@ -42,7 +42,7 @@ let
       inputName = l.lists.last inputPath.inputPath;
       localUrl = if inputName == "nix4dev" then nix4devRepoPath else "${localInputs.${inputName}}";
     in
-    "--override-input ${inputPathString} ${localUrl}"
+    "--override-input ${l.strings.escapeShellArg inputPathString} ${l.strings.escapeShellArg localUrl}"
   ) resolvedInputs;
 in
 {

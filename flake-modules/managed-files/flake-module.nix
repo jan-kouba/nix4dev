@@ -167,10 +167,13 @@
           installCmd =
             _: managedFile:
             let
+              escapedTarget = lib.strings.escapeShellArg managedFile.target;
+              escapedSource = lib.strings.escapeShellArg "${managedFile.source.file}";
+
               inst = mode: ''
-                mkdir -p "$(dirname "$out"/'${managedFile.target}')"
-                ${pkgs.coreutils}/bin/cp -r -- "${managedFile.source.file}" "$out"/'${managedFile.target}'
-                ${if managedFile.executable then ''chmod ${mode} "$out"/'${managedFile.target}' '' else ""}
+                mkdir -p "$(dirname "$out"/${escapedTarget})"
+                ${pkgs.coreutils}/bin/cp -r -- ${escapedSource} "$out"/${escapedTarget}
+                ${if managedFile.executable then ''chmod ${mode} "$out"/${escapedTarget} '' else ""}
               '';
               executeMode = if managedFile.executable then "x" else "";
               # Make the managed files that are always overwritten read-only.
@@ -178,7 +181,7 @@
               instOverwrite = inst "ugo=r${executeMode}";
             in
             ''
-              # Install "${managedFile.source.file}"
+              # Install ${escapedSource}
               ${instOverwrite}
             '';
 
@@ -237,7 +240,7 @@
                   (l.length cfg.fileListPaths) > 0
                 ) "`fileListPaths` can not be an empty list";
                 cfg.fileListPaths;
-              fileListPath = "$outDir/${l.head fileListPaths}";
+              escapedFileListPath = ''"$outDir"/${l.strings.escapeShellArg (l.head fileListPaths)}'';
               fileListPathNew = "$tmpFileListPath";
             in
             pkgs.writeShellScript "update-managed-files" ''
@@ -248,21 +251,27 @@
 
 
               # Update managed files list to contain both old and new files
-              mkdir -p "$(dirname "${fileListPath}")"
+              mkdir -p "$(dirname ${escapedFileListPath})"
 
               (
                 "${listManagedFilesCommand}"
-                ${l.strings.concatMapStringsSep "\n" (f: ''
-                  if [ -f "$outDir/${f}" ]; then
-                    cat "$outDir/${f}"
-                  fi
-                '') cfg.fileListPaths}
+                ${l.strings.concatMapStringsSep "\n" (
+                  f:
+                  let
+                    escapedF = l.strings.escapeShellArg f;
+                  in
+                  ''
+                    if [ -f "$outDir"/${escapedF} ]; then
+                      cat "$outDir"/${escapedF}
+                    fi
+                  ''
+                ) cfg.fileListPaths}
               ) | ${pkgs.jq}/bin/jq --raw-output -sS '([.[] | .managedFiles] | flatten | unique | { managedFiles: . }) + (.[0] | {_comment})' \
                 > "${fileListPathNew}"
 
               ${pkgs.rsync}/bin/rsync \
                 --checksum \
-                "${fileListPathNew}" "${fileListPath}"
+                "${fileListPathNew}" ${escapedFileListPath}
 
 
               # Update managed files
@@ -274,7 +283,7 @@
                 --checksum \
                 --from0 \
                 --chmod=D+w,F-w,+X \
-                -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" "${fileListPath}") \
+                -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" ${escapedFileListPath}) \
                 -f'-! */' \
                 ${managedFilesDir}/ \
                 "$outDir" \
@@ -286,7 +295,7 @@
 
               ${pkgs.rsync}/bin/rsync \
                 --checksum \
-                "${fileListPathNew}" "${fileListPath}"
+                "${fileListPathNew}" ${escapedFileListPath}
 
               ${l.strings.concatMapStringsSep "\n" (f: "rm -f \"$outDir/${f}\"") (l.tail cfg.fileListPaths)}
 
