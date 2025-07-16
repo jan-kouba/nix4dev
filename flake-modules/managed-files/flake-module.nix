@@ -255,13 +255,17 @@
 
               (
                 "${listManagedFilesCommand}"
-                ${l.strings.concatMapStringsSep "\n" (f: let
-                  escapedF = l.strings.escapeShellArg f;
-                in ''
-                  if [ -f "$outDir"/${escapedF} ]; then
-                    cat "$outDir"/${escapedF}
-                  fi
-                '') cfg.fileListPaths}
+                ${l.strings.concatMapStringsSep "\n" (
+                  f:
+                  let
+                    escapedF = l.strings.escapeShellArg f;
+                  in
+                  ''
+                    if [ -f "$outDir"/${escapedF} ]; then
+                      cat "$outDir"/${escapedF}
+                    fi
+                  ''
+                ) cfg.fileListPaths}
               ) | ${pkgs.jq}/bin/jq --raw-output -sS '([.[] | .managedFiles] | flatten | unique | { managedFiles: . }) + (.[0] | {_comment})' \
                 > "${fileListPathNew}"
 

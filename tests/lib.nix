@@ -22,8 +22,9 @@ let
       localInputsPath = pkgs.writeText "local-inputs" ''
         {
           ${lib.strings.concatStringsSep "\n" (
-            lib.attrsets.mapAttrsToList (name: value:
-              "${lib.strings.escapeNixIdentifier name} = ${lib.strings.escapeNixString value};") localInputs
+            lib.attrsets.mapAttrsToList (
+              name: value: "${lib.strings.escapeNixIdentifier name} = ${lib.strings.escapeNixString value};"
+            ) localInputs
           )}
         }
       '';
