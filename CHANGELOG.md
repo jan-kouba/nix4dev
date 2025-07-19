@@ -1,5 +1,46 @@
 # Changelog
 
+## [v0.2.0](https://github.com/jan-kouba/nix4dev/compare/v0.1.3...v0.2.0) (2025-07-19)
+
+### Features
+
+* Provide regular nix flake template (#109)
+([91f0720](https://github.com/jan-kouba/nix4dev/commit/91f0720c2cca9a8d6e2da26638f62438831d3c5c)),
+closes [#109](https://github.com/jan-kouba/nix4dev/issues/109)
+* Import the nix4dev flake module when generating template (#106)
+([aebec3f](https://github.com/jan-kouba/nix4dev/commit/aebec3ffda192d6a75e035666ea95e0db08dea39)),
+closes [#106](https://github.com/jan-kouba/nix4dev/issues/106)
+* Add nix4devSeedNew module (#105)
+([5f373a4](https://github.com/jan-kouba/nix4dev/commit/5f373a41e65788908747e42c79e1c1a4bd225c4e)),
+closes [#105](https://github.com/jan-kouba/nix4dev/issues/105)
+* Add inputs parameter to test*FlakePartsWithDir methods (#104)
+([513d3cd](https://github.com/jan-kouba/nix4dev/commit/513d3cd45a4e2b5d9be044956ebfdf9b974a7bc6)),
+closes [#104](https://github.com/jan-kouba/nix4dev/issues/104)
+* **test-lib:** Set outPath of the self attribute to the output of the
+previous test step (#103)
+([3f2e0d3](https://github.com/jan-kouba/nix4dev/commit/3f2e0d3d5eec5e7acc381713ff17c227f5c897d8)),
+closes [#103](https://github.com/jan-kouba/nix4dev/issues/103)
+* Allow to use derivation output as source for managed files directory (#102)
+([e940453](https://github.com/jan-kouba/nix4dev/commit/e9404531f397a23ea262cf8551ea640bf4be51dc)),
+closes [#102](https://github.com/jan-kouba/nix4dev/issues/102)
+* Update to nixos-25.05
+([21bbd31](https://github.com/jan-kouba/nix4dev/commit/21bbd311a867e5e0d92a20b401f8cde554af512c))
+
+### Fixes
+
+* Properly escape strings (#107)
+([e40d192](https://github.com/jan-kouba/nix4dev/commit/e40d192f7f6b892020cbbce2f4a18c0e7d12d55e)),
+closes [#107](https://github.com/jan-kouba/nix4dev/issues/107)
+* Make newly created parent directories of managed files writable (#99)
+([6013867](https://github.com/jan-kouba/nix4dev/commit/601386785305b9e598011779e4d18f0b8911bc15)),
+closes [#99](https://github.com/jan-kouba/nix4dev/issues/99)
+* Do not fail when using directory as managed file source (#98)
+([ce3faff](https://github.com/jan-kouba/nix4dev/commit/ce3faff449311b66551d78482bace571abb2cf3e)),
+closes [#98](https://github.com/jan-kouba/nix4dev/issues/98)
+* Do not ignore managed files starting with ./ (#97)
+([7fd13b7](https://github.com/jan-kouba/nix4dev/commit/7fd13b71d0d1f07da07f68d22a95b04bc0e7090a)),
+closes [#97](https://github.com/jan-kouba/nix4dev/issues/97)
+
 ### [v0.1.3](https://github.com/jan-kouba/nix4dev/compare/v0.1.2...v0.1.3) (2025-06-08)
 
 #### Features
