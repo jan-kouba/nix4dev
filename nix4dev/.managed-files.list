@@ -6,12 +6,19 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
-    "./.editorconfig",
-    "./.envrc",
-    "./.git/hooks/commit-msg",
-    "./.github/workflows/nix4dev-check.yml",
-    "./.gitignore",
-    "./flake.nix",
-    "./nix4dev/flake.nix"
+    ".editorconfig",
+    ".envrc",
+    ".git/hooks/commit-msg",
+    ".github/workflows/nix4dev-check.yml",
+    ".gitignore",
+    "flake-modules/templates.nix",
+    "flake.nix",
+    "nix4dev/flake.nix",
+    "nix4dev/templates/default/.editorconfig",
+    "nix4dev/templates/default/.envrc",
+    "nix4dev/templates/default/.gitignore",
+    "nix4dev/templates/default/nix4dev/.managed-files.list",
+    "nix4dev/templates/default/nix4dev/flake-modules/default.nix",
+    "nix4dev/templates/default/nix4dev/flake.nix"
   ]
 }

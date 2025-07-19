@@ -89,7 +89,7 @@ let
     pushd "$tmp_dir"/repo
 
     # Initializing repo
-    ${nix "run" repoPath} --no-write-lock-file ${repoPath}#init
+    ${pkgs.nix}/bin/nix flake init -t ${repoPath}
 
     git init .
     git add .
