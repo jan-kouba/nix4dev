@@ -5,5 +5,6 @@
     ./devshell.nix
     ./github.nix
     ./tests.nix
+    ./templates
   ];
 }

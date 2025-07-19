@@ -48,7 +48,7 @@
             path;
         in
         [
-
+          ./flake-modules/templates.nix
           (assertFileExists ./flake-modules/default.nix ''
             Default flake module not found. To create an empty default module execute:
 
