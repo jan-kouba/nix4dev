@@ -141,7 +141,7 @@ nix4devInputs:
 
             templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
               imports = [
-                (flake-parts-lib.importApply ../../nix4dev-modules nix4devInputs)
+                (flake-parts-lib.importApply ../flake-module nix4devInputs)
                 templateFlakeDefaultNix
               ];
             };

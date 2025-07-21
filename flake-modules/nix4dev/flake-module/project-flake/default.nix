@@ -12,7 +12,7 @@ in
     }:
     let
       cfg = config.nix4dev.projectFlake;
-      nix4devLib = import ../../nix4dev-lib { inherit pkgs; };
+      nix4devLib = import ../../../../nix4dev-lib { inherit pkgs; };
       flakeOptionsBase = nix4devLib.flakeNixOptions {
         flakePartsInputPathString = "inputs.flake-parts";
         flakeConfigPathString = "nix4dev.projectFlake";

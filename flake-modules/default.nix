@@ -5,9 +5,8 @@
   imports = [
     inputs.flake-parts.flakeModules.flakeModules
 
-    ./output.nix
     ./managed-files
-    ./nix4dev-templates
+    ./nix4dev
     ./test-lib
   ];
 }

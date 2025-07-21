@@ -8,7 +8,7 @@ in
     nix4devInputs.devshell.flakeModule
     nix4devInputs.treefmt-nix.flakeModule
 
-    (fpl.importApply ../flake-modules/nix4dev-templates/flake-module.nix nix4devInputs)
+    (fpl.importApply ../templates/flake-module.nix nix4devInputs)
     ./bash.nix
     ./conventional-commits
     ./editorconfig.nix
