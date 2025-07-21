@@ -17,7 +17,7 @@ in
       let
         cfg = config.nix4dev;
 
-        nix4devLib = import ../../nix4dev-lib { inherit pkgs; };
+        nix4devLib = import ../../../../nix4dev-lib { inherit pkgs; };
 
         baseFlakeOptions = nix4devLib.flakeNixOptions {
           flakePartsInputPathString = "inputs.nix4dev.inputs.flake-parts";

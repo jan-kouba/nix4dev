@@ -2,6 +2,6 @@
   perSystem =
     { ... }:
     {
-      nix4dev.envrc.watchDirectories = [ "nix4dev-modules" ];
+      nix4dev.envrc.watchDirectories = [ "flake-modules/nix4dev/flake-module" ];
     };
 }

@@ -1,6 +1,6 @@
 { lib, ... }:
 {
-  imports = [ ../flake-modules/managed-files/flake-module.nix ];
+  imports = [ ../../managed-files/flake-module.nix ];
 
   perSystem =
     { config, ... }:
