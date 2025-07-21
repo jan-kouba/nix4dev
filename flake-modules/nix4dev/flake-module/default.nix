@@ -13,6 +13,7 @@ in
     ./conventional-commits
     ./editorconfig.nix
     ./json.nix
+    ./lib
     ./managed-files.nix
     ./markdown.nix
     ./nixlang.nix
