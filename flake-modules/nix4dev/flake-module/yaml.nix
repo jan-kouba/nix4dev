@@ -23,7 +23,10 @@
               "-euc"
               ''
                 for file in "$@"; do
-                  ${lib.getExe pkgs.yq-go} -i -P "$file"
+                  # Rewrite to YAML only if the file is a JSON file
+                  if ${pkgs.jq}/bin/jq . "$file" > /dev/null; then
+                    ${pkgs.yq-go}/bin/yq -i -P "$file"
+                  fi
                 done
               ''
               "--" # bash swallows the second argument when using -c

@@ -1,0 +1,8 @@
+hello:
+    world: "I like you"
+
+list:
+            - one: 1
+            - "two":          2
+
+            - three: 3

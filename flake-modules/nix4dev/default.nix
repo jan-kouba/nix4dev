@@ -2,6 +2,7 @@
 {
   imports = [
     ./templates
+    ./tests
   ];
 
   flake.flakeModules = {
