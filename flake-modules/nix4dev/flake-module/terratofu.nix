@@ -1,30 +1,39 @@
-{ lib, ... }:
-let
-  l = lib // builtins;
-in
+{ flake-parts-lib, lib, ... }:
 {
-  perSystem =
+  options.perSystem = flake-parts-lib.mkPerSystemOption ({
+    options.nix4dev = {
+      terraform.enable = lib.mkEnableOption "terraform";
+      opentofu.enable = lib.mkEnableOption "opentofu";
+    };
+  });
+
+  config.perSystem =
     {
       config,
       pkgs,
       ...
     }:
     let
-      cfg = config.nix4dev.terraform;
-    in
-    {
-      options = {
-        nix4dev.terraform.enable = l.mkEnableOption "terraform";
+      terraCfg = config.nix4dev.terraform;
+      tofuCfg = config.nix4dev.opentofu;
+
+      tofuOutCfg = lib.mkIf tofuCfg.enable {
+        devshells.default.packages = [
+          pkgs.opentofu
+        ];
       };
 
-      config = l.mkIf cfg.enable {
-        treefmt.programs.terraform.enable = true;
-
+      terraOutCfg = lib.mkIf terraCfg.enable {
         devshells.default.packages = [
           pkgs.terraform
         ];
 
         nix4dev.allowUnfreePackages = [ "terraform" ];
+      };
+
+      commonOutCfg = lib.mkIf (terraCfg.enable || tofuCfg.enable) {
+        # treefmt uses opentofu for formatting
+        treefmt.programs.terraform.enable = true;
 
         nix4dev.managedFiles.files = {
           ".gitignore".source.lines = ''
@@ -58,5 +67,12 @@ in
           '';
         };
       };
+    in
+    {
+      config = lib.mkMerge [
+        tofuOutCfg
+        terraOutCfg
+        commonOutCfg
+      ];
     };
 }
