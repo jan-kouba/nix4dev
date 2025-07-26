@@ -13,22 +13,22 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 
-# Bash
-[*.sh]
+# YAML
+[*.{yml, yaml}]
 indent_size = 2
 
-# JSON
-[*.{json,json5}]
+# Nix language
+[*.nix]
 indent_size = 2
 
 # Markdown
 [*.md]
 indent_size = 4
 
-# Nix language
-[*.nix]
+# JSON
+[*.{json,json5}]
 indent_size = 2
 
-# YAML
-[*.{yml, yaml}]
+# Bash
+[*.sh]
 indent_size = 2

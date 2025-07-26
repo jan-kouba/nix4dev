@@ -13,49 +13,37 @@
       topCfg = config;
       cfg = config.nix4dev.managedFiles;
 
-      sourceType = t.submodule (
-        { config, ... }:
-        {
-          options = {
-            lines = l.mkOption {
-              type = t.lines;
-              description = ''
-                The source for the file.
-                The target will be overwritten by a file with this string as content.
-                Ignored, if the `file` or `text` option is set.
-              '';
-              example = l.options.literalExpression ''
-                .direnv
-                target
-              '';
-            };
+      sourceType = t.attrTag {
+        lines = l.mkOption {
+          type = t.lines;
+          description = ''
+            The source for the file.
+            The target will be overwritten by a file with this string as content.
+          '';
+          example = l.options.literalExpression ''
+            .direnv
+            target
+          '';
+        };
 
-            text = l.mkOption {
-              type = t.str;
-              description = ''
-                The source for the file.
-                The target will be overwritten by a file with this string as content.
-                Ignored, if the `file` option is set.
-              '';
-              example = l.options.literalExpression ''Hello world!'';
-            };
+        text = l.mkOption {
+          type = t.str;
+          description = ''
+            The source for the file.
+            The target will be overwritten by a file with this string as content.
+          '';
+          example = l.options.literalExpression ''Hello world!'';
+        };
 
-            file = l.mkOption {
-              type = t.pathInStore;
-              description = ''
-                The source for the file.
-                Path in store (file or directory) which will be recursively copied over the target.
-              '';
-              example = ''../examples/hello'';
-            };
-          };
-
-          config = {
-            file = l.mkDefault (pkgs.writeText "file-source" config.text);
-            text = l.mkDefault config.lines;
-          };
-        }
-      );
+        file = l.mkOption {
+          type = t.pathInStore;
+          description = ''
+            The source for the file.
+            Path in store (file or directory) which will be recursively copied over the target.
+          '';
+          example = ''../examples/hello'';
+        };
+      };
 
       managedFileType = t.submodule (
         {
@@ -93,14 +81,26 @@
                 If `target` is a directory this list is set to all the non-directory files in the directory.
               '';
             };
+
+            sourceFile = l.mkOption {
+              type = t.pathInStore;
+              description = ''
+                The source for the file.
+                Path in store (file or directory) which will be recursively copied over the target.
+                This option is guaranteed to be always defined independent of what `source.*` option was used.
+              '';
+              readOnly = true;
+            };
           };
 
           config = {
+            sourceFile =
+              config.source.file or (pkgs.writeText "file-source" (config.source.text or config.source.lines));
             target = lib.path.subpath.normalise name;
             listAllTargetFilesCommand =
               let
                 targetEscapedForPrintf = lib.strings.replaceStrings [ "%" ] [ "%%" ] config.target;
-                escapedSourceFile = lib.strings.escapeShellArg "${config.source.file}";
+                escapedSourceFile = lib.strings.escapeShellArg "${config.sourceFile}";
               in
               ''
                 ${pkgs.findutils}/bin/find ${escapedSourceFile} -type f -printf ${lib.strings.escapeShellArg targetEscapedForPrintf}'/%P\0' \
@@ -168,7 +168,7 @@
             _: managedFile:
             let
               escapedTarget = lib.strings.escapeShellArg managedFile.target;
-              escapedSource = lib.strings.escapeShellArg "${managedFile.source.file}";
+              escapedSource = lib.strings.escapeShellArg "${managedFile.sourceFile}";
 
               inst = mode: ''
                 mkdir -p "$(dirname "$out"/${escapedTarget})"
