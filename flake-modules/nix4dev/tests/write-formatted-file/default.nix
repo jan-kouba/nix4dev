@@ -3,10 +3,16 @@
 
   steps = [
     {
-      perSystem.nix4dev.managedFiles.files = {
-        "test.nix".source.file = ./test-dir/test.nix;
-        "test.yaml".source.file = ./test-dir/test.yaml;
-      };
+      perSystem =
+        { config, ... }:
+        {
+          nix4dev.managedFiles.files = {
+            "test.nix".source.file = ./test-dir/test.nix;
+            "test.yaml".source.file = ./test-dir/test.yaml;
+          };
+
+          test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
+        };
     }
   ];
 
