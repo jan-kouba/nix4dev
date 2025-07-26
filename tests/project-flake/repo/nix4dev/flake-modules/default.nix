@@ -1,4 +1,3 @@
-{ ... }:
 {
   perSystem = {
     config.nix4dev.projectFlake = {

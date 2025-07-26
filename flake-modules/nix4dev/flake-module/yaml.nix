@@ -1,6 +1,6 @@
-{ lib, ... }:
+{ flake-parts-lib, lib, ... }:
 {
-  perSystem =
+  options.perSystem = flake-parts-lib.mkPerSystemOption (
     {
       config,
       pkgs,
@@ -54,5 +54,6 @@
           indent_size = 2
         '';
       };
-    };
+    }
+  );
 }

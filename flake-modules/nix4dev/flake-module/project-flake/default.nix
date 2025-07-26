@@ -1,10 +1,10 @@
-{ lib, ... }:
+{ flake-parts-lib, lib, ... }:
 let
   l = lib // builtins;
   t = lib.types;
 in
 {
-  perSystem =
+  options.perSystem = flake-parts-lib.mkPerSystemOption (
     {
       config,
       pkgs,
@@ -80,5 +80,6 @@ in
           };
         };
       };
-    };
+    }
+  );
 }

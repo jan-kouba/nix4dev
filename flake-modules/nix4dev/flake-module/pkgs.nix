@@ -1,6 +1,7 @@
 nix4devInputs:
 {
   config,
+  flake-parts-lib,
   lib,
   ...
 }:
@@ -34,42 +35,41 @@ in
     };
   };
 
-  config = {
-    perSystem =
-      {
-        system,
-        config,
-        ...
-      }:
-      let
-        cfg = config.nix4dev;
-      in
-      {
-        options = {
-          nix4dev = {
-            overlays = overlaysOption;
+  options.perSystem = flake-parts-lib.mkPerSystemOption (
+    {
+      system,
+      config,
+      ...
+    }:
+    let
+      cfg = config.nix4dev;
+    in
+    {
+      options = {
+        nix4dev = {
+          overlays = overlaysOption;
 
-            allowUnfreePackages = l.mkOption {
-              type = t.listOf t.str;
-              description = ''
-                List of unfree packages to allow in the flake.
-              '';
-              default = [ ];
-              example = [ "terraform" ];
-            };
-          };
-        };
-
-        config = {
-          _module.args.pkgs = import topCfg.nixpkgs {
-            inherit system;
-            overlays = topCfg.overlays ++ cfg.overlays;
-
-            config = {
-              allowUnfreePredicate = pkg: l.elem (l.getName pkg) cfg.allowUnfreePackages;
-            };
+          allowUnfreePackages = l.mkOption {
+            type = t.listOf t.str;
+            description = ''
+              List of unfree packages to allow in the flake.
+            '';
+            default = [ ];
+            example = [ "terraform" ];
           };
         };
       };
-  };
+
+      config = {
+        _module.args.pkgs = import topCfg.nixpkgs {
+          inherit system;
+          overlays = topCfg.overlays ++ cfg.overlays;
+
+          config = {
+            allowUnfreePredicate = pkg: l.elem (l.getName pkg) cfg.allowUnfreePackages;
+          };
+        };
+      };
+    }
+  );
 }

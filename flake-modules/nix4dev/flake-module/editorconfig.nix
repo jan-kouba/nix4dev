@@ -1,6 +1,6 @@
-{ lib, ... }:
+{ flake-parts-lib, lib, ... }:
 {
-  perSystem =
+  options.perSystem = flake-parts-lib.mkPerSystemOption (
     { config, ... }:
     let
       cfg = config.nix4dev.editorconfig;
@@ -28,5 +28,6 @@
           trim_trailing_whitespace = true
         '';
       };
-    };
+    }
+  );
 }
