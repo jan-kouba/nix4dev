@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ flake-parts-lib, lib, ... }:
 {
   imports = [
     {
@@ -6,7 +6,7 @@
     }
   ];
 
-  config.perSystem =
+  options.perSystem = flake-parts-lib.mkPerSystemOption (
     {
       config,
       pkgs,
@@ -319,5 +319,6 @@
           managedFiles.updateFiles = updateFilesScript;
           managedFiles.writeFiles = writeFilesCommand;
         };
-    };
+    }
+  );
 }
