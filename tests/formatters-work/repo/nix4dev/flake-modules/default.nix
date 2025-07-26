@@ -5,7 +5,7 @@
     ];
 
     nix4dev.terraform.enable = true;
-    
+
     nix4dev.overlays = [
       (prev: self: {
         terraform = pkgs.writeShellApplication {
@@ -16,6 +16,6 @@
           '';
         };
       })
-    ];    
+    ];
   };
 }

@@ -20,7 +20,7 @@ in
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake
     (fpl.importApply ./shell nix4devInputs)
-    ./terraform.nix
+    ./terratofu.nix
     ./yaml.nix
   ];
 }
