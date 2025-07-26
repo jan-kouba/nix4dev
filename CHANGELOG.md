@@ -1,5 +1,28 @@
 # Changelog
 
+## [v0.3.0](https://github.com/jan-kouba/nix4dev/compare/v0.2.0...v0.3.0) (2025-07-26)
+
+### Features
+
+* Rename the `nix4dev.managedFiles` option to `managedFiles` (#118)
+([60c087b](https://github.com/jan-kouba/nix4dev/commit/60c087ba38476aac14507b0dad2d3095c7d8d55d)),
+closes [#118](https://github.com/jan-kouba/nix4dev/issues/118)
+* **managedFiles:** Change the type of the source option to attrTag (#117)
+([a117b97](https://github.com/jan-kouba/nix4dev/commit/a117b97b59e6b71a1a1a2e2eac855c528fad87a2)),
+closes [#117](https://github.com/jan-kouba/nix4dev/issues/117)
+* Add support for opentofu (#114)
+([e2bfdc5](https://github.com/jan-kouba/nix4dev/commit/e2bfdc552053f4ae0747145f044ee27cd1ef228c)),
+closes [#114](https://github.com/jan-kouba/nix4dev/issues/114)
+* Drop support for seeds (#110)
+([e9799ab](https://github.com/jan-kouba/nix4dev/commit/e9799abb3786180859d1182f715527e6efc1e25c)),
+closes [#110](https://github.com/jan-kouba/nix4dev/issues/110)
+
+### Fixes
+
+* Fix yaml formatting (#113)
+([ca717d8](https://github.com/jan-kouba/nix4dev/commit/ca717d8e3d3f64438fd158ac4ab273b588af55e2)),
+closes [#113](https://github.com/jan-kouba/nix4dev/issues/113)
+
 ## [v0.2.0](https://github.com/jan-kouba/nix4dev/compare/v0.1.3...v0.2.0) (2025-07-19)
 
 ### Features
