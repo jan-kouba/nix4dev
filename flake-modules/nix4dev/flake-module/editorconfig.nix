@@ -11,7 +11,7 @@
       };
 
       config = lib.mkIf (!cfg.disable) {
-        nix4dev.managedFiles.files.".editorconfig".source.lines = lib.mkBefore ''
+        managedFiles.files.".editorconfig".source.lines = lib.mkBefore ''
           # EditorConfig is awesome:
           # https://EditorConfig.org
 

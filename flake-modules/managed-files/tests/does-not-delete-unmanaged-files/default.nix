@@ -3,7 +3,7 @@
 
   steps = [
     {
-      perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
+      perSystem.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }

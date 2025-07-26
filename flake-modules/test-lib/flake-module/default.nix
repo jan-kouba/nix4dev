@@ -77,7 +77,7 @@
                 ];
 
                 perSystem = { config, ...}: {
-                  nix4dev.managedFiles.files."foo".source.text = "bar";
+                  managedFiles.files."foo".source.text = "bar";
                   test.commandsToExecute = [
                     ''${flake.packages.${system}.updateManagedFiles} "$out"''
                   ];
@@ -249,7 +249,7 @@
                 perSystem =
                 { config, ... }:
                 {
-                  test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
+                  test.commandsToExecute = [ ''${config.managedFiles.updateFiles} "$out"'' ];
                 };
               }
             ];

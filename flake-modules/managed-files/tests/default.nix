@@ -26,7 +26,7 @@
 
                 # Enable formatting of .nixf files
                 treefmt.programs.alejandra.enable = config.test.enableTreefmt;
-                nix4dev.managedFiles.treefmt.enable = config.test.enableTreefmt;
+                managedFiles.treefmt.enable = config.test.enableTreefmt;
               };
             };
         };
@@ -35,7 +35,7 @@
         perSystem =
           { config, ... }:
           {
-            test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
+            test.commandsToExecute = [ ''${config.managedFiles.updateFiles} "$out"'' ];
           };
       };
     in

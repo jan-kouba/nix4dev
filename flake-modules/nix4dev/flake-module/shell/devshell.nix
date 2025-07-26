@@ -74,7 +74,7 @@ in
         };
 
         config = {
-          nix4dev.managedFiles.files = {
+          managedFiles.files = {
             "nix4dev/flake.nix".source.file = cfg.flake.flakeNixFile;
 
             ".envrc".source.text =

@@ -3,12 +3,12 @@
 
   steps = [
     {
-      perSystem.nix4dev.managedFiles.files."first.nix".source.text = ''
+      perSystem.managedFiles.files."first.nix".source.text = ''
         "first"
       '';
     }
     {
-      perSystem.nix4dev.managedFiles.files."second.nix".source.text = ''
+      perSystem.managedFiles.files."second.nix".source.text = ''
         "second"
       '';
     }

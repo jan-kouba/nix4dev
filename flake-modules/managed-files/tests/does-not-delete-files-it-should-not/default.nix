@@ -3,7 +3,7 @@
 
   steps = [
     {
-      perSystem.nix4dev.managedFiles = {
+      perSystem.managedFiles = {
         # Check that the file name is not used as rsync pattern
         files."star*".source.text = "star*";
         files."starstar**".source.text = "starstar**";
