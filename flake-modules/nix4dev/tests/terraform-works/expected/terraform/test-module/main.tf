@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "local_file" "test" {
-  content = "This was created by terraform!\n"
-  filename               = "${path.module}/../../test-file"
+  content         = "This was created by terraform!\n"
+  filename        = "${path.module}/../../test-file"
   file_permission = "0666"
 }

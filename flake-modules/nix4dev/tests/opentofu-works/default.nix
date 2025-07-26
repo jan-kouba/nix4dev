@@ -20,13 +20,19 @@
             ''
               cd "$out"
 
+              # format files
+              mkdir .git
+              touch .git/config
+              TREEFMT_NO_CACHE=true ${config.devShells.default}/bin/prepare
+
               pushd tofu/test-module
               ${config.devShells.default}/bin/tofu init
               ${config.devShells.default}/bin/tofu plan
               ${config.devShells.default}/bin/tofu apply -auto-approve
               popd
 
-              rm -r tofu
+              rm -r .git
+              rm -r tofu/test-module/{.terraform*,terraform.tfstate}
             ''
           ];
         };

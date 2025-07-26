@@ -26,13 +26,19 @@
             ''
               cd "$out"
 
+              # format files
+              mkdir .git
+              touch .git/config
+              TREEFMT_NO_CACHE=true ${config.devShells.default}/bin/prepare
+
               pushd terraform/test-module
               ${config.devShells.default}/bin/terraform init
               ${config.devShells.default}/bin/terraform plan
               ${config.devShells.default}/bin/terraform apply -auto-approve
               popd
 
-              rm -r terraform
+              rm -r .git
+              rm -r terraform/test-module/{.terraform*,terraform.tfstate}
             ''
           ];
         };
