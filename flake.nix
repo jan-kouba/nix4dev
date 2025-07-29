@@ -20,6 +20,9 @@
       };
       "url" = "github:hercules-ci/flake-parts";
     };
+    "flake-parts-website" = {
+      "url" = "github:hercules-ci/flake.parts-website";
+    };
     "nixpkgs" = {
       "url" = "github:NixOS/nixpkgs/nixos-25.05";
     };
@@ -49,6 +52,7 @@
         in
         [
           ./flake-modules/templates.nix
+          inputs.flake-parts-website.flakeModules.empty-site
           (assertFileExists ./flake-modules/default.nix ''
             Default flake module not found. To create an empty default module execute:
 

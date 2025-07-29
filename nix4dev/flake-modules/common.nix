@@ -35,11 +35,25 @@
             };
           };
 
+          flake-parts-website = {
+            url = "github:hercules-ci/flake.parts-website";
+            # inputs = {
+            #   # devshell.follows = "devshell";
+            #   # flake-parts.follows = "flake-parts";
+            #   nixpkgs.follows = "nixpkgs";
+            #   treefmt-nix.follows = "treefmt-nix";
+            # };
+          };
+
           treefmt-nix = {
             url = "github:numtide/treefmt-nix";
             inputs.nixpkgs.follows = "nixpkgs";
           };
         };
+
+        extraFlakeModules = [
+          "inputs.flake-parts-website.flakeModules.empty-site"
+        ];
       };
 
       managedFiles.files.".gitignore".source.lines = ''
