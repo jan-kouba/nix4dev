@@ -6,7 +6,7 @@
         {
           test.enableTreefmt = false;
 
-          managedFiles.files."dir".source.file =
+          nix4dev.managedFiles.files."dir".source.file =
             let
               srcDir = pkgs.runCommand "make-dir" { } ''
                 cp -r "${./test-dir}" $out

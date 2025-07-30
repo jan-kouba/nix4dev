@@ -4,7 +4,7 @@
       perSystem = {
         test.enableTreefmt = false;
 
-        managedFiles.files."dir/foo".source.text = ''
+        nix4dev.managedFiles.files."dir/foo".source.text = ''
           foo
         '';
       };

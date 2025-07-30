@@ -15,7 +15,7 @@
         perSystem =
           { config, ... }:
           {
-            test.commandsToExecute = [ ''${config.managedFiles.updateFiles} "$out"'' ];
+            test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
           };
       };
     in

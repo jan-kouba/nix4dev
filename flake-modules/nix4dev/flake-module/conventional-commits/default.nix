@@ -58,7 +58,7 @@
             ];
           };
 
-          managedFiles.files = {
+          nix4dev.managedFiles.files = {
             ".git/hooks/commit-msg" =
               let
                 checkCommand = pkgs.writeShellApplication {
