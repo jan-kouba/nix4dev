@@ -41,7 +41,7 @@ nix4devInputs:
               '';
             };
 
-            extraFiles = options.managedFiles.files // {
+            extraFiles = options.nix4dev.managedFiles.files // {
               description = ''
                 The extra files to add to this template.
               '';
@@ -153,7 +153,7 @@ nix4devInputs:
               ${templateExtraFiles}/ \
               .
 
-            ${templateFlakeModule.config.allSystems.${system}.managedFiles.updateFiles} $out
+            ${templateFlakeModule.config.allSystems.${system}.nix4dev.managedFiles.updateFiles} $out
           '';
         in
         {
@@ -183,7 +183,7 @@ nix4devInputs:
       '';
     in
     {
-      managedFiles.files = {
+      nix4dev.managedFiles.files = {
         "flake-modules/templates.nix" = lib.mkIf hasTemplates {
           source.file = templatesNixFile;
         };

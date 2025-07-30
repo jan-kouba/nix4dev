@@ -36,11 +36,13 @@
           package = mdformat;
         };
 
-        managedFiles.files.".editorconfig".source.lines = lib.mkIf (!config.nix4dev.editorconfig.disable) ''
-          # Markdown
-          [*.md]
-          indent_size = 4
-        '';
+        nix4dev.managedFiles.files.".editorconfig".source.lines =
+          lib.mkIf (!config.nix4dev.editorconfig.disable)
+            ''
+              # Markdown
+              [*.md]
+              indent_size = 4
+            '';
       };
     }
   );

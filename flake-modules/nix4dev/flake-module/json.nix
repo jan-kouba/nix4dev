@@ -17,11 +17,13 @@
           ];
         };
 
-        managedFiles.files.".editorconfig".source.lines = lib.mkIf (!config.nix4dev.editorconfig.disable) ''
-          # JSON
-          [*.{json,json5}]
-          indent_size = 2
-        '';
+        nix4dev.managedFiles.files.".editorconfig".source.lines =
+          lib.mkIf (!config.nix4dev.editorconfig.disable)
+            ''
+              # JSON
+              [*.{json,json5}]
+              indent_size = 2
+            '';
       };
     }
   );

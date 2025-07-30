@@ -6,7 +6,7 @@
       perSystem = {
         test.enableTreefmt = false;
 
-        managedFiles.files."./test.nix".source.text = ''
+        nix4dev.managedFiles.files."./test.nix".source.text = ''
           {
           foo = [  "barr"    ];
           }

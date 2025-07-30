@@ -35,7 +35,7 @@
         # treefmt uses opentofu for formatting
         treefmt.programs.terraform.enable = true;
 
-        managedFiles.files = {
+        nix4dev.managedFiles.files = {
           ".gitignore".source.lines = ''
             #
             # Terraform

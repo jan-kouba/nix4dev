@@ -4,7 +4,7 @@
       perSystem = {
         test.enableTreefmt = false;
 
-        managedFiles.files."dir".source.file = ./test-dir;
+        nix4dev.managedFiles.files."dir".source.file = ./test-dir;
       };
     }
   ];

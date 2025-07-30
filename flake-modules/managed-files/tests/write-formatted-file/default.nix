@@ -3,7 +3,7 @@
 
   steps = [
     {
-      perSystem.managedFiles.files."test.nix".source.text = ''
+      perSystem.nix4dev.managedFiles.files."test.nix".source.text = ''
         {
         foo = [  "barr"    ];
         }
