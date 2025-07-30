@@ -54,8 +54,8 @@
         : The expected output of this test.
 
         `excludeFiles`
-        : The files to exclude from test.
-          The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
+        : The files or directories to exclude from test.
+          The files on the list will be deleted (if they exist) before the actual test output is compared with the expected output.
           Defaults to `[]`.
 
         # Example
@@ -151,7 +151,7 @@
             '';
 
           deleteExcluded = file: ''
-            rm "$out/${file}" && \
+            rm -r "$out/${file}" && \
               rmdir -p --ignore-fail-on-non-empty "$(${pkgs.coreutils}/bin/realpath "$(dirname "$out/${file}")")"
           '';
 
@@ -211,7 +211,7 @@
           : Optional test description. If not specified, the name of the test is used.
 
           `excludeFiles`
-          : The files to exclude from tests.
+          : The files or directories to exclude from tests.
             The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
             This will be merged with the excludeFiles passed as the parameter to the `testSuiteFlakePartsWithDir` function.
             Defaults to `[]`.
@@ -224,7 +224,7 @@
           It can be used to do some common setup (e.g. of the commands to run in every step).
 
         `excludeFiles`
-        : The files to exclude from tests.
+        : The files or directories to exclude from tests.
           The files on the list will be deleted (if exist) before the actual test output is compared with the expected output.
           Defaults to `[]`.
 
