@@ -55,9 +55,9 @@
     {
       treefmt.settings.global.excludes = [
         "tests/init-barebone-project/expected/**"
-        "tests/formatters-work/repo/**"
         "flake-modules/*/tests/*/expected/**"
         "flake-modules/*/tests/*/test-dir/**"
+        "flake-modules/nix4dev/tests/prepare-formats-files/init/*"
       ];
 
       nix4dev.envrc.watchDirectories = [ "tests" ];
