@@ -66,7 +66,7 @@ nix4devInputs:
 
           The devshell (in which the setup command is run) has only the nix4dev flake as input.
           It is not possible to add other inputs. However, it is possible to configure
-          the `perSystem.nix4dev.flake.extraInputs` option which will add the extra inputs into
+          the `perSystem.nix4dev.flake.inputs` option which will add the extra inputs into
           the generated template, so they can be used in the devshells initialized using the generated template.
         '';
         default = { };
@@ -191,7 +191,7 @@ nix4devInputs:
 
       nix4dev.projectFlake = lib.mkIf hasTemplates {
         enable = true;
-        extraFlakeModules = [ "./flake-modules/templates.nix" ];
+        modules = [ "./flake-modules/templates.nix" ];
       };
     };
 }

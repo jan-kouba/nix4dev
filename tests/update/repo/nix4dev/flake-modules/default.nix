@@ -2,7 +2,7 @@
 let
   l = lib // builtins;
 
-  extraInputs = {
+  inputs = {
     dep = {
       url = "${l.head (l.splitString "\n" (l.readFile ./repo_root))}/../dep-repo";
       flake = false;
@@ -10,16 +10,19 @@ let
   };
 in
 {
-  imports = [ ../../test-module.nix ];
+  imports = [
+    ./inputs.nix
+    ../../test-module.nix
+  ];
 
   perSystem = {
     nix4dev.flake = {
-      inherit extraInputs;
+      inherit inputs;
     };
 
     nix4dev.projectFlake = {
       enable = true;
-      extraInputs = extraInputs // {
+      inputs = inputs // {
         systems.url = "github:nix-systems/default";
       };
     };

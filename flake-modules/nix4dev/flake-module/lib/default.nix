@@ -2,7 +2,6 @@
 {
   imports = [
     ./flake-nix-options.nix
-    ./make-flake-nix.nix
   ];
 
   options.perSystem = flake-parts-lib.mkPerSystemOption ({

@@ -14,21 +14,28 @@ in
     let
       cfg = config.nix4dev;
 
-      baseFlakeOptions = config.nix4dev.lib.internal.flakeNixOptions {
-        flakePartsInputPathString = "inputs.nix4dev.inputs.flake-parts";
-        nixpkgsInputPathString = "inputs.nix4dev.inputs.nixpkgs";
-        flakeConfigPathString = "nix4dev.flake";
-      };
+      baseFlakeOptions = config.nix4dev.lib.internal.flakeNixOptions;
 
       flakeOptions = {
         imports = [ baseFlakeOptions ];
 
         config = {
-          baseFlakeInputs = {
-            nix4dev.url = "github:jan-kouba/nix4dev";
+          flakeConfigPath = [
+            "nix4dev"
+            "flake"
+          ];
+
+          inputs = {
+            nix4dev = l.mkDefault {
+              url = "github:jan-kouba/nix4dev";
+            };
+
+            flake-parts = l.mkDefault {
+              follows = "nix4dev/flake-parts";
+            };
           };
 
-          baseFlakeModules = [
+          modules = l.mkDefault [
             "inputs.nix4dev.flakeModules.default"
           ];
         };
