@@ -12,11 +12,7 @@ in
     }:
     let
       cfg = config.nix4dev.projectFlake;
-      flakeOptionsBase = config.nix4dev.lib.internal.flakeNixOptions {
-        flakePartsInputPathString = "inputs.flake-parts";
-        flakeConfigPathString = "nix4dev.projectFlake";
-        nixpkgsInputPathString = "inputs.nixpkgs";
-      };
+      flakeOptionsBase = config.nix4dev.lib.internal.flakeNixOptions;
       flakeOptions = {
         imports = [ flakeOptionsBase ];
 
@@ -34,6 +30,9 @@ in
           };
 
           baseFlakeModules = [ ];
+
+          nix4devInputPath = [ ];
+          flakeConfigPathString = "nix4dev.projectFlake";
         };
       };
     in
