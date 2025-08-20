@@ -20,14 +20,6 @@ in
         imports = [ baseFlakeOptions ];
 
         config = {
-          baseFlakeInputs = {
-            nix4dev.url = "github:jan-kouba/nix4dev";
-          };
-
-          baseFlakeModules = [
-            "inputs.nix4dev.flakeModules.default"
-          ];
-
           nix4devInputPath = [ "nix4dev" ];
           flakeConfigPathString = "nix4dev.flake";
         };

@@ -5,8 +5,15 @@ t.makeTest (
     cat > nix4dev/flake-modules/default.nix <<EOF
       { inputs, ... }: {
         perSystem = { system, ...}: {
-          nix4dev.flake.extraInputs = {
-            foo.url = "github:NixOS/nixpkgs/nixos-25.05";
+          nix4dev.flake = {
+            extraInputs = {
+              foo.url = "github:NixOS/nixpkgs/nixos-25.05";
+              nix4dev.url = "github:jan-kouba/nix4dev";
+            };
+
+             extraFlakeModules = [
+               "inputs.nix4dev.flakeModules.default"
+             ];
           };
 
           packages.bar = inputs.foo.legacyPackages.\''${system}.hello;

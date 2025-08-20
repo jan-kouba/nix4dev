@@ -10,7 +10,10 @@ let
   };
 in
 {
-  imports = [ ../../test-module.nix ];
+  imports = [
+    ./inputs.nix
+    ../../test-module.nix
+  ];
 
   perSystem = {
     nix4dev.flake = {
