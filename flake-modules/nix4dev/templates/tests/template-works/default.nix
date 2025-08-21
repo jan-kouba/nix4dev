@@ -1,14 +1,26 @@
 let
   templateSettingsModule = {
-    perSystem.nix4dev.templates.test = {
-      description = "A test template";
-      welcomeText = ''
-        # A test template
-        Hello
-      '';
+    perSystem = {
+      nix4dev.templates.test = {
+        description = "A test template";
+        welcomeText = ''
+          # A test template
+          Hello
+        '';
 
-      extraFiles = {
-        "nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
+        extraFiles = {
+          "nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
+        };
+      };
+
+      nix4dev.projectFlake = {
+        inputs = {
+          flake-parts = {
+            inputs.nixpkgs-lib.follows = "nixpkgs";
+            url = "github:hercules-ci/flake-parts";
+          };
+          nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+        };
       };
     };
   };

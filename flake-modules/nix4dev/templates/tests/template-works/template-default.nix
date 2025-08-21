@@ -1,11 +1,11 @@
 {
   perSystem.nix4dev.flake = {
-    extraInputs = {
+    inputs = {
       dummy-flake.url = "github:jan-kouba/dummy-repo";
       nix4dev.url = "github:jan-kouba/nix4dev";
     };
 
-    extraFlakeModules = [
+    modules = [
       "inputs.nix4dev.flakeModules.default"
       "inputs.dummy-flake.flakeModules.default"
     ];

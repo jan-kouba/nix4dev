@@ -5,7 +5,7 @@
 
       description = "This is test of project flake";
 
-      extraInputs = {
+      inputs = {
         foo-nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
         systems.url = "github:nix-systems/default";
       };

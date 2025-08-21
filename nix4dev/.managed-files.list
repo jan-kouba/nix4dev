@@ -19,6 +19,7 @@
     "nix4dev/templates/default/.gitignore",
     "nix4dev/templates/default/nix4dev/.managed-files.list",
     "nix4dev/templates/default/nix4dev/flake-modules/default.nix",
+    "nix4dev/templates/default/nix4dev/flake-modules/inputs.nix",
     "nix4dev/templates/default/nix4dev/flake.nix"
   ]
 }

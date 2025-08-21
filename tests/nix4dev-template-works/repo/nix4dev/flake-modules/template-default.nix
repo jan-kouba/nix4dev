@@ -11,8 +11,8 @@
     in
     {
       nix4dev.flake = {
-        extraInputs.nix4dev.url = "github:jan-kouba/nix4dev";
-        extraFlakeModules = [ "inputs.nix4dev.flakeModules.default" ];
+        inputs.nix4dev.url = "github:jan-kouba/nix4dev";
+        modules = [ "inputs.nix4dev.flakeModules.default" ];
       };
 
       devshells.default.packages = [
