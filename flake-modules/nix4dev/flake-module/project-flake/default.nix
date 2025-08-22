@@ -21,13 +21,9 @@ in
         };
 
         config = {
-          # baseFlakeInputs = {
-          #   nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-          #   flake-parts = {
-          #     url = "github:hercules-ci/flake-parts";
-          #     inputs.nixpkgs-lib.follows = "nixpkgs";
-          #   };
-          # };
+          inputs.flake-parts = l.mkDefault {
+            url = "github:hercules-ci/flake-parts";
+          };
 
           nix4devInputPath = [ ];
           flakeConfigPathString = "nix4dev.projectFlake";

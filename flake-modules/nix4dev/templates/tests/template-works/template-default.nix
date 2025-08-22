@@ -2,7 +2,6 @@
   perSystem.nix4dev.flake = {
     inputs = {
       dummy-flake.url = "github:jan-kouba/dummy-repo";
-      nix4dev.url = "github:jan-kouba/nix4dev";
     };
 
     modules = [

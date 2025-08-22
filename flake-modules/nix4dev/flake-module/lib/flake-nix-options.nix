@@ -30,12 +30,15 @@
           flakeNixFile =
             let
               flakeDescription = config.description;
-              makeInputPathString =
-                inputPath:
-                lib.strings.concatMapStringsSep "." (e: "inputs.${lib.strings.escapeNixIdentifier e}") inputPath;
-              flakePartsInputPathString = makeInputPathString (config.nix4devInputPath ++ [ "flake-parts" ]);
-              nixpkgsInputPathString = makeInputPathString (config.nix4devInputPath ++ [ "nixpkgs" ]);
-              flakeInputs = config.baseFlakeInputs // config.extraInputs // config.inputs;
+              flakeInputs =
+                let
+                  i = config.baseFlakeInputs // config.extraInputs // config.inputs;
+                in
+                assert l.assertMsg (i ? flake-parts) ''
+                  The flake inputs must contain flake-parts!
+                  To fix this, add the `flake-parts` input into the `${config.flakeConfigPathString}.inputs` option.
+                '';
+                i;
               flakeModules = config.baseFlakeModules ++ config.extraFlakeModules ++ config.modules;
             in
             pkgs.writeText "flake-not-formatted" ''
@@ -47,12 +50,12 @@
                 inputs = ${printFlakeInputs flakeInputs};
 
                 outputs = inputs:
-                  ${flakePartsInputPathString}.lib.mkFlake
+                  inputs.flake-parts.lib.mkFlake
                   {inherit inputs;}
                   {
                     imports =
                       let
-                        l = ${nixpkgsInputPathString}.lib // builtins;
+                        l = inputs.flake-parts.inputs.nixpkgs-lib.lib // builtins;
                         assertFileExists = path: msg: assert (
                           l.asserts.assertMsg
                           (l.filesystem.pathIsRegularFile path)
@@ -138,6 +141,15 @@
                   v;
             };
 
+            description = l.mkOption {
+              type = t.nullOr t.str;
+              description = ''
+                Flake description. This will be set into flake's `description` attribute.
+              '';
+              example = "A very cool flake!";
+              default = null;
+            };
+
             baseFlakeInputs = l.mkOption {
               type = t.attrsOf t.anything;
               description = ''
@@ -166,15 +178,6 @@
                   l.warn "${config.flakeConfigPathString}.baseFlakeModules was deprecated. Use the `modules` option instead." v
                 else
                   v;
-            };
-
-            description = l.mkOption {
-              type = t.nullOr t.str;
-              description = ''
-                Flake description. This will be set into flake's `description` attribute.
-              '';
-              example = "A very cool flake!";
-              default = null;
             };
 
             nix4devInputPath = l.mkOption {

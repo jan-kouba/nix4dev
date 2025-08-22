@@ -6,6 +6,9 @@
     "dummy-flake" = {
       "url" = "github:jan-kouba/dummy-repo";
     };
+    "flake-parts" = {
+      "follows" = "nix4dev/flake-parts";
+    };
     "nix4dev" = {
       "url" = "github:jan-kouba/nix4dev";
     };
@@ -13,10 +16,10 @@
 
   outputs =
     inputs:
-    inputs.nix4dev.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports =
         let
-          l = inputs.nix4dev.inputs.nixpkgs.lib // builtins;
+          l = inputs.flake-parts.inputs.nixpkgs-lib.lib // builtins;
           assertFileExists =
             path: msg:
             assert (l.asserts.assertMsg (l.filesystem.pathIsRegularFile path) msg);

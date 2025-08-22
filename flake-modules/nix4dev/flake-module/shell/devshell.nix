@@ -22,6 +22,20 @@ in
         config = {
           nix4devInputPath = [ "nix4dev" ];
           flakeConfigPathString = "nix4dev.flake";
+
+          inputs = {
+            nix4dev = l.mkDefault {
+              url = "github:jan-kouba/nix4dev";
+            };
+
+            flake-parts = l.mkDefault {
+              follows = "nix4dev/flake-parts";
+            };
+          };
+
+          modules = l.mkDefault [
+            "inputs.nix4dev.flakeModules.default"
+          ];
         };
       };
 

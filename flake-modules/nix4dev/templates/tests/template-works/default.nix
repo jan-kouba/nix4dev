@@ -12,16 +12,6 @@ let
           "nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
         };
       };
-
-      nix4dev.projectFlake = {
-        inputs = {
-          flake-parts = {
-            inputs.nixpkgs-lib.follows = "nixpkgs";
-            url = "github:hercules-ci/flake-parts";
-          };
-          nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-        };
-      };
     };
   };
 in
