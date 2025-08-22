@@ -117,11 +117,9 @@
               defaultText = l.literalExpression "{}";
               apply =
                 v:
-                l.asserts.checkAssertWarn
-                  [ ]
-                  [
-                    "extraInputs was deprecated. Use the `modules` option instead."
-                  ]
+                if v != { } then
+                  l.warn "${config.flakeConfigPathString}.extraInputs was deprecated. Use the `modules` option instead." v
+                else
                   v;
             };
 
@@ -134,11 +132,9 @@
               defaultText = l.literalExpression "[]";
               apply =
                 v:
-                l.asserts.checkAssertWarn
-                  [ ]
-                  [
-                    "extraFlakeModules was deprecated. Use the `modules` option instead."
-                  ]
+                if v != [ ] then
+                  l.warn "${config.flakeConfigPathString}.extraFlakeModules was deprecated. Use the `modules` option instead." v
+                else
                   v;
             };
 
@@ -151,11 +147,9 @@
               default = { };
               apply =
                 v:
-                l.asserts.checkAssertWarn
-                  [ ]
-                  [
-                    "baseFlakeInputs was deprecated. Use the `inputs` option instead."
-                  ]
+                if v != { } then
+                  l.warn "${config.flakeConfigPathString}.baseFlakeInputs was deprecated. Use the `inputs` option instead." v
+                else
                   v;
             };
 
@@ -168,11 +162,9 @@
               default = [ ];
               apply =
                 v:
-                l.asserts.checkAssertWarn
-                  [ ]
-                  [
-                    "baseFlakeModules was deprecated. Use the `modules` option instead."
-                  ]
+                if v != [ ] then
+                  l.warn "${config.flakeConfigPathString}.baseFlakeModules was deprecated. Use the `modules` option instead." v
+                else
                   v;
             };
 
