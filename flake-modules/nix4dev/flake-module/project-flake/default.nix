@@ -21,8 +21,15 @@ in
         };
 
         config = {
-          inputs.flake-parts = l.mkDefault {
-            url = "github:hercules-ci/flake-parts";
+          inputs = {
+            flake-parts = l.mkDefault {
+              url = "github:hercules-ci/flake-parts";
+              inputs.nixpkgs-lib.follows = "nixpkgs";
+            };
+
+            nixpkgs = l.mkDefault {
+              url = "github:NixOS/nixpkgs/nixos-25.05";
+            };
           };
 
           nix4devInputPath = [ ];

@@ -22,6 +22,7 @@ let
       let
         isLocalFlake = (l.hasAttr "url" value) && (l.substring 0 1 value.url) == "/";
         isFlake = (!l.hasAttr "flake" value) || value.flake;
+        isFollows = value ? follows;
         inputPath = inputPathSoFar ++ [ inputName ];
       in
       if inputName == "nix4dev" then
@@ -29,6 +30,8 @@ let
         ++ (resolveInputs inputPath (import (nix4devRepoPath + "/flake.nix")).inputs)
       else if isLocalFlake then
         (if isFlake then resolveInputs inputPath (import (value.url + "/flake.nix")).inputs else [ ])
+      else if isFollows then
+        [ ]
       else
         { inputPath = inputPathSoFar ++ [ inputName ]; }
     );

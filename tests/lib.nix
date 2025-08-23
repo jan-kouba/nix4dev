@@ -40,9 +40,10 @@ let
         overrideOptions="$( \
           nix eval --raw --file ${./override-flake-inputs.nix} \
             --arg flakePath "$flakeNix" \
-            --arg nixpkgs ${inputs.nixpkgs} options \
+            --arg nixpkgs ${inputs.nixpkgs} \
             --arg localInputsPath "${localInputsPath}" \
             --arg nix4devRepoPath "${repoPath}" \
+            options
         )"
 
         if nix flake metadata ${localFlakeUrl} \

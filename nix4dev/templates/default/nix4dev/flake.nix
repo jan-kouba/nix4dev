@@ -21,7 +21,6 @@
         in
         [
           inputs.nix4dev.flakeModules.default
-          inputs.nix4dev.flakeModules.default
           (assertFileExists ./flake-modules/default.nix ''
             Default flake module not found. To create an empty default module execute:
 
