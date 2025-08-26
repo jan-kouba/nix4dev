@@ -3,16 +3,16 @@
 
   # To change flake inputs, use the `nix4dev.projectFlake.inputs` option.
   inputs = {
-    "flake-parts" = {
-      "inputs" = {
-        "nixpkgs-lib" = {
-          "follows" = "nixpkgs";
+    flake-parts = {
+      inputs = {
+        nixpkgs-lib = {
+          follows = "nixpkgs";
         };
       };
-      "url" = "github:hercules-ci/flake-parts";
+      url = "github:hercules-ci/flake-parts";
     };
-    "nixpkgs" = {
-      "url" = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-25.05";
     };
   };
 
