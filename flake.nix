@@ -2,37 +2,37 @@
 {
   description = "Tools to easily setup development environment.";
 
-  # To change flake inputs, use the `nix4dev.projectFlake.extraInputs` option.
+  # To change flake inputs, use the `nix4dev.projectFlake.inputs` option.
   inputs = {
-    "devshell" = {
-      "inputs" = {
-        "nixpkgs" = {
-          "follows" = "nixpkgs";
+    devshell = {
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
         };
       };
-      "url" = "github:numtide/devshell";
+      url = "github:numtide/devshell";
     };
-    "flake-parts" = {
-      "inputs" = {
-        "nixpkgs-lib" = {
-          "follows" = "nixpkgs";
+    flake-parts = {
+      inputs = {
+        nixpkgs-lib = {
+          follows = "nixpkgs";
         };
       };
-      "url" = "github:hercules-ci/flake-parts";
+      url = "github:hercules-ci/flake-parts";
     };
-    "nixpkgs" = {
-      "url" = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-25.05";
     };
-    "systems" = {
-      "url" = "github:nix-systems/default";
+    systems = {
+      url = "github:nix-systems/default";
     };
-    "treefmt-nix" = {
-      "inputs" = {
-        "nixpkgs" = {
-          "follows" = "nixpkgs";
+    treefmt-nix = {
+      inputs = {
+        nixpkgs = {
+          follows = "nixpkgs";
         };
       };
-      "url" = "github:numtide/treefmt-nix";
+      url = "github:numtide/treefmt-nix";
     };
   };
 
@@ -41,7 +41,7 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports =
         let
-          l = inputs.nixpkgs.lib // builtins;
+          l = inputs.flake-parts.inputs.nixpkgs-lib.lib // builtins;
           assertFileExists =
             path: msg:
             assert (l.asserts.assertMsg (l.filesystem.pathIsRegularFile path) msg);

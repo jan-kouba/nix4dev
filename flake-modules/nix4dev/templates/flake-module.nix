@@ -187,7 +187,8 @@ nix4devInputs:
         "flake-modules/templates.nix" = lib.mkIf hasTemplates {
           source.file = templatesNixFile;
         };
-      } // generatedTemplatesDirs;
+      }
+      // generatedTemplatesDirs;
 
       nix4dev.projectFlake = lib.mkIf hasTemplates {
         enable = true;
