@@ -110,7 +110,7 @@ nix4devInputs:
             ${lib.concatMapAttrsStringSep "\n" (
               _: extraFile:
               let
-                srcFileArg = lib.strings.escapeShellArg "${extraFile.source.file}";
+                srcFileArg = lib.strings.escapeShellArg "${extraFile.sourceFile}";
                 targetFileRelPathArg = lib.strings.escapeShellArg extraFile.target;
               in
               ''
