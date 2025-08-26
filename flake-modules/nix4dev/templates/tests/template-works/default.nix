@@ -9,6 +9,12 @@ let
 
       extraFiles = {
         "nix4dev/flake-modules/default.nix".source.file = ./template-default.nix;
+        "foo".source.text = ''
+          foo
+        '';
+        "bar".source.lines = ''
+          bar
+        '';
       };
     };
   };
