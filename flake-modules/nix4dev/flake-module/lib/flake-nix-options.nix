@@ -15,13 +15,15 @@
               "set" = ''
                 {
                   ${l.strings.concatStrings (
-                    l.attrsets.mapAttrsToList (name: value: ''"${name}" = ${printFlakeInputs value};'') x
+                    l.attrsets.mapAttrsToList (
+                      name: value: ''${lib.strings.escapeNixIdentifier name} = ${printFlakeInputs value};''
+                    ) x
                   )}
                 }
               '';
               "int" = l.toString x;
               "bool" = if x then "true" else "false";
-              "string" = ''"${x}"'';
+              "string" = lib.strings.escapeNixString x;
               "list" = "[ ${l.concatStringsSep " " (printFlakeInputs x)} ]";
               "float" = l.toString x;
             }

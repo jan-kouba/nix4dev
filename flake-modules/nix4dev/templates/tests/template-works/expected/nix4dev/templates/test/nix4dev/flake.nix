@@ -3,14 +3,14 @@
 
   # To change flake inputs, use the `nix4dev.flake.inputs` option.
   inputs = {
-    "dummy-flake" = {
-      "url" = "github:jan-kouba/dummy-repo";
+    dummy-flake = {
+      url = "github:jan-kouba/dummy-repo";
     };
-    "flake-parts" = {
-      "follows" = "nix4dev/flake-parts";
+    flake-parts = {
+      follows = "nix4dev/flake-parts";
     };
-    "nix4dev" = {
-      "url" = "github:jan-kouba/nix4dev";
+    nix4dev = {
+      url = "github:jan-kouba/nix4dev";
     };
   };
 
