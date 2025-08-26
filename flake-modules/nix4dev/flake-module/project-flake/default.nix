@@ -12,11 +12,7 @@ in
     }:
     let
       cfg = config.nix4dev.projectFlake;
-      flakeOptionsBase = config.nix4dev.lib.internal.flakeNixOptions {
-        flakePartsInputPathString = "inputs.flake-parts";
-        flakeConfigPathString = "nix4dev.projectFlake";
-        nixpkgsInputPathString = "inputs.nixpkgs";
-      };
+      flakeOptionsBase = config.nix4dev.lib.internal.flakeNixOptions;
       flakeOptions = {
         imports = [ flakeOptionsBase ];
 
@@ -25,15 +21,21 @@ in
         };
 
         config = {
-          baseFlakeInputs = {
-            nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-            flake-parts = {
+          inputs = {
+            flake-parts = l.mkDefault {
               url = "github:hercules-ci/flake-parts";
               inputs.nixpkgs-lib.follows = "nixpkgs";
             };
+
+            nixpkgs = l.mkDefault {
+              url = "github:NixOS/nixpkgs/nixos-25.05";
+            };
           };
 
-          baseFlakeModules = [ ];
+          flakeConfigPath = [
+            "nix4dev"
+            "projectFlake"
+          ];
         };
       };
     in
