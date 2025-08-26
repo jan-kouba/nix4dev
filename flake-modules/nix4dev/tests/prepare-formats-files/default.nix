@@ -4,7 +4,7 @@
       perSystem =
         { config, ... }:
         {
-          nix4dev.terraform.enable = true;
+          nix4dev.opentofu.enable = true;
 
           test.commandsToExecute = [
             ''
