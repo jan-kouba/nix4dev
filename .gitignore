@@ -1,4 +1,4 @@
+/.direnv
+
 # Do not commit flake lock file
 /flake.lock
-
-/.direnv

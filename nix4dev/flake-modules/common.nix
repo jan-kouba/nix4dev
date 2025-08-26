@@ -7,7 +7,7 @@
       conventionalCommits.enable = true;
 
       # Add the root flake as dependency, so we have its dependencies captured
-      flake.extraInputs =
+      flake.inputs =
         let
           projectFlakeInputs = (import ./../../flake.nix).inputs;
           testInputs = lib.attrsets.mapAttrs' (name: value: {
@@ -25,7 +25,7 @@
 
         description = "Tools to easily setup development environment.";
 
-        extraInputs = {
+        inputs = {
           systems.url = "github:nix-systems/default";
 
           devshell = {
