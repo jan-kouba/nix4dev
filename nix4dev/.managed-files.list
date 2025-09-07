@@ -11,6 +11,7 @@
     ".git/hooks/commit-msg",
     ".github/workflows/nix4dev-check.yml",
     ".gitignore",
+    "docs/test-lib.md",
     "flake-modules/templates.nix",
     "flake.nix",
     "nix4dev/flake.nix",
