@@ -4,11 +4,19 @@
   ...
 }:
 {
-  perSystem =
-    {
-      config,
-      ...
-    }:
+  imports = [
+    ./deletes-file-when-stops-being-managed
+    ./does-not-delete-files-it-should-not
+    ./does-not-delete-unmanaged-files
+    ./parent-directories-of-managed-files-are-writable
+    ./write-directory
+    ./write-directory-produced-by-derivation
+    ./write-file
+    ./write-formatted-directory
+    ./write-formatted-file
+  ];
+
+  config.perSystem =
     let
       treefmtModule =
         { lib, ... }:
@@ -40,9 +48,10 @@
       };
     in
     {
-      checks.managedFilesCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
-        testsDir = ./.;
-        inputs.nixpkgs = inputs.nixpkgs;
+      nix4dev.flakePartsTests.suites."managed-files" = {
+        defaultInputs = {
+          nixpkgs = inputs.nixpkgs;
+        };
 
         extraFlakeModules = [
           self.flakeModules.managedFiles
