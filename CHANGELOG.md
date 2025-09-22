@@ -1,5 +1,31 @@
 # Changelog
 
+### [v0.3.1](https://github.com/jan-kouba/nix4dev/compare/v0.3.0...v0.3.1) (2025-09-22)
+
+#### Features
+
+* Allow to define flake parts test suites using module system (#128)
+([f8ca2e4](https://github.com/jan-kouba/nix4dev/commit/f8ca2e4d96d79977bd378270b224b3edb42e9664)),
+closes [#128](https://github.com/jan-kouba/nix4dev/issues/128)
+* Fix and improve the managed flake.nix files (#125)
+([dac974b](https://github.com/jan-kouba/nix4dev/commit/dac974b2d736e6e55f68ba02f16697db111deec9)),
+closes [#125](https://github.com/jan-kouba/nix4dev/issues/125)
+* Do not automatically add nix4dev to inputs (#123)
+([70fac2a](https://github.com/jan-kouba/nix4dev/commit/70fac2a2185d94d6eba2850ae2357171e8e8fb2b)),
+closes [#123](https://github.com/jan-kouba/nix4dev/issues/123)
+* **test-lib:** Allow to specify also directories in the excludeFiles (#121)
+([845b573](https://github.com/jan-kouba/nix4dev/commit/845b5739ab8b5eb8a8ed900da6254263a5785fc3)),
+closes [#121](https://github.com/jan-kouba/nix4dev/issues/121)
+* Revert the rename of `nix4dev.managedFiles` option to `managedFiles` (#120)
+([26f3ed3](https://github.com/jan-kouba/nix4dev/commit/26f3ed30ebbf2f871a09a0f9e6c9732766a9d27c)),
+closes [#120](https://github.com/jan-kouba/nix4dev/issues/120)
+
+#### Fixes
+
+* Fix extra files generation in nix4dev templates (#126)
+([b9c86e1](https://github.com/jan-kouba/nix4dev/commit/b9c86e1b01b966107801b5a6c6819851b59f16fa)),
+closes [#126](https://github.com/jan-kouba/nix4dev/issues/126)
+
 ## [v0.3.0](https://github.com/jan-kouba/nix4dev/compare/v0.2.0...v0.3.0) (2025-07-26)
 
 ### Features
