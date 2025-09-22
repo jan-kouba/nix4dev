@@ -1,17 +1,19 @@
 {
-  testDescription = "managed files can write file";
+  perSystem.nix4dev.flakePartsTests.suites."managed-files".tests."write-file" = {
+    steps = [
+      {
+        perSystem = {
+          test.enableTreefmt = false;
 
-  steps = [
-    {
-      perSystem = {
-        test.enableTreefmt = false;
+          nix4dev.managedFiles.files."./test.nix".source.text = ''
+            {
+            foo = [  "barr"    ];
+            }
+          '';
+        };
+      }
+    ];
 
-        nix4dev.managedFiles.files."./test.nix".source.text = ''
-          {
-          foo = [  "barr"    ];
-          }
-        '';
-      };
-    }
-  ];
+    expected = ./expected;
+  };
 }
