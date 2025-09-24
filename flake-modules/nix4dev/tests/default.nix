@@ -4,13 +4,15 @@
   ...
 }:
 {
-  perSystem =
-    {
-      config,
-      ...
-    }:
-    let
+  imports = [
+    ./opentofu-works
+    ./prepare-formats-files
+    ./terraform-works
+    ./write-managed-formatted-file
+  ];
 
+  perSystem =
+    let
       nix4devTestModule = {
         perSystem =
           { config, ... }:
@@ -20,9 +22,8 @@
       };
     in
     {
-      checks.nix4devModuleTests = config.nix4devTestLib.testSuiteFlakePartsWithDir {
-        testsDir = ./.;
-        inputs.nixpkgs = inputs.nixpkgs;
+      nix4dev.flakePartsTests.suites."nix4dev" = {
+        defaultInputs.nixpkgs = inputs.nixpkgs;
 
         extraFlakeModules = [
           nix4devTestModule

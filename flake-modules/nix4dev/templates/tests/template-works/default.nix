@@ -20,25 +20,29 @@ let
   };
 in
 {
-  steps = [
-    {
-      imports = [ templateSettingsModule ];
+  perSystem.config.nix4dev.flakePartsTests.suites."templates".tests."template-works" = {
+    steps = [
+      {
+        imports = [ templateSettingsModule ];
 
-      perSystem =
-        { config, ... }:
-        {
-          test.commandsToExecute = [
-            ''PRJ_ROOT="$out" ${config.packages.setup}/bin/setup''
-          ];
-        };
-    }
-  ];
+        perSystem =
+          { config, ... }:
+          {
+            test.commandsToExecute = [
+              ''PRJ_ROOT="$out" ${config.packages.setup}/bin/setup''
+            ];
+          };
+      }
+    ];
 
-  excludeFiles = [
-    ".editorconfig"
-    ".envrc"
-    ".gitignore"
-    "nix4dev/.managed-files.list"
-    "nix4dev/flake.nix"
-  ];
+    expected = ./expected;
+
+    excludeFiles = [
+      ".editorconfig"
+      ".envrc"
+      ".gitignore"
+      "nix4dev/.managed-files.list"
+      "nix4dev/flake.nix"
+    ];
+  };
 }
