@@ -1,16 +1,12 @@
 { self, ... }:
 {
-  perSystem =
-    { config, ... }:
-    {
-      checks.templatesCheck = config.nix4devTestLib.testSuiteFlakePartsWithDir {
-        testsDir = ./.;
+  imports = [
+    ./template-works
+  ];
 
-        inputs = { };
-
-        extraFlakeModules = [
-          self.flakeModules.default
-        ];
-      };
-    };
+  perSystem.config.nix4dev.flakePartsTests.suites."templates" = {
+    extraFlakeModules = [
+      self.flakeModules.default
+    ];
+  };
 }
