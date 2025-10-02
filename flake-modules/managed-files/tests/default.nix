@@ -14,6 +14,8 @@
     ./write-file
     ./write-formatted-directory
     ./write-formatted-file
+
+    ./write-file-no-treefmt
   ];
 
   config.perSystem =
@@ -57,6 +59,17 @@
           self.flakeModules.managedFiles
           managedFilesTestModule
           treefmtModule
+        ];
+      };
+
+      nix4dev.flakePartsTests.suites."managed-files-no-treefmt" = {
+        defaultInputs = {
+          nixpkgs = inputs.nixpkgs;
+        };
+
+        extraFlakeModules = [
+          self.flakeModules.managedFiles
+          managedFilesTestModule
         ];
       };
     };
