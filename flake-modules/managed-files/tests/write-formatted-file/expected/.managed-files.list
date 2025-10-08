@@ -6,6 +6,7 @@
     "This file contains list of managed files."
   ],
   "managedFiles": [
+    "test.md",
     "test.nix"
   ]
 }

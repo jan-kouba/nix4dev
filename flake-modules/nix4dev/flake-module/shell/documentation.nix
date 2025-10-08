@@ -1,4 +1,4 @@
-{ self, ... }:
+{ ... }:
 {
   perSystem =
     {
@@ -24,7 +24,7 @@
 
                 declarations = builtins.map (decl: {
                   name = lib.removePrefix "/" (
-                    lib.removePrefix (builtins.toString self) (
+                    lib.removePrefix (builtins.toString "") (
                       lib.removeSuffix ", via option perSystem" (builtins.toString decl)
                     )
                   );
