@@ -1,4 +1,3 @@
-_nix4devInputs:
 {
   flake-parts-lib,
   self,
@@ -10,6 +9,10 @@ _nix4devInputs:
     { ... }:
     {
       options.nix4dev.documentation.nixModules = {
+        enable = lib.mkEnableOption "generation of documentation for nix modules" // {
+          default = true;
+        };
+
         sourcePath = lib.mkOption {
           type = lib.types.path;
           description = ''
@@ -33,7 +36,6 @@ _nix4devInputs:
   config.perSystem =
     {
       config,
-      options,
       pkgs,
       system,
       ...
@@ -84,12 +86,11 @@ _nix4devInputs:
         in
         {
           "docs/modules/flake/${docFileNameBase}.md".source.file = optionsDoc.optionsCommonMark;
-          # pkgs.runCommand "" {} "touch $out";
         };
     in
     {
-      nix4dev.managedFiles.files = lib.attrsets.concatMapAttrs managedFilesEntry (
-        self.flakeModules or { }
+      nix4dev.managedFiles.files = lib.mkIf cfg.enable (
+        lib.attrsets.concatMapAttrs managedFilesEntry (self.flakeModules or { })
       );
     };
 }
