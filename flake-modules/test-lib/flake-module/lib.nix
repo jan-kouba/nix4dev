@@ -89,21 +89,22 @@ let
       evalFlakeModules =
         modules: flakeDir:
         let
-          self =
+          flake =
             flake-parts-lib.evalFlakeModule
               {
                 inherit inputs;
-                self = self // {
+                self = flake.config.flake // {
                   inherit inputs;
                   outPath = flakeDir;
                 };
+                moduleLocation = ./lib.nix;
               }
               {
                 imports = modules;
                 systems = [ system ];
               };
         in
-        self;
+        flake;
 
       testSetupModule =
         { flake-parts-lib, lib, ... }:
