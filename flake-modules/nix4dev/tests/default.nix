@@ -8,6 +8,7 @@
     ./opentofu-works
     ./prepare-formats-files
     ./terraform-works
+    ./generates-module-options-documentation
     ./write-managed-formatted-file
   ];
 

@@ -17,6 +17,7 @@ in
     ./managed-files.nix
     ./markdown.nix
     ./nixlang.nix
+    (fpl.importApply ./nix-modules.nix nix4devInputs)
     (fpl.importApply ./pkgs.nix nix4devInputs)
     ./project-flake
     (fpl.importApply ./shell nix4devInputs)
