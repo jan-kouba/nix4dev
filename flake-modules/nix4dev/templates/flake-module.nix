@@ -136,12 +136,18 @@ nix4devInputs:
             );
             defaultNixFile;
 
-          templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } {
-            imports = [
-              (flake-parts-lib.importApply ../flake-module nix4devInputs)
-              templateFlakeDefaultNix
-            ];
-          };
+          templateFlakeModule = flake-parts-lib.evalFlakeModule { inputs = nix4devInputs; } (
+            { flake-parts-lib, ... }:
+            {
+              imports = [
+                (flake-parts-lib.importApply ../flake-module nix4devInputs)
+                templateFlakeDefaultNix
+                {
+                  perSystem.nix4dev.documentation.nixModules.enable = false;
+                }
+              ];
+            }
+          );
 
           templateProjectDir = pkgs.runCommand "template-project" { } ''
             mkdir -p $out
