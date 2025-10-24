@@ -92,6 +92,9 @@ let
     # Initializing repo
     ${pkgs.nix}/bin/nix flake init -t ${repoPath}
 
+    # Replace nix4dev flake references by path to this repo
+    find . -name '*.nix' -exec sed -i 's%"github:jan-kouba/nix4dev"%"${repoPath}"%g' {} \;
+
     git init .
     git add .
     git commit -m "Init"

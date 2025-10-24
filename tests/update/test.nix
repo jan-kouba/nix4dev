@@ -12,6 +12,21 @@ t.makeTest (
 
     cp -r ${./repo}/* .
     chmod -R u+w .
+
+    cat > nix4dev/flake-modules/inputs.nix <<EOF
+      {
+        perSystem.nix4dev.flake = {
+          inputs = {
+            nix4dev.url = "${t.repoPath}";
+          };
+
+          modules = [
+            "inputs.nix4dev.flakeModules.default"
+          ];
+        };
+      }
+    EOF
+
     readlink -f "$(pwd)" > nix4dev/flake-modules/repo_root
     git add .
     PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
