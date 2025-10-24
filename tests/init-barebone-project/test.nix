@@ -10,6 +10,9 @@ t.makeTest (
     # Check that the project directory looks as expected
     rm -rf .git nix4dev/flake.lock
 
+    # Replace nix4dev flake references back from the path to this repo
+    find . -name '*.nix' -exec sed -i 's%"${t.repoPath}"%"github:jan-kouba/nix4dev"%g' {} \;
+
     diff --recursive ${./.}/expected .
   ''
 )
