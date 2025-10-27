@@ -1,3 +1,4 @@
+nix4devIntpus:
 {
   flake-parts-lib,
   self,
@@ -87,10 +88,12 @@
         {
           "docs/modules/flake/${docFileNameBase}.md".source.file = optionsDoc.optionsCommonMark;
         };
+
+      projectFlake = (import nix4devIntpus.flake-compat) { src = ./..; };
     in
     {
       nix4dev.managedFiles.files = lib.mkIf cfg.enable (
-        lib.attrsets.concatMapAttrs managedFilesEntry (self.flakeModules or { })
+        lib.attrsets.concatMapAttrs managedFilesEntry (projectFlake.flakeModules or { })
       );
     };
 }

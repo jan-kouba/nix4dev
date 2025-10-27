@@ -12,6 +12,9 @@
       };
       url = "github:numtide/devshell";
     };
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+    };
     flake-parts = {
       inputs = {
         nixpkgs-lib = {

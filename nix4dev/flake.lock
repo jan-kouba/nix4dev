@@ -92,6 +92,7 @@
           "nixpkgs"
         ],
         "test-input-devshell": "test-input-devshell",
+        "test-input-flake-compat": "test-input-flake-compat",
         "test-input-flake-parts": "test-input-flake-parts",
         "test-input-nixpkgs": "test-input-nixpkgs",
         "test-input-systems": "test-input-systems",
@@ -130,6 +131,21 @@
       "original": {
         "owner": "numtide",
         "repo": "devshell",
+        "type": "github"
+      }
+    },
+    "test-input-flake-compat": {
+      "locked": {
+        "lastModified": 1761588595,
+        "narHash": "sha256-XKUZz9zewJNUj46b4AJdiRZJAvSZ0Dqj2BNfXvFlJC4=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "f387cd2afec9419c8ee37694406ca490c3f34ee5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
         "type": "github"
       }
     },
