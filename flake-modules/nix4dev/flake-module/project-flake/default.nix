@@ -28,7 +28,7 @@ in
             };
 
             nixpkgs = l.mkDefault {
-              url = "github:NixOS/nixpkgs/nixos-25.05";
+              url = "github:NixOS/nixpkgs/nixos-25.11";
             };
           };
 
