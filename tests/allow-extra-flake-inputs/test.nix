@@ -7,7 +7,7 @@ t.makeTest (
         perSystem = { system, ...}: {
           nix4dev.flake = {
             inputs = {
-              foo.url = "github:NixOS/nixpkgs/nixos-25.05";
+              foo.url = "github:NixOS/nixpkgs/nixos-25.11";
             };
           };
 

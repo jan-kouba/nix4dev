@@ -12,7 +12,7 @@
       url = "github:hercules-ci/flake-parts";
     };
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-25.05";
+      url = "github:NixOS/nixpkgs/nixos-25.11";
     };
   };
 
