@@ -1,5 +1,22 @@
 # Changelog
 
+### [v0.3.2](https://github.com/jan-kouba/nix4dev/compare/v0.3.1...v0.3.2) (2025-12-03)
+
+#### Features
+
+* Update to nixos-25.11 (#136)
+([3123f89](https://github.com/jan-kouba/nix4dev/commit/3123f89bec46dccdf7636a2212b0a611e349be5c)),
+closes [#136](https://github.com/jan-kouba/nix4dev/issues/136)
+
+#### Fixes
+
+* Fix setup of mdformat plugins (#133)
+([47b08bd](https://github.com/jan-kouba/nix4dev/commit/47b08bda864b01a3583e21c870392ca52f4776ff)),
+closes [#133](https://github.com/jan-kouba/nix4dev/issues/133)
+* **test-lib:** Fix self passed into the tested flake (#132)
+([6232d90](https://github.com/jan-kouba/nix4dev/commit/6232d90dc6d6ed4cb85b067bfeaa00a68d86e7ea)),
+closes [#132](https://github.com/jan-kouba/nix4dev/issues/132)
+
 ### [v0.3.1](https://github.com/jan-kouba/nix4dev/compare/v0.3.0...v0.3.1) (2025-09-22)
 
 #### Features
