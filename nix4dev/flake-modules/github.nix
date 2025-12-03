@@ -12,8 +12,8 @@
             {
               "if" = "github.event.pull_request.draft == false";
               strategy.matrix.runs-on = [
-                "ubuntu-22.04"
-                "macos-14"
+                "ubuntu-24.04"
+                "macos-15"
               ];
               runs-on = "\${{ matrix.runs-on}}";
 
