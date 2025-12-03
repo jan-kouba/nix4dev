@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         runs-on:
-          - ubuntu-22.04
-          - macos-14
+          - ubuntu-24.04
+          - macos-15
   nix4dev-test-all:
     if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.runs-on}}
@@ -35,8 +35,8 @@ jobs:
     strategy:
       matrix:
         runs-on:
-          - ubuntu-22.04
-          - macos-14
+          - ubuntu-24.04
+          - macos-15
 name: nix4dev-check
 "on":
   pull_request:
