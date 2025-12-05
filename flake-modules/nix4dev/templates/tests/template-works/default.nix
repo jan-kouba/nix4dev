@@ -28,9 +28,7 @@ in
         perSystem =
           { config, ... }:
           {
-            test.commandsToExecute = [
-              ''PRJ_ROOT="$out" ${config.packages.setup}/bin/setup''
-            ];
+            test.commandsToExecute = [ ''${config.nix4dev.managedFiles.updateFiles} "$out"'' ];
           };
       }
     ];
