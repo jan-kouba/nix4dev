@@ -13,9 +13,11 @@
               ''
                 cd $out
 
-                # run prepare
+                # Allow prepare to find project root
                 mkdir .git
                 touch .git/config
+
+                # run prepare
                 TREEFMT_NO_CACHE=true ${config.devShells.default}/bin/prepare
               ''
             ];
@@ -24,11 +26,7 @@
     ];
 
     excludeFiles = [
-      ".editorconfig"
-      ".envrc"
       ".git"
-      ".gitignore"
-      "nix4dev"
     ];
   };
 }
