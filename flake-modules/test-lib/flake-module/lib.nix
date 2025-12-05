@@ -41,6 +41,7 @@ let
 
     `expectedDir`
     : The expected output of this test.
+      If set to `null`, will expect empty directory.
 
     `excludeFiles`
     : The files or directories to exclude from test.
@@ -176,7 +177,10 @@ let
       expected = pkgs.runCommand "${testName}-expected" { } ''
         set -euo pipefail
 
-        cp -r "${expectedDir}" "$out"
+        ${
+          if expectedDir != null then ''cp -r "${expectedDir}" "$out"''
+            else "mkdir $out"
+        }
       '';
     };
 
