@@ -7,7 +7,7 @@
 }:
 let
   nix =
-    command: localFlakeUrl:
+    localFlakeUrl:
     let
       localInputs =
         (lib.attrsets.mapAttrs' (name: value: {
@@ -72,9 +72,11 @@ let
       bash -c '
         . ${makeAndCheckOverrides}
 
-        nix ${command} \
+        nix flake update \
           $overrideOptions \
-          "$@"
+          --flake ${localFlakeUrl}
+
+        nix "$@"
       ' bash \
     '';
 
@@ -99,7 +101,9 @@ let
     git add .
     git commit -m "Init"
 
-    ${nix "flake update" "./nix4dev"} --print-build-logs --flake ./nix4dev/
+    # Init flake.lock file.
+    # The "hacked" nix command always updates the lock file in the directory specified
+    ${nix "./nix4dev"} flake metadata ./nix4dev > /dev/null
     git add nix4dev/flake.lock
     git commit -m "Add nix4dev/flake.lock"
 
