@@ -5,6 +5,6 @@ t.makeTest (
     chmod -R u+w .
     git add .
 
-    ${t.nix "develop" "./nix4dev"} ./nix4dev -c hello-unfree
+    ${t.nix "./nix4dev"} develop ./nix4dev -c hello-unfree
   ''
 )

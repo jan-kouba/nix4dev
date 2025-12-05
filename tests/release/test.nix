@@ -13,7 +13,7 @@ t.makeTest (
     test ! -e CHANGELOG.md
 
     # Run release
-    ${t.nix "develop" "./nix4dev"} nix4dev/ -c release
+    ${t.nix "./nix4dev"} develop nix4dev/ -c release
 
     # Check output of release
     cat CHANGELOG.md

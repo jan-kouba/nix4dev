@@ -7,11 +7,11 @@ t.makeTest (
     chmod -R u+w .
 
     git add .
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "./nix4dev"} run ./nix4dev#setup
 
     # Lock the project flake's inputs
     git add .
-    ${t.nix "flake update" "."}
+    ${t.nix "."} flake metadata . > /dev/null
 
     git add .
     git commit -m "Added repo files"
@@ -27,11 +27,11 @@ t.makeTest (
     ${t.pkgs.nix}/bin/nix flake init -t ../repo
 
     # Test that the module from template is loaded
-    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
+    ${t.nix "./nix4dev"} develop ./nix4dev -c test-success
 
     # Test that setup does not break things
-    PRJ_ROOT=$(pwd) ${t.nix "run" "./nix4dev"} ./nix4dev#setup
+    PRJ_ROOT=$(pwd) ${t.nix "./nix4dev"} run ./nix4dev#setup
 
-    ${t.nix "develop" "./nix4dev"} ./nix4dev -c test-success
+    ${t.nix "./nix4dev"} develop ./nix4dev -c test-success
   ''
 )
