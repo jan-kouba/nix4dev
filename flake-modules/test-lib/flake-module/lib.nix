@@ -177,10 +177,7 @@ let
       expected = pkgs.runCommand "${testName}-expected" { } ''
         set -euo pipefail
 
-        ${
-          if expectedDir != null then ''cp -r "${expectedDir}" "$out"''
-            else "mkdir $out"
-        }
+        ${if expectedDir != null then ''cp -r "${expectedDir}" "$out"'' else "mkdir $out"}
       '';
     };
 
