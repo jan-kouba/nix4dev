@@ -69,9 +69,10 @@
               };
 
               expected = lib.mkOption {
-                type = lib.types.pathWith { };
+                type = lib.types.nullOr (lib.types.pathWith { });
                 description = ''
-                  The path to the directory containing the expected output of this test.
+                  The path to a file or directory containing the expected output of this test.
+                  If set to `null`, will expect empty directory.
                 '';
                 example = lib.options.literalExpression "./expected";
               };
