@@ -7,6 +7,7 @@
   imports = [
     ./opentofu-works
     ./prepare-formats-files
+    ./devshell-does-not-depend-on-managed-files-contents
     ./terraform-works
     ./write-managed-formatted-file
   ];
