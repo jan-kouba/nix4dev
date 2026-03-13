@@ -4,7 +4,7 @@
       { self, ... }:
       {
         perSystem.test.commandsToExecute = [
-          ''cp ${self}/foo $out/bar''
+          "cp ${self}/foo $out/bar"
         ];
       }
     )

@@ -17,7 +17,7 @@
           type = t.listOf t.pathInStore;
           description = "The commands to execute when '${commandName}' is called";
           default = [ ];
-          example = l.options.literalExpression ''[ ''${pkgs.sbt}/bin/sbt prepare ]'';
+          example = l.options.literalExpression "[ \${pkgs.sbt}/bin/sbt prepare ]";
         };
 
       compoundCommand =
