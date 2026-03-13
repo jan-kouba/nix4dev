@@ -33,7 +33,7 @@
             The source for the file.
             The target will be overwritten by a file with this string as content.
           '';
-          example = l.options.literalExpression ''Hello world!'';
+          example = l.options.literalExpression "Hello world!";
         };
 
         file = l.mkOption {
@@ -42,7 +42,7 @@
             The source for the file.
             Path in store (file or directory) which will be recursively copied over the target.
           '';
-          example = ''../examples/hello'';
+          example = "../examples/hello";
         };
       };
 
