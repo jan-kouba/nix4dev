@@ -16,6 +16,7 @@
             p.mdformat-footnote
             p.mdformat-frontmatter
             p.mdformat-gfm
+            p.mdformat-mkdocs
             p.mdformat-nix-alejandra
             p.mdformat-simple-breaks
             p.mdformat-tables
