@@ -16,7 +16,7 @@
                 {
                   ${l.strings.concatStrings (
                     l.attrsets.mapAttrsToList (
-                      name: value: ''${lib.strings.escapeNixIdentifier name} = ${printFlakeInputs value};''
+                      name: value: "${lib.strings.escapeNixIdentifier name} = ${printFlakeInputs value};"
                     ) x
                   )}
                 }

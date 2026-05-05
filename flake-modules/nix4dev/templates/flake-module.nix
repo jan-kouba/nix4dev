@@ -1,8 +1,6 @@
 nix4devInputs:
 {
-  config,
   flake-parts-lib,
-  inputs,
   lib,
   ...
 }:
@@ -25,7 +23,7 @@ nix4devInputs:
 
             description = lib.mkOption {
               type = lib.types.str;
-              description = ''A one-line description of the template, in CommonMark syntax.'';
+              description = "A one-line description of the template, in CommonMark syntax.";
               example = "A simple nix4dev template";
             };
 
