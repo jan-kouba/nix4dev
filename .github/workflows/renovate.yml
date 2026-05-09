@@ -1,0 +1,20 @@
+name: Renovate
+"on":
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch: {}
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      id-token: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: nix run ./nix4dev#renovate -- --platform=github --token="$RENOVATE_TOKEN" --autodiscover=false "${{ github.repository }}"
