@@ -15,7 +15,7 @@
                 (_self: prev: {
                   terraform = pkgs.writeShellApplication {
                     name = "terraform";
-                    runtimeInputs = [ (prev.opentofu.withPlugins (p: [ p.local ])) ];
+                    runtimeInputs = [ (prev.opentofu.withPlugins (p: [ p.hashicorp_local ])) ];
                     text = ''
                       exec tofu "$@"
                     '';
