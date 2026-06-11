@@ -21,6 +21,6 @@ t.makeTest (
     # Check that all the generated files are correctly formatted
     ${t.nix "./nix4dev"} run ./nix4dev#prepare
 
-    test "$(${t.nix "./nix4dev"} run ./nix4dev#bar)" == "Hello, world!"
+    test "$(${t.nix "./nix4dev"} run ./nix4dev#bar -- -g "Hello, world!")" == "Hello, world!"
   ''
 )

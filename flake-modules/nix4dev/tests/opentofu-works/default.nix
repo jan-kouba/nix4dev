@@ -13,7 +13,7 @@
 
               overlays = [
                 (_self: prev: {
-                  opentofu = prev.opentofu.withPlugins (p: [ p.local ]);
+                  opentofu = prev.opentofu.withPlugins (p: [ p.hashicorp_local ]);
                 })
               ];
             };

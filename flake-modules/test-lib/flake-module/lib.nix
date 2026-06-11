@@ -9,7 +9,7 @@
 }:
 
 let
-  system = pkgs.system;
+  system = pkgs.stdenv.hostPlatform.system;
 
   /**
     Runs flake-parts test on a directory.
