@@ -1,5 +1,30 @@
 # Changelog
 
+### [v0.3.3](https://github.com/jan-kouba/nix4dev/compare/v0.3.2...v0.3.3) (2026-06-11)
+
+#### Features
+
+* Update to nixos-26.05 (#146)
+([dc88e5c](https://github.com/jan-kouba/nix4dev/commit/dc88e5cb1098e25afc019c1773c26690faad2b06)),
+closes [#146](https://github.com/jan-kouba/nix4dev/issues/146)
+* Configure renovate to update devshell
+([6756119](https://github.com/jan-kouba/nix4dev/commit/6756119bb7f706597fb4831396747f9a23635b0f))
+* Add prj-renovate command
+([f0f1bb7](https://github.com/jan-kouba/nix4dev/commit/f0f1bb7f3adb5a4d0278f8dea179300c0f636d8d))
+* Do not eagerly build contents of all managed files when entering devshell
+(#141)
+([e928a7e](https://github.com/jan-kouba/nix4dev/commit/e928a7ef89d803d9b679a251535fede1ede10cdb)),
+closes [#141](https://github.com/jan-kouba/nix4dev/issues/141)
+* Allow the expected directory in flake tests to be null (#138)
+([87d9e63](https://github.com/jan-kouba/nix4dev/commit/87d9e6336882fdc9af8f8fe42a0b7efea01e2511)),
+closes [#138](https://github.com/jan-kouba/nix4dev/issues/138)
+
+#### Fixes
+
+* Remove mdformat-mkdocs plugin (#142)
+([a218bea](https://github.com/jan-kouba/nix4dev/commit/a218beac66a4523bd1e1ad911c87657784afc191)),
+closes [#142](https://github.com/jan-kouba/nix4dev/issues/142)
+
 ### [v0.3.2](https://github.com/jan-kouba/nix4dev/compare/v0.3.1...v0.3.2) (2025-12-03)
 
 #### Features
