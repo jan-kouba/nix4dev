@@ -62,7 +62,16 @@
 
       nix4dev.envrc.watchDirectories = [ "tests" ];
 
-      packages.test-all = testAllPkg;
+      packages =
+        (lib.concatMapAttrs (
+          n: v: {
+            "test-${n}" = v;
+          }
+        ))
+          tests
+        // {
+          test-all = testAllPkg;
+        };
 
       devshells.default = {
         commands =

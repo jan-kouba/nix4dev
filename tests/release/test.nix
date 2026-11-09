@@ -1,8 +1,8 @@
 t:
 t.makeTest (
   t.withLockedRepo ''
-    mkdir -p nix4dev/flake-modules
-    echo "{}" > nix4dev/flake-modules/default.nix
+    cp -r ${./repo}/* .
+    chmod -R u+w .
     git add .
 
     git tag v0.0.1 HEAD~1
