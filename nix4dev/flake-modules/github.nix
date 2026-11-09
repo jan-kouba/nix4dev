@@ -8,6 +8,7 @@
             {
               mainStepName,
               mainStepCommand,
+              timeoutMinutes ? null,
             }:
             {
               "if" = "github.event.pull_request.draft == false";
@@ -30,10 +31,15 @@
                     git config --global user.name "nix4dev CI"
                   '';
                 }
-                {
-                  name = mainStepName;
-                  run = mainStepCommand;
-                }
+                (
+                  {
+                    name = mainStepName;
+                    run = mainStepCommand;
+                  }
+                  // (lib.attrsets.optionalAttrs (timeoutMinutes != null) {
+                    timeout-minutes = timeoutMinutes;
+                  })
+                )
               ];
             };
 
@@ -42,6 +48,7 @@
             mainStepCommand = ''
               PRJ_ROOT="$(pwd)" nix run ./nix4dev#check
             '';
+            timeoutMinutes = 10;
           };
 
           testJob = workflowJob {
@@ -49,6 +56,7 @@
             mainStepCommand = ''
               nix develop ./nix4dev -c test-all
             '';
+            timeoutMinutes = 20;
           };
 
           workflowNix = {

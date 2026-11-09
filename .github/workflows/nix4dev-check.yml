@@ -13,6 +13,7 @@ jobs:
       - name: Run `check`
         run: |
           PRJ_ROOT="$(pwd)" nix run ./nix4dev#check
+        timeout-minutes: 10
     strategy:
       matrix:
         runs-on:
@@ -32,6 +33,7 @@ jobs:
       - name: Run `test-all`
         run: |
           nix develop ./nix4dev -c test-all
+        timeout-minutes: 20
     strategy:
       matrix:
         runs-on:
