@@ -62,6 +62,8 @@
 
       nix4dev.envrc.watchDirectories = [ "tests" ];
 
+      packages.test-all = testAllPkg;
+
       devshells.default = {
         commands =
           (lib.mapAttrsToList (_n: v: {

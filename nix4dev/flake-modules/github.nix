@@ -47,7 +47,7 @@
           testJob = workflowJob {
             mainStepName = "Run `test-all`";
             mainStepCommand = ''
-              nix develop ./nix4dev -c test-all
+              nix run ./nix4dev#test-all
             '';
           };
 
