@@ -278,17 +278,18 @@
               # Update managed files
               jq_filter='.managedFiles[] | gsub("\\*"; "\\*") | gsub("\\?"; "\\?") | gsub("\\["; "\\[") | gsub("^\\./"; "") | "/" + .'
 
-              ${pkgs.rsync}/bin/rsync \
-                -r \
-                --delete \
-                --checksum \
-                --from0 \
-                --chmod=D+w,F-w,+X \
-                -f'.+ '<(${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" ${escapedFileListPath}) \
-                -f'-! */' \
-                ${managedFilesDir}/ \
-                "$outDir" \
-              | { grep -v '^cannot delete non-empty directory: ' || true; }
+              ${pkgs.jq}/bin/jq --raw-output0 "$jq_filter" ${escapedFileListPath} \
+                | ${pkgs.rsync}/bin/rsync \
+                  -r \
+                  --delete \
+                  --checksum \
+                  --from0 \
+                  --chmod=D+w,F-w,+X \
+                  -f'.+ -' \
+                  -f'-! */' \
+                  ${managedFilesDir}/ \
+                  "$outDir" \
+                | { grep -v '^cannot delete non-empty directory: ' || true; }
 
 
               # Update managed files list to contain just the new files
