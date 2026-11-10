@@ -3,7 +3,7 @@ jobs:
     if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.runs-on}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Setup git for test
@@ -13,16 +13,17 @@ jobs:
       - name: Run `check`
         run: |
           PRJ_ROOT="$(pwd)" nix run ./nix4dev#check
+        timeout-minutes: 10
     strategy:
       matrix:
         runs-on:
-          - ubuntu-24.04
-          - macos-15
+          - ubuntu-26.04
+          - macos-26
   nix4dev-test-all:
     if: github.event.pull_request.draft == false
     runs-on: ${{ matrix.runs-on}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Setup git for test
@@ -32,11 +33,12 @@ jobs:
       - name: Run `test-all`
         run: |
           nix run ./nix4dev#test-all
+        timeout-minutes: 20
     strategy:
       matrix:
         runs-on:
-          - ubuntu-24.04
-          - macos-15
+          - ubuntu-26.04
+          - macos-26
 name: nix4dev-check
 "on":
   pull_request:

@@ -8,17 +8,18 @@
             {
               mainStepName,
               mainStepCommand,
+              timeoutMinutes ? null,
             }:
             {
               "if" = "github.event.pull_request.draft == false";
               strategy.matrix.runs-on = [
-                "ubuntu-24.04"
-                "macos-15"
+                "ubuntu-26.04"
+                "macos-26"
               ];
               runs-on = "\${{ matrix.runs-on}}";
 
               steps = [
-                { uses = "actions/checkout@v4"; }
+                { uses = "actions/checkout@v7"; }
                 {
                   name = "Install Nix";
                   uses = "DeterminateSystems/nix-installer-action@main";
@@ -30,10 +31,15 @@
                     git config --global user.name "nix4dev CI"
                   '';
                 }
-                {
-                  name = mainStepName;
-                  run = mainStepCommand;
-                }
+                (
+                  {
+                    name = mainStepName;
+                    run = mainStepCommand;
+                  }
+                  // (lib.attrsets.optionalAttrs (timeoutMinutes != null) {
+                    timeout-minutes = timeoutMinutes;
+                  })
+                )
               ];
             };
 
@@ -42,6 +48,7 @@
             mainStepCommand = ''
               PRJ_ROOT="$(pwd)" nix run ./nix4dev#check
             '';
+            timeoutMinutes = 10;
           };
 
           testJob = workflowJob {
@@ -49,6 +56,7 @@
             mainStepCommand = ''
               nix run ./nix4dev#test-all
             '';
+            timeoutMinutes = 20;
           };
 
           workflowNix = {
