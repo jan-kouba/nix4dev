@@ -32,7 +32,7 @@ jobs:
           git config --global user.name "nix4dev CI"
       - name: Run `test-all`
         run: |
-          nix develop ./nix4dev -c test-all
+          nix run ./nix4dev#test-all
         timeout-minutes: 20
     strategy:
       matrix:
